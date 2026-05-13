@@ -23,7 +23,7 @@ export function Modal({
               open?: boolean;
               setOpen?: (open: boolean) => void;
             }>,
-            { open, setOpen }
+            { open, setOpen },
           );
         }
         return child;
@@ -45,7 +45,7 @@ export const ModalTrigger = ({
     <button
       className={cn(
         "px-4 py-2 rounded-md text-black dark:text-white text-center relative overflow-hidden",
-        className
+        className,
       )}
       onClick={() => setOpen?.(true)}
     >
@@ -97,8 +97,8 @@ export const ModalBody = ({
           <motion.div
             ref={modalRef}
             className={cn(
-              "min-h-[70%] max-h-[90%] md:max-w-[70%] lg:max-w-[60%] xl:min-h-[60%] 2xl:max-w-[50%] bg-black/85 border border-border md:rounded-2xl relative z-[60] flex flex-col flex-1 overflow-y-auto modal-custom-scrollbar",
-              className
+              "min-h-[70%] max-h-[90%] md:max-w-[70%] lg:max-w-[60%] xl:min-h-[60%] 2xl:max-w-[50%] bg-black/85 border border-border/50 md:rounded-2xl relative z-[60] flex flex-col flex-1 overflow-y-auto modal-custom-scrollbar",
+              className,
             )}
             initial={{
               opacity: 0,
@@ -143,7 +143,7 @@ export const ModalContent = ({
     <div
       className={cn(
         "flex flex-col justify-center flex-1 p-8 md:p-10",
-        className
+        className,
       )}
     >
       {children}
@@ -221,7 +221,7 @@ const CloseIcon = ({ setOpen }: { setOpen?: (open: boolean) => void }) => {
 // Add it in a separate file, I've added here for simplicity
 export const useOutsideClick = (
   ref: React.RefObject<HTMLDivElement | null>,
-  callback: (event: MouseEvent | TouchEvent) => void
+  callback: (event: MouseEvent | TouchEvent) => void,
 ) => {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {

@@ -11,6 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { SocialLink } from "./SocialLink";
 import { useNewBooking } from "@/hooks/use-new-booking";
 import ScrollingText from "@/components/ScrollingText";
+import { cn } from "@/lib/utils";
 
 const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
   ({ isOpen, onClose }, ref) => {
@@ -27,6 +28,7 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
     const handleMenuClick = (e: React.MouseEvent) => {
       e.stopPropagation();
     };
+
     return (
       <AnimatePresence>
         {isOpen && (
@@ -36,7 +38,10 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="max-[360px]:py-6 md:hidden fixed top-[78px] left-2 right-2 border border-border bg-background/85 backdrop-blur-sm rounded-[8px] py-11 px-4 shadow-lg z-40"
+            className={cn(
+              "max-[360px]:py-6 min-[900px]:hidden fixed top-[78px] left-2 right-2 border border-border backdrop-blur-sm rounded-[8px] py-11 px-4 shadow-lg z-40 md:mx-4",
+              "bg-background/85",
+            )}
             onClick={handleMenuClick}
           >
             <nav>

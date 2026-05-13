@@ -26,7 +26,7 @@ const CoverCard = ({
       <Link
         href={href}
         className={cn(
-          "flex w-full h-full cursor-pointer flex-col items-stretch rounded-[16px] border border-solid border-border/50 bg-[#0e0d0d] px-2 pt-4 2xl:px-3"
+          "flex w-full h-full cursor-pointer flex-col items-stretch rounded-[16px] border border-solid border-border/50 bg-[#0e0d0d] px-2 pt-4 2xl:px-3",
         )}
       >
         <div className="mx-2">
@@ -34,7 +34,7 @@ const CoverCard = ({
         </div>
         <div
           className={cn(
-            "z-2 flex flex-shrink-0 flex-col gap-3 font-sans py-5 px-3.5 md:py-6"
+            "z-2 flex flex-shrink-0 flex-col gap-3 font-sans py-5 px-3.5 md:py-6",
           )}
         >
           <div className="flex items-center justify-between">

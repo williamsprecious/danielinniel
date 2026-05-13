@@ -24,19 +24,24 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 }) => {
   const galleryImages = images.length > 0 ? images : [];
 
-  const [isScreenSizeSm, setIsScreenSizeSm] = useState<boolean>(false);
+  const [faceWidth, setFaceWidth] = useState<number>(300);
+
   useEffect(() => {
-    const handleResize = () => setIsScreenSizeSm(window.innerWidth <= 640);
-    // Set initial value
+    const handleResize = () => {
+      if (window.innerWidth <= 640)
+        setFaceWidth(220); // Mobile
+      else if (window.innerWidth <= 1024)
+        setFaceWidth(280); // Tablet
+      else setFaceWidth(350); // Desktop
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const cylinderWidth: number = isScreenSizeSm ? 1100 : 1800;
   const faceCount: number = galleryImages.length;
-  const faceWidth: number = (cylinderWidth / faceCount) * 1.5;
-  const radius: number = cylinderWidth / (2 * Math.PI);
+  // Calculate radius so the edges of the square faces perfectly touch (forming a prism)
+  const radius: number = faceWidth / 2 / Math.tan(Math.PI / faceCount);
 
   const dragFactor: number = 0.05;
   const rotation = useMotionValue(0);
@@ -44,7 +49,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 
   const transform = useTransform(
     rotation,
-    (val: number) => `rotate3d(0,1,0,${val}deg)`
+    (val: number) => `rotate3d(0,1,0,${val}deg)`,
   );
 
   const startInfiniteSpin = (startAngle: number) => {
@@ -76,7 +81,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 
   const handleDrag = (
     _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
+    info: PanInfo,
   ): void => {
     controls.stop();
     rotation.set(rotation.get() + info.offset.x * dragFactor);
@@ -84,7 +89,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 
   const handleDragEnd = (
     _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
+    info: PanInfo,
   ): void => {
     const finalAngle = rotation.get() + info.velocity.x * dragFactor;
     rotation.set(finalAngle);
@@ -106,8 +111,10 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
     }
   };
 
+  if (faceCount === 0) return null;
+
   return (
-    <div className="relative h-[360px] w-full overflow-hidden sm:h-[450px] md:h-[480px] 2xl:h-[600px]">
+    <div className="relative h-[360px] w-full overflow-hidden sm:h-[450px] md:h-[550px] 2xl:h-[600px]">
       <div
         className="absolute top-0 left-0 h-full w-[48px] z-10"
         style={{
@@ -135,7 +142,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
           style={{
             transform: transform,
             rotateY: rotation,
-            width: cylinderWidth,
+            width: faceWidth,
             transformStyle: "preserve-3d",
           }}
           className="flex min-h-[200px] cursor-grab items-center justify-center [transform-style:preserve-3d]"
@@ -143,9 +150,10 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
           {galleryImages.map((url, i) => (
             <div
               key={i}
-              className="group absolute flex h-fit items-center justify-center p-[8%] [backface-visibility:hidden] md:p-[6%] 2xl:p-[0%]"
+              className="absolute flex items-center justify-center [backface-visibility:hidden]"
               style={{
                 width: `${faceWidth}px`,
+                height: `${faceWidth}px`,
                 transform: `rotateY(${
                   (360 / faceCount) * i
                 }deg) translateZ(${radius}px)`,
@@ -156,7 +164,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
                 alt="gallery"
                 width={700}
                 height={700}
-                className="pointer-events-none w-[200px] h-[200px] rounded-[15px] border-[3px] border-foreground object-cover transition-transform duration-300 ease-out group-hover:scale-105 sm:w-[280px] sm:h-[240px] md:w-[260px] md:h-[220px] lg:w-[260px] lg:h-[230px] 2xl:w-[310px] 2xl:h-[310px]"
+                className="pointer-events-none w-full h-full border-[3px] border-foreground object-cover"
               />
             </div>
           ))}

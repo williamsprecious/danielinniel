@@ -28,10 +28,9 @@ const HeaderText = ({
           opacity: 1,
         }}
         transition={{
-          type: "spring",
-          stiffness: 90,
-          damping: 18,
-          duration: 1,
+          type: "tween",
+          ease: [0.25, 1, 0.5, 1],
+          duration: 0.8,
           delay,
         }}
         viewport={{ amount: 0.3, once: true }}

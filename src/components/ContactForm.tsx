@@ -92,7 +92,8 @@ const ContactForm = () => {
                 <Input
                   placeholder="Your Name"
                   className={cn(
-                    form.formState.errors.name && "border border-destructive/90"
+                    form.formState.errors.name &&
+                      "border border-destructive/90",
                   )}
                   {...field}
                 />
@@ -111,7 +112,7 @@ const ContactForm = () => {
                   placeholder="Company (optional)"
                   className={cn(
                     form.formState.errors.company &&
-                      "border border-destructive/90"
+                      "border border-destructive/90",
                   )}
                   {...field}
                 />
@@ -131,7 +132,7 @@ const ContactForm = () => {
                   placeholder="Email"
                   className={cn(
                     form.formState.errors.email &&
-                      "border border-destructive/90"
+                      "border border-destructive/90",
                   )}
                   {...field}
                 />
@@ -151,7 +152,7 @@ const ContactForm = () => {
                   placeholder="How can we help?"
                   className={cn(
                     form.formState.errors.message &&
-                      "border border-destructive/90"
+                      "border border-destructive/90",
                   )}
                   {...field}
                 />

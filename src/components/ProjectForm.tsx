@@ -149,7 +149,7 @@ const ProjectForm = ({
                 <SelectTrigger
                   className={cn(
                     "input",
-                    errors.grade?.message && "border border-destructive/90"
+                    errors.grade?.message && "border border-destructive/90",
                   )}
                 >
                   <SelectValue placeholder="Select grade" />
@@ -190,7 +190,7 @@ const ProjectForm = ({
                 <SelectTrigger
                   className={cn(
                     "input",
-                    errors.grade?.message && "border border-destructive/90"
+                    errors.grade?.message && "border border-destructive/90",
                   )}
                 >
                   <SelectValue placeholder="Select design" />
@@ -228,7 +228,7 @@ const ProjectForm = ({
               <SelectTrigger
                 className={cn(
                   "input",
-                  errors.budget?.message && "border border-destructive/90"
+                  errors.budget?.message && "border border-destructive/90",
                 )}
                 disabled={budgetList.length === 1}
               >
@@ -244,16 +244,12 @@ const ProjectForm = ({
             </Select>
           )}
         />
-        <p className="flex items-center gap-1 mt-1 tracking-wide font-light px-2 text-[13px] text-[#a5d4d0]/60">
-          <CircleAlert className="size-3.5" /> Motion animation attracts
-          additional costs.
-        </p>
       </div>
 
       <div>
         <Textarea
           className={cn(
-            errors.projectDetails?.message && "border border-destructive/90"
+            errors.projectDetails?.message && "border border-destructive/90",
           )}
           placeholder="Describe your idea in detail"
           rows={10}

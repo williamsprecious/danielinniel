@@ -53,7 +53,7 @@ const ServiceCard = ({
     >
       <Link
         href={href}
-        className="flex w-full h-full cursor-pointer flex-col items-stretch rounded-[16px] border border-solid border-border/50 bg-[#0e0d0d] p-2 md:p-2 lg:p-4 gap-1"
+        className="flex w-full h-full cursor-pointer flex-col items-stretch rounded-[16px] ring ring-foreground/10 bg-[#0e0d0d] p-2 md:p-2 lg:p-4 gap-1"
         style={{
           transformStyle: "preserve-3d",
           transform: "none",
@@ -87,7 +87,7 @@ const ServiceCard = ({
               className={cn(
                 "w-full h-full object-cover transition-opacity duration-300",
                 showFallback && "opacity-0 invisible",
-                !showFallback && "opacity-100 visible"
+                !showFallback && "opacity-100 visible",
               )}
               width={500}
               height={500}

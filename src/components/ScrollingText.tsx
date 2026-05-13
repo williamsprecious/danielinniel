@@ -16,23 +16,29 @@ const ScrollingText = ({
   duration = 3,
   className,
 }: ScrollingTextProps) => {
+  const renderTextGroup = () => (
+    <span className="flex shrink-0 items-center gap-4 pr-4">
+      <span className="inline-flex items-center">{text}</span>
+      <span aria-hidden>-</span>
+    </span>
+  );
+
   return (
     <div
       className={cn(
         "relative overflow-hidden inline-block text-[13px] lg:text-sm 2xl:text-base align-middle",
         widthClass,
-        className
+        className,
       )}
     >
       <motion.div
-        className="whitespace-nowrap will-change-transform"
-        animate={{ x: ["100%", "-100%"] }}
+        className="flex w-max whitespace-nowrap will-change-transform"
+        animate={{ x: ["0%", "-50%"] }}
         transition={{ repeat: Infinity, duration, ease: "linear" }}
         aria-hidden
       >
-        <span className="inline-flex items-center">{text}</span>
-        <span className="mx-4">-</span>
-        <span className="inline-flex items-center">{text}</span>
+        {renderTextGroup()}
+        {renderTextGroup()}
       </motion.div>
     </div>
   );

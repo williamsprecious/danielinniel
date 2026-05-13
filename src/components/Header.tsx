@@ -21,9 +21,7 @@ const Header = () => {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
   const [isVisible, setIsVisible] = useState(!isHomePage); // Hide on home page initially
-  const [isAtTop, setIsAtTop] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [useDarkHeader, setUseDarkHeader] = useState(false);
   const { scrollY } = useScroll();
   const headerRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -32,19 +30,19 @@ const Header = () => {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();
 
-    // Check if we've scrolled past the HomeIntroImage section (into RecentWorks)
-    let hasPassedIntro = false;
-    const recentWorksElement = document.getElementById("home-intro");
-    if (recentWorksElement) {
-      const rect = recentWorksElement.getBoundingClientRect();
-      hasPassedIntro = rect.bottom <= 0;
+    // Check if we've scrolled past the About section (into Services)
+    let hasReachedServices = false;
+    const aboutElement = document.getElementById("about-section");
+    if (aboutElement) {
+      const rect = aboutElement.getBoundingClientRect();
+      hasReachedServices = rect.bottom <= 100;
     }
 
     if (previous !== undefined) {
       if (isHomePage) {
-        // On home page: only show header after scrolling past HomeIntroImage
-        if (hasPassedIntro) {
-          // Once past HomeIntroImage, use normal scroll behavior
+        // On home page: only show header after scrolling past About into Services
+        if (hasReachedServices) {
+          // Once in Services, use normal scroll behavior
           if (latest < previous || latest < 100) {
             setIsVisible(true);
           } else {
@@ -52,7 +50,7 @@ const Header = () => {
             setIsMenuOpen(false);
           }
         } else {
-          // Still in HomeIntroImage section, hide header
+          // Before Services section, hide header
           setIsVisible(false);
           setIsMenuOpen(false);
         }
@@ -67,47 +65,6 @@ const Header = () => {
       }
     }
 
-    // ? Check if we're at the very top
-    if (latest <= 0) {
-      setIsAtTop(true);
-    } else {
-      setIsAtTop(false);
-    }
-
-    // Update header background theme based on overlapping dark sections on the home page
-    if (isHomePage) {
-      const headerElement = headerRef.current;
-
-      if (headerElement) {
-        const headerRect = headerElement.getBoundingClientRect();
-        const headerTop = headerRect.top;
-        const headerBottom = headerRect.bottom;
-
-        const darkSectionIds = ["home-intro", "works", "about-section"];
-        let isOverDarkSection = false;
-
-        for (const id of darkSectionIds) {
-          const section = document.getElementById(id);
-          if (!section) continue;
-
-          const sectionRect = section.getBoundingClientRect();
-
-          if (
-            sectionRect.top <= headerBottom &&
-            sectionRect.bottom >= headerTop
-          ) {
-            isOverDarkSection = true;
-            break;
-          }
-        }
-
-        setUseDarkHeader(isOverDarkSection);
-      } else {
-        setUseDarkHeader(false);
-      }
-    } else {
-      setUseDarkHeader(false);
-    }
   });
 
   // Reset header visibility when route changes
@@ -155,16 +112,10 @@ const Header = () => {
           duration: 0.3,
         }}
         className={cn(
-          "fixed top-2 left-0 right-0 z-40 mx-2 px-3 h-16 rounded-[8px] grid grid-cols-[minmax(200px,300px)_max-content] gap-4 justify-between items-center transition-colors duration-1000 ease-in-out sm:grid-cols-[minmax(300px,350px)_max-content] md:px-4 md:mx-6 md:grid-cols-[160px_1fr_140px] min-[900px]:md:grid-cols-[min-content_1fr_140px] lg:md:grid-cols-[230px_1fr_230px] lg:px-5 xl:h-18 2xl:h-[84px] 2xl:top-2.5 2xl:mx-14 2xl:grid-cols-[300px_1fr_300px] 2xl:px-8",
-          isAtTop && !isMenuOpen
-            ? "border border-transparent"
-            : cn(
-                "border border-solid border-border/80 backdrop-blur-sm",
-                useDarkHeader ? "bg-black/60" : "bg-background/80",
-              ),
+          "fixed top-2.5 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-16px)] max-w-[1900px] px-3 h-16 border border-solid border-border/80 backdrop-blur-sm bg-background/80 rounded-[8px] grid grid-cols-[minmax(200px,300px)_max-content] gap-4 justify-between items-center transition-colors duration-1000 ease-in-out sm:grid-cols-[minmax(300px,350px)_max-content] md:px-4 md:w-[calc(100%-48px)] min-[900px]:md:grid-cols-[min-content_1fr_140px] lg:md:grid-cols-[230px_1fr_230px] lg:px-5 xl:h-18 2xl:h-[84px] 2xl:top-3 2xl:w-[calc(100%-112px)] 2xl:grid-cols-[300px_1fr_300px] 2xl:px-8"
         )}
       >
-        <nav className="hidden md:block">
+        <nav className="hidden min-[900px]:block">
           <ul className="flex items-center gap-1 md:gap-4 lg:gap-5">
             <li>
               <Button
@@ -222,7 +173,7 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="hidden md:flex justify-end gap-4 lg:gap-6 2xl:gap-8">
+        <div className="hidden min-[900px]:flex justify-end gap-4 lg:gap-6 2xl:gap-8">
           <SocialLink
             href="https://www.instagram.com/danielinniel"
             icon={Instagram}
@@ -242,7 +193,7 @@ const Header = () => {
         </div>
 
         <button
-          className="md:hidden cursor-pointer"
+          className="min-[900px]:hidden cursor-pointer"
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >

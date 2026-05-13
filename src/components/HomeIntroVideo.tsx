@@ -4,10 +4,7 @@ import ScrollToSectionButton from "@/components/ScrollToSectionButton";
 
 const HomeIntroVideo = () => {
   return (
-    <section
-      id="home-intro"
-      className="relative bg-black min-h-80 md:min-h-screen"
-    >
+    <section id="home-intro" className="relative bg-black min-h-80">
       <video
         className="size-full object-cover max-lg:h-[75vw]"
         autoPlay
