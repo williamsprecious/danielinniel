@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { getGalleryData, GalleryData } from "@/sanity/queries/query-client";
-import { GALLERY_QUERYResult } from "../../sanity.types";
+import { getGalleryData, GalleryData } from "@/actions/gallery.action";
+import { GALLERY_QUERY_RESULT } from "../../sanity.types";
 
 interface UseInfiniteGalleryProps {
   category: string;
@@ -11,7 +11,7 @@ interface UseInfiniteGalleryProps {
 }
 
 interface UseInfiniteGalleryReturn {
-  items: GALLERY_QUERYResult;
+  items: GALLERY_QUERY_RESULT;
   loading: boolean;
   error: string | null;
   hasMore: boolean;
@@ -24,7 +24,7 @@ export const useInfiniteGallery = ({
   filterParam,
   limit = 12,
 }: UseInfiniteGalleryProps): UseInfiniteGalleryReturn => {
-  const [items, setItems] = useState<GALLERY_QUERYResult>([]);
+  const [items, setItems] = useState<GALLERY_QUERY_RESULT>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);

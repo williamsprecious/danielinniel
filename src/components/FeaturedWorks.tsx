@@ -1,17 +1,17 @@
 import { urlFor } from "@/sanity/lib/image";
-import { FEATURE_QUERYResult } from "../../sanity.types";
+import { FEATURE_QUERY_RESULT } from "../../sanity.types";
 import HeaderText from "@/components/HeaderText";
 import Carousel from "@/components/ui/carousel";
 
-const FeaturedWorks = ({ works }: { works: FEATURE_QUERYResult }) => {
+const FeaturedWorks = ({ works }: { works: FEATURE_QUERY_RESULT }) => {
   const items = works.map((work) => {
-    const workWithUrl = work as FEATURE_QUERYResult[0] & {
+    const workWithUrl = work as FEATURE_QUERY_RESULT[0] & {
       workUrl?: string | null;
     };
 
     return {
       button: "View Work",
-      src: urlFor(work.image!).width(700).format("webp").quality(80).url(),
+      src: urlFor(work.image!).url(),
       title: work.title!,
       _id: work._id,
       workUrl: workWithUrl.workUrl || null,

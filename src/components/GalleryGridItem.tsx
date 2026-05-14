@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { Image } from "next-sanity/image";
 import { motion } from "motion/react";
 
 interface GalleryGridItemProps {
@@ -80,7 +80,6 @@ const GalleryGridItem = ({
             height={500}
             className="w-full h-full object-cover object-top"
             alt={description || "Gallery video thumbnail"}
-            unoptimized={true}
             loading="lazy"
           />
         </Link>
@@ -112,7 +111,6 @@ const GalleryGridItem = ({
           height={500}
           className="w-full h-full object-cover object-top"
           alt={description || "Gallery image"}
-          unoptimized={true}
           loading="lazy"
         />
       </Link>

@@ -5,7 +5,7 @@ import { useState, useRef, useId, useEffect, useCallback } from "react";
 import ButtonAnimationWrapper from "@/components/ButtonAnimationWrapper";
 import { Button } from "@/components/ui/button";
 import useFancybox from "@/hooks/useFancybox";
-import Image from "next/image";
+import { Image } from "next-sanity/image";
 import Link from "next/link";
 
 interface SlideData {
