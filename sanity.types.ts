@@ -12,7 +12,23 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol;
+
 // Source: schema.json
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
 export type Gallery = {
   _id: string;
   _type: "gallery";
@@ -22,15 +38,14 @@ export type Gallery = {
   galleryType?: "image" | "video";
   videoType?: "url" | "file";
   category?: "concept-and-design" | "cover-art";
-  conceptType?: "concept-art" | "logo" | "character-design" | "fashion-illustration";
+  conceptType?:
+    | "concept-art"
+    | "logo"
+    | "character-design"
+    | "fashion-illustration";
   grade?: "essential" | "advanced";
   image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
@@ -39,26 +54,32 @@ export type Gallery = {
   description?: string;
   videoUrl?: string;
   video?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
-    };
+    asset?: SanityFileAssetReference;
     media?: unknown;
     _type: "file";
   };
   videoPreview?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
-    };
+    asset?: SanityFileAssetReference;
     media?: unknown;
     _type: "file";
   };
   createdAt?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type Featured = {
@@ -69,12 +90,7 @@ export type Featured = {
   _rev: string;
   title?: string;
   image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
@@ -109,20 +125,16 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  thumbHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
 };
 
 export type SanityFileAsset = {
@@ -145,6 +157,13 @@ export type SanityFileAsset = {
   path?: string;
   url?: string;
   source?: SanityAssetSourceData;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
 };
 
 export type SanityImageAsset = {
@@ -170,17 +189,6 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
-
 export type Geopoint = {
   _type: "geopoint";
   lat?: number;
@@ -194,30 +202,60 @@ export type Slug = {
   source?: string;
 };
 
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
+export type AllSanitySchemaTypes =
+  | SanityImageAssetReference
+  | SanityFileAssetReference
+  | Gallery
+  | SanityImageCrop
+  | SanityImageHotspot
+  | Featured
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint
+  | Slug;
 
-export type AllSanitySchemaTypes = Gallery | Featured | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
-export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./src/sanity/queries/query-client.ts
+// Source: src/sanity/queries/query.ts
+// Variable: FEATURE_QUERY
+// Query: *[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }
+export type FEATURE_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  workUrl: string | null;
+}>;
+
+// Source: src/sanity/queries/query.ts
 // Variable: GALLERY_QUERY
-// Query: *[_type == "gallery" && category == $category &&       ($filterParam == null ||        (category == "cover-art" && grade == $filterParam) ||        (category == "concept-and-design" && conceptType == $filterParam))    ] | order(createdAt desc) [$start...$end] {      _id,      galleryType,      videoType,      category,      conceptType,      grade,      image {        asset-> {          _id,          url,          metadata {            dimensions          }        }      },      description,      videoUrl,      video {        asset-> {          _id,          url,          mimeType        }      },      videoPreview {        asset-> {          _id,          url,          mimeType        }      },      createdAt    }
-export type GALLERY_QUERYResult = Array<{
+// Query: *[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ] | order(createdAt desc) [$start...$end] {      _id,      galleryType,      videoType,      category,      conceptType,      grade,      image {        asset-> {          _id,          url,          metadata {            lqip,            dimensions          }        }      },      description,      videoUrl,      video {        asset-> {          _id,          url,          mimeType        }      },      videoPreview {        asset-> {          _id,          url,          mimeType        }      },      createdAt    }
+export type GALLERY_QUERY_RESULT = Array<{
   _id: string;
   galleryType: "image" | "video" | null;
   videoType: "file" | "url" | null;
   category: "concept-and-design" | "cover-art" | null;
-  conceptType: "character-design" | "concept-art" | "fashion-illustration" | "logo" | null;
+  conceptType:
+    | "character-design"
+    | "concept-art"
+    | "fashion-illustration"
+    | "logo"
+    | null;
   grade: "advanced" | "essential" | null;
   image: {
     asset: {
       _id: string;
       url: string | null;
       metadata: {
+        lqip: string | null;
         dimensions: SanityImageDimensions | null;
       } | null;
     } | null;
@@ -240,37 +278,18 @@ export type GALLERY_QUERYResult = Array<{
   } | null;
   createdAt: string | null;
 }>;
-// Variable: GALLERY_COUNT_QUERY
-// Query: count(*[_type == "gallery" && category == $category &&       ($filterParam == null ||        (category == "cover-art" && grade == $filterParam) ||        (category == "concept-and-design" && conceptType == $filterParam))    ])
-export type GALLERY_COUNT_QUERYResult = number;
 
-// Source: ./src/sanity/queries/query.ts
-// Variable: FEATURE_QUERY
-// Query: *[_type == "featured"] | order(createdAt desc){ _id, title, image, workUrl }
-export type FEATURE_QUERYResult = Array<{
-  _id: string;
-  title: string | null;
-  image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  } | null;
-  workUrl: string | null;
-}>;
+// Source: src/sanity/queries/query.ts
+// Variable: GALLERY_COUNT_QUERY
+// Query: count(*[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ])
+export type GALLERY_COUNT_QUERY_RESULT = number;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n    *[_type == \"gallery\" && category == $category && \n      ($filterParam == null || \n       (category == \"cover-art\" && grade == $filterParam) || \n       (category == \"concept-and-design\" && conceptType == $filterParam))\n    ] | order(createdAt desc) [$start...$end] {\n      _id,\n      galleryType,\n      videoType,\n      category,\n      conceptType,\n      grade,\n      image {\n        asset-> {\n          _id,\n          url,\n          metadata {\n            dimensions\n          }\n        }\n      },\n      description,\n      videoUrl,\n      video {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      videoPreview {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      createdAt\n    }\n  ": GALLERY_QUERYResult;
-    "\n    count(*[_type == \"gallery\" && category == $category && \n      ($filterParam == null || \n       (category == \"cover-art\" && grade == $filterParam) || \n       (category == \"concept-and-design\" && conceptType == $filterParam))\n    ])\n  ": GALLERY_COUNT_QUERYResult;
-    "*[_type == \"featured\"] | order(createdAt desc){ _id, title, image, workUrl }": FEATURE_QUERYResult;
+    '*[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }': FEATURE_QUERY_RESULT;
+    '\n    *[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ] | order(createdAt desc) [$start...$end] {\n      _id,\n      galleryType,\n      videoType,\n      category,\n      conceptType,\n      grade,\n      image {\n        asset-> {\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions\n          }\n        }\n      },\n      description,\n      videoUrl,\n      video {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      videoPreview {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      createdAt\n    }\n  ': GALLERY_QUERY_RESULT;
+    '\n    count(*[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ])\n  ': GALLERY_COUNT_QUERY_RESULT;
   }
 }

@@ -55,16 +55,7 @@ const GalleryGrid = ({ category }: GalleryGridProps) => {
         {items.map((item) => {
           const hasImage = !!item.image;
 
-          const imageUrl = hasImage
-            ? item.category === "cover-art"
-              ? urlFor(item.image!)
-                  .width(700)
-                  .height(700)
-                  .quality(80)
-                  .format("webp")
-                  .url()
-              : urlFor(item.image!).width(700).quality(80).format("webp").url()
-            : null;
+          const imageUrl = hasImage ? urlFor(item.image!).url() : null;
 
           const videoPreviewUrl = item.videoPreview?.asset?.url || null;
           const fullVideoUrl = item.video?.asset?.url || null;

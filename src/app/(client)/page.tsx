@@ -3,7 +3,7 @@ import About from "@/components/About";
 import FeaturedWorks from "@/components/FeaturedWorks";
 import Services from "@/components/Services";
 import Nft from "@/components/Nft";
-import { getFeaturedWorks } from "@/sanity/queries/query";
+import { getFeaturedWorks } from "@/sanity/queries";
 
 const Home = async () => {
   const featuredWorks = await getFeaturedWorks();
