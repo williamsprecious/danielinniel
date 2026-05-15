@@ -15,6 +15,35 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type StoreSettings = {
+  _id: string;
+  _type: "storeSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  storeName?: string;
+  contactEmails?: Array<string>;
+  emailFromName?: string;
+  baseCurrency?: string;
+  ratesToNGN?: Array<{
+    code?: "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "ZAR" | "GHS" | "JPY";
+    rate?: number;
+    _type: "currencyRate";
+    _key: string;
+  }>;
+  ratesUpdatedAt?: string;
+  orderNumberPrefix?: string;
+  defaultDownloadExpiryDays?: number;
+  defaultDownloadLimit?: number;
+};
+
+export type ProductReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "product";
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -22,11 +51,207 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type Order = {
+  _id: string;
+  _type: "order";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  orderNumber?: string;
+  status?: "confirmed" | "processing" | "delivered" | "cancelled" | "refunded";
+  customer?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  };
+  shippingAddress?: Address;
+  billingAddress?: Address;
+  items?: Array<{
+    product?: ProductReference;
+    variantKey?: string;
+    title?: string;
+    variantTitle?: string;
+    type?: "physical" | "digital";
+    image?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    unitPriceNGN?: number;
+    quantity?: number;
+    lineTotalNGN?: number;
+    _type: "orderItem";
+    _key: string;
+  }>;
+  subtotalNGN?: number;
+  totalNGN?: number;
+  currency?: string;
+  rateToNaira?: number;
+  payment?: {
+    provider?: string;
+    reference?: string;
+    amountNGN?: number;
+    paidAt?: string;
+    gatewayResponse?: string;
+  };
+  fulfillment?: {
+    carrier?: string;
+    trackingNumber?: string;
+    trackingUrl?: string;
+    shippedAt?: string;
+    deliveredAt?: string;
+  };
+  adminNotes?: string;
+  createdAt?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Address = {
+  _type: "address";
+  firstName?: string;
+  lastName?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  phone?: string;
+};
+
+export type CategoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "category";
+};
+
 export type SanityFileAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
+export type Product = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  shortDescription?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  images?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  categories?: Array<
+    {
+      _key: string;
+    } & CategoryReference
+  >;
+  status?: "draft" | "active" | "archived";
+  type?: "physical" | "digital";
+  digitalFile?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  downloadLimit?: number;
+  downloadExpiryDays?: number;
+  hasVariants?: boolean;
+  priceNGN?: number;
+  compareAtPriceNGN?: number;
+  stock?: number;
+  options?: Array<{
+    name?: string;
+    values?: Array<string>;
+    _type: "productOption";
+    _key: string;
+  }>;
+  variants?: Array<{
+    title?: string;
+    optionValues?: Array<string>;
+    priceNGN?: number;
+    compareAtPriceNGN?: number;
+    stock?: number;
+    image?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    _type: "productVariant";
+    _key: string;
+  }>;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type Category = {
+  _id: string;
+  _type: "category";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  displayOrder?: number;
+  visibility?: "active" | "hidden";
 };
 
 export type Gallery = {
@@ -64,22 +289,6 @@ export type Gallery = {
     _type: "file";
   };
   createdAt?: string;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
 };
 
 export type Featured = {
@@ -196,18 +405,20 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type AllSanitySchemaTypes =
+  | StoreSettings
+  | ProductReference
   | SanityImageAssetReference
-  | SanityFileAssetReference
-  | Gallery
+  | Order
   | SanityImageCrop
   | SanityImageHotspot
+  | Address
+  | CategoryReference
+  | SanityFileAssetReference
+  | Product
+  | Slug
+  | Category
+  | Gallery
   | Featured
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -216,10 +427,9 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
-  | Slug;
+  | Geopoint;
 
-// Source: src/sanity/queries/query.ts
+// Source: src/sanity/queries/index.ts
 // Variable: FEATURE_QUERY
 // Query: *[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }
 export type FEATURE_QUERY_RESULT = Array<{
@@ -235,7 +445,7 @@ export type FEATURE_QUERY_RESULT = Array<{
   workUrl: string | null;
 }>;
 
-// Source: src/sanity/queries/query.ts
+// Source: src/sanity/queries/index.ts
 // Variable: GALLERY_QUERY
 // Query: *[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ] | order(createdAt desc) [$start...$end] {      _id,      galleryType,      videoType,      category,      conceptType,      grade,      image {        asset-> {          _id,          url,          metadata {            lqip,            dimensions          }        }      },      description,      videoUrl,      video {        asset-> {          _id,          url,          mimeType        }      },      videoPreview {        asset-> {          _id,          url,          mimeType        }      },      createdAt    }
 export type GALLERY_QUERY_RESULT = Array<{
@@ -279,7 +489,7 @@ export type GALLERY_QUERY_RESULT = Array<{
   createdAt: string | null;
 }>;
 
-// Source: src/sanity/queries/query.ts
+// Source: src/sanity/queries/index.ts
 // Variable: GALLERY_COUNT_QUERY
 // Query: count(*[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ])
 export type GALLERY_COUNT_QUERY_RESULT = number;

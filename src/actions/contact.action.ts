@@ -1,6 +1,8 @@
 "use server";
 
 import { z } from "zod";
+import { request as arcjetRequest, slidingWindow } from "@arcjet/next";
+import { aj } from "@/lib/arcjet";
 import { sendEmail } from "@/lib/ses";
 import { contactSchema, projectSchema } from "@/schema";
 import {
@@ -16,9 +18,43 @@ export type FormEmailActionState = {
   errors?: Record<string, string[]>;
 };
 
+const contactFormRateLimit = slidingWindow({
+  mode: "LIVE",
+  interval: "1h",
+  max: 5,
+});
+
+async function checkRateLimit(): Promise<FormEmailActionState | null> {
+  const req = await arcjetRequest();
+  const decision = await aj.withRule(contactFormRateLimit).protect(req);
+
+  if (decision.isDenied()) {
+    if (decision.reason.isRateLimit()) {
+      return {
+        success: false,
+        message:
+          "You've sent too many messages. Please try again in an hour.",
+      };
+    }
+    return {
+      success: false,
+      message: "Your request was blocked. Please try again later.",
+    };
+  }
+
+  if (decision.isErrored()) {
+    console.warn("Arcjet error:", decision.reason.message);
+  }
+
+  return null;
+}
+
 export async function sendProjectEmail(
   formData: unknown
 ): Promise<FormEmailActionState> {
+  const blocked = await checkRateLimit();
+  if (blocked) return blocked;
+
   const parsed = projectSchema.safeParse(formData);
   if (!parsed.success) {
     return {
@@ -51,6 +87,9 @@ export async function sendProjectEmail(
 export async function sendContactEmail(
   formData: unknown
 ): Promise<FormEmailActionState> {
+  const blocked = await checkRateLimit();
+  if (blocked) return blocked;
+
   const parsed = contactSchema.safeParse(formData);
   if (!parsed.success) {
     return {

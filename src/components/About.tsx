@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -14,6 +14,20 @@ const About = () => {
 
   const text = `I create compelling visuals that bring your ideas to life, designed to inspire, engage, and tell authentic stories.`;
   const words = useMemo(() => text.split(" "), [text]);
+
+  // Remove this line incase on any i notice more bugs later
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => ScrollTrigger.refresh(), 150);
+    });
+    ro.observe(document.body);
+    return () => {
+      clearTimeout(timeoutId);
+      ro.disconnect();
+    };
+  }, []);
 
   useGSAP(
     () => {
