@@ -13,7 +13,7 @@ const CoverArtPage = () => {
   return (
     <section className="row-container pt-20 pb-36 space-y-12 md:space-y-16 md:pt-44 md:pb-40 lg:space-y-20 2xl:pt-52 2xl:space-y-24 2xl:pb-48">
       <div className="max-w-2xl mx-auto space-y-6 min-[580px]:px-7 md:px-3 lg:px-0 2xl:max-w-3xl 2xl:space-y-7">
-        <HeaderText title="Choose Your Grade!" underline />
+        <HeaderText title="Choose Your Grade!" />
         <motion.p
           initial={{
             y: 40,

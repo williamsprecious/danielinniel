@@ -54,19 +54,14 @@ const AboutPage = () => {
         </motion.div>
 
         <div className="md:flex-1 flex flex-col gap-y-6 2xl:gap-y-12">
-          <HeaderText
-            title="Biography"
-            textType="h1"
-            className="underline"
-            delay={0.1}
-          />
+          <HeaderText title="Biography" textType="h1" delay={0.1} />
 
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            className="text-base leading-7 text-foreground/85 font-light space-y-8 sm:text-lg sm:leading-8 md:text-xl 2xl:leading-9 2xl:space-y-12 2xl:text-[22px]"
+            className="text-base text-foreground/85 font-light space-y-8 md:text-lg 2xl:space-y-12 2xl:text-xl"
           >
             <motion.p variants={itemVariants}>
               Ekpo Daniel, Also known as DANIELINNIEL - A creative visual

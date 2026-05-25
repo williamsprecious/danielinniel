@@ -198,8 +198,6 @@ export type Product = {
     media?: unknown;
     _type: "file";
   };
-  downloadLimit?: number;
-  downloadExpiryDays?: number;
   hasVariants?: boolean;
   priceNGN?: number;
   compareAtPriceNGN?: number;
@@ -216,16 +214,16 @@ export type Product = {
     priceNGN?: number;
     compareAtPriceNGN?: number;
     stock?: number;
-    image?: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
     _type: "productVariant";
     _key: string;
   }>;
+  specifications?: Array<{
+    label?: string;
+    value?: string;
+    _type: "specRow";
+    _key: string;
+  }>;
+  shipping?: string;
 };
 
 export type Slug = {
@@ -494,6 +492,174 @@ export type GALLERY_QUERY_RESULT = Array<{
 // Query: count(*[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ])
 export type GALLERY_COUNT_QUERY_RESULT = number;
 
+// Source: src/sanity/queries/index.ts
+// Variable: CATEGORY_ID_BY_SLUG_QUERY
+// Query: *[_type == "category" && slug.current == $slug][0]._id
+export type CATEGORY_ID_BY_SLUG_QUERY_RESULT = string | null;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCT_LIST_QUERY
+// Query: *[_type == "product" && status == "active"      && ($categoryId == null || references($categoryId))    ] | order(_createdAt desc) [$start...$end] {      _id,      title,      "slug": slug.current,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      "image": images[0]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      variants[]{ priceNGN, compareAtPriceNGN }    }
+export type PRODUCT_LIST_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  type: "digital" | "physical" | null;
+  hasVariants: boolean | null;
+  priceNGN: number | null;
+  compareAtPriceNGN: number | null;
+  image:
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+        width: number | null;
+        height: number | null;
+        lqip: string | null;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+    | null;
+  variants: Array<{
+    priceNGN: number | null;
+    compareAtPriceNGN: number | null;
+  }> | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCT_LIST_COUNT_QUERY
+// Query: count(*[_type == "product" && status == "active"      && ($categoryId == null || references($categoryId))    ])
+export type PRODUCT_LIST_COUNT_QUERY_RESULT = number;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCT_BY_SLUG_QUERY
+// Query: *[_type == "product" && status == "active" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      shortDescription,      description,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      shipping,      specifications[]{ label, value },      "images": images[]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      "categories": categories[]->{ _id, title, "slug": slug.current },      options[]{ name, values },      variants[]{        _key,        title,        optionValues,        priceNGN,        compareAtPriceNGN,        stock      }    }
+export type PRODUCT_BY_SLUG_QUERY_RESULT = {
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  shortDescription: string | null;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+  type: "digital" | "physical" | null;
+  hasVariants: boolean | null;
+  priceNGN: number | null;
+  compareAtPriceNGN: number | null;
+  stock: number | null;
+  shipping: string | null;
+  specifications: Array<{
+    label: string | null;
+    value: string | null;
+  }> | null;
+  images: Array<
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+        width: number | null;
+        height: number | null;
+        lqip: string | null;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+  categories: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+  }> | null;
+  options: Array<{
+    name: string | null;
+    values: Array<string> | null;
+  }> | null;
+  variants: Array<{
+    _key: string;
+    title: string | null;
+    optionValues: Array<string> | null;
+    priceNGN: number | null;
+    compareAtPriceNGN: number | null;
+    stock: number | null;
+  }> | null;
+} | null;
+
+// Source: src/sanity/queries/index.ts
+// Variable: ACTIVE_CATEGORIES_QUERY
+// Query: *[_type == "category" && visibility == "active"]      | order(coalesce(displayOrder, 9999) asc, title asc) {      _id,      title,      "slug": slug.current    }
+export type ACTIVE_CATEGORIES_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  slug: string | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: ACTIVE_PRODUCT_SLUGS_QUERY
+// Query: *[_type == "product" && status == "active" && defined(slug.current)]{      "slug": slug.current    }
+export type ACTIVE_PRODUCT_SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: STORE_SETTINGS_QUERY
+// Query: *[_id == "storeSettings"][0]{      baseCurrency,      ratesToNGN[]{ code, rate },      ratesUpdatedAt    }
+export type STORE_SETTINGS_QUERY_RESULT =
+  | {
+      baseCurrency: null;
+      ratesToNGN: null;
+      ratesUpdatedAt: null;
+    }
+  | {
+      baseCurrency: string | null;
+      ratesToNGN: Array<{
+        code:
+          | "AUD"
+          | "CAD"
+          | "EUR"
+          | "GBP"
+          | "GHS"
+          | "JPY"
+          | "USD"
+          | "ZAR"
+          | null;
+        rate: number | null;
+      }> | null;
+      ratesUpdatedAt: string | null;
+    }
+  | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -501,5 +667,12 @@ declare module "@sanity/client" {
     '*[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }': FEATURE_QUERY_RESULT;
     '\n    *[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ] | order(createdAt desc) [$start...$end] {\n      _id,\n      galleryType,\n      videoType,\n      category,\n      conceptType,\n      grade,\n      image {\n        asset-> {\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions\n          }\n        }\n      },\n      description,\n      videoUrl,\n      video {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      videoPreview {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      createdAt\n    }\n  ': GALLERY_QUERY_RESULT;
     '\n    count(*[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ])\n  ': GALLERY_COUNT_QUERY_RESULT;
+    '\n    *[_type == "category" && slug.current == $slug][0]._id\n  ': CATEGORY_ID_BY_SLUG_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ] | order(_createdAt desc) [$start...$end] {\n      _id,\n      title,\n      "slug": slug.current,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{ priceNGN, compareAtPriceNGN }\n    }\n  ': PRODUCT_LIST_QUERY_RESULT;
+    '\n    count(*[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ])\n  ': PRODUCT_LIST_COUNT_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active" && slug.current == $slug][0]{\n      _id,\n      title,\n      "slug": slug.current,\n      shortDescription,\n      description,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      shipping,\n      specifications[]{ label, value },\n      "images": images[]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      "categories": categories[]->{ _id, title, "slug": slug.current },\n      options[]{ name, values },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCT_BY_SLUG_QUERY_RESULT;
+    '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
+    '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
   }
 }

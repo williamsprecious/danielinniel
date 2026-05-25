@@ -63,7 +63,7 @@ const OptimizedHeadingImage = ({
             "h-full w-auto object-contain transition-opacity duration-300",
             showFallback &&
               "opacity-0 invisible absolute left-1/2 -translate-x-1/2",
-            !showFallback && "opacity-100 visible"
+            !showFallback && "opacity-100 visible",
           )}
           width={1000}
           height={130}
@@ -86,7 +86,7 @@ const OptimizedHeadingImage = ({
 const Nft = () => {
   const handleZoraClick = (event: MouseEvent<HTMLAnchorElement>) => {
     const proceed = window.confirm(
-      "This NFT collection is available on Zora. Login is required to view. Continue to Zora?"
+      "This NFT collection is available on Zora. Login is required to view. Continue to Zora?",
     );
 
     if (!proceed) {
@@ -138,7 +138,7 @@ const Nft = () => {
             duration: 1,
           }}
           viewport={{ amount: 0.3, once: true }}
-          className="w-[100%] text-center text-base opacity-85 font-light min-[680px]:w-[90%] sm:text-lg md:text-xl md:mx-auto md:max-w-[640px] lg:max-w-2xl 2xl:text-2xl 2xl:max-w-3xl"
+          className="w-[100%] text-center text-sm opacity-85 min-[680px]:w-[90%] sm:text-base md:text-base md:mx-auto md:max-w-[640px] lg:max-w-2xl 2xl:text-xl 2xl:max-w-3xl"
         >
           Enter the inn & iel universe with curated collections of original,
           collectible characters.

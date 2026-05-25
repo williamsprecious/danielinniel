@@ -5,8 +5,8 @@
 
 @theme inline {
   /* Font */
-  --font-sans: var(--font-roboto);
-  --font-bowlby: var(--font-bowlby);
+  --font-sans: var(--font-roboto-mono);
+  --font-heading: var(--font-road-rage);
 
   --breakpoint-3xs: 16rem;
   --breakpoint-2xs: 18rem;
@@ -100,12 +100,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  h1 {
-    @apply font-bowlby max-[400px]:text-[30px] text-[32px] sm:text-[38px] md:text-[44px] 2xl:text-[52px];
-  }
-  h2 {
-    @apply text-[26px] font-bowlby text-center md:text-3xl lg:text-4xl 2xl:text-[46px];
-  }
+
   .modal-custom-scrollbar {
     scrollbar-width: thin !important;
     scrollbar-color: hsl(var(--border) / 0.3) transparent !important;

@@ -11,7 +11,8 @@
       "Skill(content-modeling-best-practices)",
       "Bash(npx sanity *)",
       "Bash(npx tsc *)",
-      "Skill(inngest-events)"
+      "Skill(inngest-events)",
+      "Bash(npx eslint *)"
     ]
   }
 }

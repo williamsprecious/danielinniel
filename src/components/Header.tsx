@@ -14,6 +14,7 @@ import { Button, buttonVariants } from "./ui/button";
 import { SocialLink } from "./SocialLink";
 import { cn } from "@/lib/utils";
 import MobileMenu from "./MobileMenu";
+import CartButton from "@/components/shop/cart/ui/components/CartButton";
 import { useNewBooking } from "@/hooks/use-new-booking";
 import ScrollingText from "@/components/ScrollingText";
 
@@ -64,7 +65,6 @@ const Header = () => {
         }
       }
     }
-
   });
 
   // Reset header visibility when route changes
@@ -112,14 +112,14 @@ const Header = () => {
           duration: 0.3,
         }}
         className={cn(
-          "fixed top-2.5 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-16px)] max-w-[1900px] px-3 h-16 border border-solid border-border/80 backdrop-blur-sm bg-background/80 rounded-[8px] grid grid-cols-[minmax(200px,300px)_max-content] gap-4 justify-between items-center transition-colors duration-1000 ease-in-out sm:grid-cols-[minmax(300px,350px)_max-content] md:px-4 md:w-[calc(100%-48px)] min-[900px]:md:grid-cols-[min-content_1fr_140px] lg:md:grid-cols-[230px_1fr_230px] lg:px-5 xl:h-18 2xl:h-[84px] 2xl:top-3 2xl:w-[calc(100%-112px)] 2xl:grid-cols-[300px_1fr_300px] 2xl:px-8"
+          "fixed top-2 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-16px)] max-w-[1900px] px-3 h-16 border border-solid border-border/50 backdrop-blur-sm bg-background/80 rounded-[8px] grid grid-cols-[minmax(200px,300px)_max-content] gap-4 justify-between items-center transition-colors duration-1000 ease-in-out sm:grid-cols-[minmax(300px,350px)_max-content] md:px-4 md:w-[calc(100%-48px)] min-[900px]:md:grid-cols-[min-content_1fr_140px] lg:md:grid-cols-[230px_1fr_230px] lg:px-5 xl:h-18 2xl:h-[84px] 2xl:top-2.5 2xl:w-[calc(100%-112px)] 2xl:grid-cols-[300px_1fr_300px] 2xl:px-8",
         )}
       >
         <nav className="hidden min-[900px]:block">
           <ul className="flex items-center gap-1 md:gap-4 lg:gap-5">
             <li>
               <Button
-                variant="secondary"
+                variant="outline"
                 size="sm"
                 className="px-2 2xl:px-2"
                 onClick={() => {
@@ -173,7 +173,7 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="hidden min-[900px]:flex justify-end gap-4 lg:gap-6 2xl:gap-8">
+        <div className="hidden min-[900px]:flex items-center justify-end gap-4 lg:gap-6 2xl:gap-8">
           <SocialLink
             href="https://www.instagram.com/danielinniel"
             icon={Instagram}
@@ -190,19 +190,23 @@ const Header = () => {
             icon={IoLogoYoutube}
             className="size-4"
           />
+          <CartButton />
         </div>
 
-        <button
-          className="min-[900px]:hidden cursor-pointer"
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? (
-            <Image src="/cancel.svg" width={30} height={30} alt="Hamburger" />
-          ) : (
-            <Image src="/menu.svg" width={32} height={32} alt="Hamburger" />
-          )}
-        </button>
+        <div className="flex items-center gap-1.5 min-[900px]:hidden">
+          <CartButton />
+          <button
+            className="cursor-pointer"
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <Image src="/cancel.svg" width={30} height={30} alt="Hamburger" />
+            ) : (
+              <Image src="/menu.svg" width={32} height={32} alt="Hamburger" />
+            )}
+          </button>
+        </div>
       </motion.header>
 
       {/* Backdrop overlay to prevent clicks outside header and menu when mobile nav is open */}

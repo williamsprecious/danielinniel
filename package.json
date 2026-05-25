@@ -8,7 +8,8 @@
     "start": "next start",
     "prod": "next build && next start",
     "lint": "eslint",
-    "typegen": "sanity schema extract && sanity typegen generate"
+    "typegen": "sanity schema extract && sanity typegen generate",
+    "dev:webhook": ""
   },
   "dependencies": {
     "@arcjet/next": "^1.4.0",
@@ -16,6 +17,7 @@
     "@fancyapps/ui": "^6.0.29",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",
+    "@portabletext/react": "^6.2.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-scroll-area": "^1.2.10",

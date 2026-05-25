@@ -1,19 +1,30 @@
 import type { Metadata } from "next";
-import { Bowlby_One, Roboto } from "next/font/google";
+import {
+  Bowlby_One,
+  Lexend,
+  Poppins,
+  Road_Rage,
+  Roboto,
+  Roboto_Mono,
+} from "next/font/google";
 import Layout from "@/components/Layout";
+import CurrencyProvider from "@/components/providers/CurrencyProvider";
+import CartDrawer from "@/components/shop/cart/ui/components/CartDrawer";
 import { SanityLive } from "@/sanity/lib/live";
+import { getStoreSettings } from "@/sanity/queries";
+import { isCurrencyCode, type CurrencyRates } from "@/lib/currencies";
 
 import "../globals.css";
 
-const bowlby = Bowlby_One({
+const roadRage = Road_Rage({
   subsets: ["latin"],
-  variable: "--font-bowlby",
+  variable: "--font-road-rage",
   weight: ["400"],
 });
 
-const roboto = Roboto({
+const robotoMono = Roboto_Mono({
   subsets: ["latin"],
-  variable: "--font-roboto",
+  variable: "--font-roboto-mono",
 });
 
 export const metadata: Metadata = {
@@ -28,17 +39,28 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getStoreSettings();
+  const initialRates: CurrencyRates = {};
+  for (const entry of settings?.ratesToNGN ?? []) {
+    if (isCurrencyCode(entry?.code) && typeof entry?.rate === "number") {
+      initialRates[entry.code] = entry.rate;
+    }
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${bowlby.variable} ${roboto.variable} font-sans relative antialiased`}
+        className={`${roadRage.variable} ${robotoMono.variable} font-sans relative antialiased`}
       >
-        <Layout>{children}</Layout>
+        <CurrencyProvider initialRates={initialRates}>
+          <Layout>{children}</Layout>
+          <CartDrawer />
+        </CurrencyProvider>
         <SanityLive />
       </body>
     </html>

@@ -94,26 +94,6 @@ export const productType = defineType({
             : "Upload the digital file delivered to customers";
         }),
     }),
-    defineField({
-      name: "downloadLimit",
-      title: "Download Limit",
-      type: "number",
-      initialValue: 5,
-      hidden: ({ parent }) => parent?.type !== "digital",
-      description: "Max downloads per order. Overrides StoreSettings default.",
-      validation: (Rule) => Rule.integer().min(1),
-    }),
-    defineField({
-      name: "downloadExpiryDays",
-      title: "Download Link Expiry (days)",
-      type: "number",
-      initialValue: 30,
-      hidden: ({ parent }) => parent?.type !== "digital",
-      description:
-        "Days the customer's download link stays active for after purchase. Overrides StoreSettings default.",
-      validation: (Rule) => Rule.integer().min(1),
-    }),
-
     // ── Variants / simple pricing (physical only)
     defineField({
       name: "hasVariants",
@@ -160,7 +140,7 @@ export const productType = defineType({
       type: "number",
       initialValue: 0,
       hidden: ({ parent }) =>
-        parent?.hasVariants === true && parent?.type !== "digital",
+        parent?.hasVariants === true || parent?.type === "digital",
       validation: (Rule) => Rule.integer().min(0),
     }),
 
@@ -227,14 +207,56 @@ export const productType = defineType({
       validation: (Rule) =>
         Rule.custom((value, context) => {
           const parent = (
-            context as { parent?: { hasVariants?: boolean; type?: string } }
+            context as {
+              parent?: {
+                hasVariants?: boolean;
+                type?: string;
+                options?: Array<{ name?: string; values?: string[] }>;
+              };
+            }
           )?.parent;
           if (parent?.hasVariants !== true || parent?.type === "digital")
             return true;
-          return (
-            (Array.isArray(value) && value.length > 0) ||
-            "Add at least one variant"
+
+          const variants = value as
+            | Array<{ optionValues?: string[] }>
+            | undefined;
+          if (!Array.isArray(variants) || variants.length === 0)
+            return "Add at least one variant";
+
+          const options = parent?.options ?? [];
+          if (options.length === 0) return true; // Option types validation handles this
+
+          // Cartesian product of all declared option values.
+          const expectedCombos = options.reduce<string[][]>(
+            (acc, opt) => {
+              const vals = opt.values ?? [];
+              if (vals.length === 0) return acc;
+              return acc.flatMap((curr) => vals.map((v) => [...curr, v]));
+            },
+            [[]],
           );
+
+          if (expectedCombos.length === 0) return true;
+
+          const variantKeys = new Set(
+            variants.map((v) => (v.optionValues ?? []).join(" ")),
+          );
+          const missing = expectedCombos.filter(
+            (combo) => !variantKeys.has(combo.join(" ")),
+          );
+
+          if (missing.length > 0) {
+            const preview = missing
+              .slice(0, 3)
+              .map((c) => c.join(" / "))
+              .join(", ");
+            const suffix =
+              missing.length > 3 ? ` (+${missing.length - 3} more)` : "";
+            return `Missing variant${missing.length === 1 ? "" : "s"} for: ${preview}${suffix}. Every combination of your Option Types must be defined.`;
+          }
+
+          return true;
         }),
       of: [
         defineArrayMember({
@@ -310,11 +332,6 @@ export const productType = defineType({
               initialValue: 0,
               validation: (Rule) => Rule.integer().min(0),
             }),
-            defineField({
-              name: "image",
-              type: "image",
-              options: { hotspot: true },
-            }),
           ],
           preview: {
             select: {
@@ -322,9 +339,8 @@ export const productType = defineType({
               optionValues: "optionValues",
               price: "priceNGN",
               stock: "stock",
-              media: "image",
             },
-            prepare: ({ title, optionValues, price, stock, media }) => {
+            prepare: ({ title, optionValues, price, stock }) => {
               const label =
                 title ||
                 (Array.isArray(optionValues)
@@ -333,12 +349,51 @@ export const productType = defineType({
               return {
                 title: label,
                 subtitle: `₦${price ?? "?"} • stock ${stock ?? 0}`,
-                media,
               };
             },
           },
         }),
       ],
+    }),
+    defineField({
+      name: "specifications",
+      title: "Specifications",
+      type: "array",
+      description:
+        "Spec rows shown in the Specifications accordion (e.g. Paper / Dimensions / Edition). Leave empty to hide.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "specRow",
+          fields: [
+            defineField({
+              name: "label",
+              type: "string",
+              validation: (Rule) => Rule.required().max(60),
+            }),
+            defineField({
+              name: "value",
+              type: "string",
+              validation: (Rule) => Rule.required().max(120),
+            }),
+          ],
+          preview: {
+            select: { label: "label", value: "value" },
+            prepare: ({ label, value }) => ({
+              title: label || "Spec",
+              subtitle: value,
+            }),
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: "shipping",
+      title: "Shipping & Returns",
+      type: "text",
+      rows: 3,
+      description:
+        "Shipping window + returns blurb shown in the Shipping accordion. For digital products, use this to describe delivery (e.g., 'Instant download — link sent on purchase'). Leave empty to hide.",
     }),
   ],
   preview: {

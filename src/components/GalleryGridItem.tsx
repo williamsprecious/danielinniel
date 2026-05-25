@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 
 interface GalleryGridItemProps {
   url: string;
+  thumbnailUrl?: string;
+  lqip?: string;
   type: "image" | "video";
   videoType?: "url" | "file";
   videoUrl?: string;
@@ -16,6 +18,8 @@ interface GalleryGridItemProps {
 
 const GalleryGridItem = ({
   url,
+  thumbnailUrl,
+  lqip,
   type,
   videoType,
   videoUrl,
@@ -40,7 +44,7 @@ const GalleryGridItem = ({
           data-fancybox="gallery"
           data-aspect-ratio="16 / 9"
           data-type="html5video"
-          className="rounded-xl overflow-hidden inline-block w-full h-full"
+          className="rounded-lg overflow-hidden inline-block w-full h-full"
         >
           <video
             src={url}
@@ -72,14 +76,16 @@ const GalleryGridItem = ({
           data-fancybox="gallery"
           data-aspect-ratio="16 / 9"
           href={videoUrl}
-          className="rounded-xl overflow-hidden inline-block w-full h-full"
+          className="rounded-lg overflow-hidden inline-block w-full h-full"
         >
           <Image
-            src={url}
+            src={thumbnailUrl ?? url}
             width={500}
             height={500}
             className="w-full h-full object-cover object-top"
             alt={description || "Gallery video thumbnail"}
+            placeholder={lqip ? "blur" : "empty"}
+            blurDataURL={lqip}
             loading="lazy"
           />
         </Link>
@@ -103,14 +109,16 @@ const GalleryGridItem = ({
         data-fancybox="gallery"
         data-caption={description || ""}
         href={url}
-        className="rounded-xl overflow-hidden inline-block w-full h-full"
+        className="rounded-lg overflow-hidden inline-block w-full h-full"
       >
         <Image
-          src={url}
+          src={thumbnailUrl ?? url}
           width={500}
           height={500}
           className="w-full h-full object-cover object-top"
           alt={description || "Gallery image"}
+          placeholder={lqip ? "blur" : "empty"}
+          blurDataURL={lqip}
           loading="lazy"
         />
       </Link>
