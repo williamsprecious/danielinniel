@@ -51,7 +51,7 @@ const CartDrawer = () => {
             <span className="text-[11px] uppercase tracking-[0.18em] text-foreground/50">
               Your Cart
             </span>
-            <span className="font-bowlby text-lg">
+            <span className="text-lg">
               {itemCount} {itemCount === 1 ? "Item" : "Items"}
             </span>
           </div>
@@ -198,8 +198,9 @@ const CartDrawer = () => {
                 <dd className="text-foreground/60">Calculated at checkout</dd>
               </div>
             </dl>
-            <button
-              type="button"
+            <Link
+              href="/checkout"
+              onClick={close}
               className="mt-5 flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground transition-transform"
             >
               <span className="text-base font-medium">Checkout</span>
@@ -207,7 +208,7 @@ const CartDrawer = () => {
               <span className="text-base tabular-nums">
                 {formatPrice(subtotalNGN, currency, rates)}
               </span>
-            </button>
+            </Link>
           </SheetFooter>
         )}
       </SheetContent>

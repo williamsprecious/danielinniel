@@ -67,11 +67,16 @@ const Header = () => {
     }
   });
 
-  // Reset header visibility when route changes
-  useEffect(() => {
+  // Reset header visibility + close menu when route changes.
+  // React docs pattern for "adjust state when a prop changes" — runs during
+  // render via a prev-value comparison, not in an effect.
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevIsHomePage, setPrevIsHomePage] = useState(isHomePage);
+  if (isHomePage !== prevIsHomePage) {
+    setPrevIsHomePage(isHomePage);
     setIsVisible(!isHomePage);
     setIsMenuOpen(false);
-  }, [isHomePage]);
+  }
 
   // ? Close menu when clicking outside
   useEffect(() => {
@@ -112,7 +117,7 @@ const Header = () => {
           duration: 0.3,
         }}
         className={cn(
-          "fixed top-2 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-16px)] max-w-[1900px] px-3 h-16 border border-solid border-border/50 backdrop-blur-sm bg-background/80 rounded-[8px] grid grid-cols-[minmax(200px,300px)_max-content] gap-4 justify-between items-center transition-colors duration-1000 ease-in-out sm:grid-cols-[minmax(300px,350px)_max-content] md:px-4 md:w-[calc(100%-48px)] min-[900px]:md:grid-cols-[min-content_1fr_140px] lg:md:grid-cols-[230px_1fr_230px] lg:px-5 xl:h-18 2xl:h-[84px] 2xl:top-2.5 2xl:w-[calc(100%-112px)] 2xl:grid-cols-[300px_1fr_300px] 2xl:px-8",
+          "fixed top-2 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-16px)] max-w-[1900px] px-3 h-16 border border-solid border-border/50 backdrop-blur-sm bg-background/80 rounded-[8px] grid grid-cols-[minmax(200px,300px)_max-content] gap-4 justify-between items-center transition-colors duration-1000 ease-in-out sm:grid-cols-[minmax(300px,350px)_max-content] md:top-2.5 md:px-4 md:w-[calc(100%-48px)] min-[900px]:md:grid-cols-[min-content_1fr_140px] lg:md:grid-cols-[230px_1fr_230px] lg:px-5 xl:h-18 2xl:h-[84px] 2xl:top-3 2xl:w-[calc(100%-112px)] 2xl:grid-cols-[300px_1fr_300px] 2xl:px-8",
         )}
       >
         <nav className="hidden min-[900px]:block">

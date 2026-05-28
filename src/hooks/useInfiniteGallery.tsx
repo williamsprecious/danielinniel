@@ -80,8 +80,11 @@ export const useInfiniteGallery = ({
     fetchData(0, true);
   }, [fetchData]);
 
-  // Initial load and refetch when dependencies change
+  // Initial load and refetch when category/filter/limit change. fetchData
+  // calls setState internally — that's the whole point of a data-fetching
+  // effect, so the set-state-in-effect rule is a false positive here.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData(0, true);
   }, [fetchData]);
 

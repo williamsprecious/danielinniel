@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import { motion } from "motion/react";
@@ -21,11 +21,14 @@ const OptimizedHeadingImage = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Reset state when src changes to handle prop updates correctly
-  useEffect(() => {
+  // Reset load/error state when src changes (React docs "adjust state when
+  // prop changes" pattern — runs during render, not in an effect).
+  const [prevMainSrc, setPrevMainSrc] = useState(mainSrc);
+  if (mainSrc !== prevMainSrc) {
+    setPrevMainSrc(mainSrc);
     setImageLoaded(false);
     setImageError(false);
-  }, [mainSrc]);
+  }
 
   // Determine if we should use fallback permanently (main image errored)
   const useFallbackPermanently = imageError && !!fallbackSrc;

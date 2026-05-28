@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { ShopImage } from "@/lib/shop-types";
@@ -51,6 +51,7 @@ export const useCartStore = create<CartState>()(
       lines: [],
       addLine: (incoming, qty = 1) =>
         set((state) => {
+          const isDigital = incoming.type === "digital";
           const existing = state.lines.find((l) =>
             matchLine(l, incoming.productId, incoming.variantKey),
           );
@@ -61,7 +62,9 @@ export const useCartStore = create<CartState>()(
                   ? {
                       ...l,
                       ...incoming,
-                      qty: clampQty(l.qty + qty, incoming.stock),
+                      qty: isDigital
+                        ? 1
+                        : clampQty(l.qty + qty, incoming.stock),
                     }
                   : l,
               ),
@@ -70,18 +73,21 @@ export const useCartStore = create<CartState>()(
           return {
             lines: [
               ...state.lines,
-              { ...incoming, qty: clampQty(qty, incoming.stock) },
+              {
+                ...incoming,
+                qty: isDigital ? 1 : clampQty(qty, incoming.stock),
+              },
             ],
           };
         }),
       updateQty: (productId, variantKey, qty) =>
         set((state) => ({
           lines: state.lines
-            .map((l) =>
-              matchLine(l, productId, variantKey)
-                ? { ...l, qty: clampQty(qty, l.stock) }
-                : l,
-            )
+            .map((l) => {
+              if (!matchLine(l, productId, variantKey)) return l;
+              if (l.type === "digital") return { ...l, qty: qty <= 0 ? 0 : 1 };
+              return { ...l, qty: clampQty(qty, l.stock) };
+            })
             .filter((l) => l.qty > 0),
         })),
       removeLine: (productId, variantKey) =>
@@ -105,23 +111,27 @@ export const useCartStore = create<CartState>()(
   ),
 );
 
+// useSyncExternalStore bridge to the zustand persist hydration lifecycle.
+// Stable module-level fns so React doesn't re-subscribe on every render.
+const subscribeCartHydration = (cb: () => void) =>
+  useCartStore.persist.onFinishHydration(cb);
+const getCartHydratedSnapshot = () => useCartStore.persist.hasHydrated();
+const getCartHydratedServerSnapshot = () => false;
+
+// SSR-safe — returns false until localStorage hydrates, then true. Use this
+// when you need to know whether the persisted cart is ready to read.
+export const useCartHydrated = (): boolean =>
+  useSyncExternalStore(
+    subscribeCartHydration,
+    getCartHydratedSnapshot,
+    getCartHydratedServerSnapshot,
+  );
+
 // SSR-safe — returns [] until localStorage hydrates, then the persisted lines.
-// Mirrors useHydratedCurrency to prevent the cart badge from flashing.
+// Prevents the cart badge / summary from flashing wrong values during hydration.
 export const useHydratedCart = (): CartLine[] => {
   const lines = useCartStore((s) => s.lines);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    if (useCartStore.persist.hasHydrated()) {
-      setHydrated(true);
-      return;
-    }
-    const unsub = useCartStore.persist.onFinishHydration(() =>
-      setHydrated(true),
-    );
-    return unsub;
-  }, []);
-
+  const hydrated = useCartHydrated();
   return hydrated ? lines : [];
 };
 

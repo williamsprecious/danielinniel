@@ -44,3 +44,21 @@ export const contactSchema = z.object({
   company: z.string().optional(),
   message: z.string().min(5),
 });
+
+export const checkoutSchema = z.object({
+  // contact
+  email: z.string().email("Invalid email address"),
+
+  // shipping
+  country: z.string().min(2, "Select a country"),
+  firstName: z.string().min(1, "First name is required").max(60),
+  lastName: z.string().min(1, "Last name is required").max(60),
+  line1: z.string().min(3, "Address is required"),
+  line2: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State / region is required"),
+  postalCode: z.string().optional(),
+  phone: z.string().min(6, "Phone is required"),
+});
+
+export type CheckoutFormValues = z.infer<typeof checkoutSchema>;

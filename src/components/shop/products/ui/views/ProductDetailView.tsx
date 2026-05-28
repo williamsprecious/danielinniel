@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ShoppingBag } from "lucide-react";
@@ -63,7 +63,12 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
 
   const isOutOfStock = availableStock === 0;
 
-  useEffect(() => {
+  // Clamp quantity when availableStock decreases below it (e.g. variant
+  // switch reveals tighter stock). Uses React docs "adjust state when prop
+  // changes" pattern — runs during render, not in an effect.
+  const [prevAvailableStock, setPrevAvailableStock] = useState(availableStock);
+  if (availableStock !== prevAvailableStock) {
+    setPrevAvailableStock(availableStock);
     if (
       availableStock !== undefined &&
       availableStock > 0 &&
@@ -71,7 +76,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
     ) {
       setQuantity(availableStock);
     }
-  }, [availableStock]);
+  }
 
   const displayedPriceNGN = activeVariant?.priceNGN ?? product.priceNGN;
   const displayedCompareAtPriceNGN =

@@ -223,7 +223,7 @@ export async function getProducts(
 
 export async function getProductBySlug(
   slug: string,
-  options: { stega?: boolean } = {},
+  _options: { stega?: boolean } = {},
 ): Promise<ProductDetail | null> {
   try {
     const { data } = await sanityFetch({

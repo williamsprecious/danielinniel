@@ -5,8 +5,6 @@ import dynamic from "next/dynamic";
 import Footer from "@/components/Footer";
 import BookingDialog from "@/components/BookingDialog";
 import { cn } from "@/lib/utils";
-import { SparklesCore } from "./ui/sparkles";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 // Dynamically import Header with no SSR to prevent hydration issues
 const Header = dynamic(() => import("@/components/Header"), {
@@ -14,7 +12,6 @@ const Header = dynamic(() => import("@/components/Header"), {
 });
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const isMobile = useIsMobile();
   const pathname = usePathname();
   const removeFooter =
     pathname === "/cover-art/essential" ||
@@ -26,18 +23,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <div className="fixed inset-0 w-full h-screen -z-10">
-        <SparklesCore
-          id="tsparticlesfullpage"
-          background="transparent"
-          minSize={0.5}
-          maxSize={1.2}
-          speed={0.4}
-          particleDensity={isMobile ? 4 : 2}
-          className="w-full h-full"
-          particleColor="rgba(255, 255, 255, 0.8)"
-        />
-      </div>
       <BookingDialog />
 
       {/* Just so the footer can be fixed to the bottom */}

@@ -3,15 +3,15 @@ import { notFound } from "next/navigation";
 import ProductDetailView from "@/components/shop/products/ui/views/ProductDetailView";
 import {
   getProductBySlug,
-  getActiveProductSlugs,
+  // getActiveProductSlugs,
 } from "@/sanity/queries/products";
 
 type Params = { slug: string };
 
-export const generateStaticParams = async () => {
-  const slugs = await getActiveProductSlugs();
-  return slugs.map((slug) => ({ slug }));
-};
+// export const generateStaticParams = async () => {
+//   const slugs = await getActiveProductSlugs();
+//   return slugs.map((slug) => ({ slug }));
+// };
 
 export const generateMetadata = async ({
   params,

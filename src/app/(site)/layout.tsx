@@ -1,15 +1,7 @@
 import type { Metadata } from "next";
-import {
-  Bowlby_One,
-  Lexend,
-  Poppins,
-  Road_Rage,
-  Roboto,
-  Roboto_Mono,
-} from "next/font/google";
-import Layout from "@/components/Layout";
+import { Road_Rage, Roboto_Mono } from "next/font/google";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
-import CartDrawer from "@/components/shop/cart/ui/components/CartDrawer";
+import SparklesBackground from "@/components/SparklesBackground";
 import { SanityLive } from "@/sanity/lib/live";
 import { getStoreSettings } from "@/sanity/queries";
 import { isCurrencyCode, type CurrencyRates } from "@/lib/currencies";
@@ -39,7 +31,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -57,9 +49,9 @@ export default async function RootLayout({
       <body
         className={`${roadRage.variable} ${robotoMono.variable} font-sans relative antialiased`}
       >
+        <SparklesBackground />
         <CurrencyProvider initialRates={initialRates}>
-          <Layout>{children}</Layout>
-          <CartDrawer />
+          {children}
         </CurrencyProvider>
         <SanityLive />
       </body>

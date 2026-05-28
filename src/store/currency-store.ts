@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { CurrencyCode, CurrencyRates } from "@/lib/currencies";
@@ -28,20 +28,23 @@ export const useCurrencyStore = create<CurrencyState>()(
   ),
 );
 
+// useSyncExternalStore bridge to zustand persist. Stable module-level fns
+// so React doesn't re-subscribe every render.
+const subscribeCurrencyHydration = (cb: () => void) =>
+  useCurrencyStore.persist.onFinishHydration(cb);
+const getCurrencyHydratedSnapshot = () =>
+  useCurrencyStore.persist.hasHydrated();
+const getCurrencyHydratedServerSnapshot = () => false;
+
+const useCurrencyHydrated = (): boolean =>
+  useSyncExternalStore(
+    subscribeCurrencyHydration,
+    getCurrencyHydratedSnapshot,
+    getCurrencyHydratedServerSnapshot,
+  );
+
 export const useHydratedCurrency = (): CurrencyCode => {
   const selected = useCurrencyStore((s) => s.selectedCurrency);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    if (useCurrencyStore.persist.hasHydrated()) {
-      setHydrated(true);
-      return;
-    }
-    const unsub = useCurrencyStore.persist.onFinishHydration(() =>
-      setHydrated(true),
-    );
-    return unsub;
-  }, []);
-
+  const hydrated = useCurrencyHydrated();
   return hydrated ? selected : "NGN";
 };

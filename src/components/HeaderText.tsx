@@ -8,11 +8,13 @@ const HeaderText = ({
   delay = 0,
   className,
   textType = "h2",
+  underline = false,
 }: {
   title: string;
   delay?: number;
   className?: string;
   textType?: "h1" | "h2";
+  underline?: boolean;
 }) => {
   if (textType === "h1") {
     return (
@@ -34,6 +36,7 @@ const HeaderText = ({
         viewport={{ amount: 0.3, once: true }}
         className={cn(
           "font-heading text-6xl md:text-7xl lg:text-8xl 2xl:text-9xl",
+          underline && "underline underline-offset-8",
           className,
         )}
       >
@@ -62,6 +65,7 @@ const HeaderText = ({
       viewport={{ amount: 0.3, once: true }}
       className={cn(
         "font-heading text-5xl text-center md:text-6xl lg:text-7xl 2xl:text-8xl",
+        underline && "underline underline-offset-8",
         className,
       )}
     >
