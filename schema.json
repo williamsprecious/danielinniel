@@ -1,5 +1,667 @@
 [
   {
+    "name": "shippingZoneGB",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneGB"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "shippingZoneCA",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneCA"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "regionOverrides": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "region": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "union",
+                    "of": [
+                      {
+                        "type": "string",
+                        "value": "Alberta"
+                      },
+                      {
+                        "type": "string",
+                        "value": "British Columbia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Manitoba"
+                      },
+                      {
+                        "type": "string",
+                        "value": "New Brunswick"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Newfoundland and Labrador"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Northwest Territories"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nova Scotia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nunavut"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ontario"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Prince Edward Island"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Quebec"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Saskatchewan"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Yukon"
+                      }
+                    ]
+                  },
+                  "optional": true
+                },
+                "feeNGN": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "number"
+                  },
+                  "optional": true
+                },
+                "_type": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string",
+                    "value": "shippingZoneCAOverride"
+                  }
+                }
+              },
+              "rest": {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "shippingZoneUS",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneUS"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "regionOverrides": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "region": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "union",
+                    "of": [
+                      {
+                        "type": "string",
+                        "value": "Alabama"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Alaska"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Arizona"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Arkansas"
+                      },
+                      {
+                        "type": "string",
+                        "value": "California"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Colorado"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Connecticut"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Delaware"
+                      },
+                      {
+                        "type": "string",
+                        "value": "District of Columbia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Florida"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Georgia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Hawaii"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Idaho"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Illinois"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Indiana"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Iowa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kansas"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kentucky"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Louisiana"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Maine"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Maryland"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Massachusetts"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Michigan"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Minnesota"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Mississippi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Missouri"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Montana"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nebraska"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nevada"
+                      },
+                      {
+                        "type": "string",
+                        "value": "New Hampshire"
+                      },
+                      {
+                        "type": "string",
+                        "value": "New Jersey"
+                      },
+                      {
+                        "type": "string",
+                        "value": "New Mexico"
+                      },
+                      {
+                        "type": "string",
+                        "value": "New York"
+                      },
+                      {
+                        "type": "string",
+                        "value": "North Carolina"
+                      },
+                      {
+                        "type": "string",
+                        "value": "North Dakota"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ohio"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Oklahoma"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Oregon"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Pennsylvania"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Rhode Island"
+                      },
+                      {
+                        "type": "string",
+                        "value": "South Carolina"
+                      },
+                      {
+                        "type": "string",
+                        "value": "South Dakota"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Tennessee"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Texas"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Utah"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Vermont"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Virginia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Washington"
+                      },
+                      {
+                        "type": "string",
+                        "value": "West Virginia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Wisconsin"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Wyoming"
+                      }
+                    ]
+                  },
+                  "optional": true
+                },
+                "feeNGN": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "number"
+                  },
+                  "optional": true
+                },
+                "_type": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string",
+                    "value": "shippingZoneUSOverride"
+                  }
+                }
+              },
+              "rest": {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "shippingZoneNG",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneNG"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "regionOverrides": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "region": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "union",
+                    "of": [
+                      {
+                        "type": "string",
+                        "value": "Abia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Adamawa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Akwa Ibom"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Anambra"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Bauchi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Bayelsa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Benue"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Borno"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Cross River"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Delta"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ebonyi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Edo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ekiti"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Enugu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "FCT - Abuja"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Gombe"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Imo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Jigawa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kaduna"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kano"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Katsina"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kebbi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kogi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kwara"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Lagos"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nasarawa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Niger"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ogun"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ondo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Osun"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Oyo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Plateau"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Rivers"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Sokoto"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Taraba"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Yobe"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Zamfara"
+                      }
+                    ]
+                  },
+                  "optional": true
+                },
+                "feeNGN": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "number"
+                  },
+                  "optional": true
+                },
+                "_type": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string",
+                    "value": "shippingZoneNGOverride"
+                  }
+                }
+              },
+              "rest": {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "storeSettings",
     "type": "document",
     "attributes": {
@@ -150,10 +812,75 @@
         },
         "optional": true
       },
-      "orderNumberPrefix": {
+      "shippingZones": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "array",
+          "of": {
+            "type": "union",
+            "of": [
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneNG"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneUS"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneCA"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneGB"
+                }
+              }
+            ]
+          }
         },
         "optional": true
       },
@@ -457,7 +1184,7 @@
                 },
                 "optional": true
               },
-              "unitPriceNGN": {
+              "unitPrice": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "number"
@@ -471,7 +1198,7 @@
                 },
                 "optional": true
               },
-              "lineTotalNGN": {
+              "lineTotal": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "number"
@@ -501,14 +1228,21 @@
         },
         "optional": true
       },
-      "subtotalNGN": {
+      "subtotal": {
         "type": "objectAttribute",
         "value": {
           "type": "number"
         },
         "optional": true
       },
-      "totalNGN": {
+      "shippingFee": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "total": {
         "type": "objectAttribute",
         "value": {
           "type": "number"

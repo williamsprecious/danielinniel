@@ -121,6 +121,28 @@ export const PRODUCT_BY_SLUG_QUERY = defineQuery(/* groq */ `
     }
   `);
 
+export const PRODUCTS_BY_IDS_FOR_CART_QUERY = defineQuery(/* groq */ `
+    *[_type == "product" && _id in $ids]{
+      _id,
+      status,
+      "slug": slug.current,
+      title,
+      type,
+      hasVariants,
+      priceNGN,
+      compareAtPriceNGN,
+      stock,
+      "image": images[0]{ ${productImageFields} },
+      variants[]{
+        _key,
+        title,
+        priceNGN,
+        compareAtPriceNGN,
+        stock
+      }
+    }
+  `);
+
 export const ACTIVE_CATEGORIES_QUERY = defineQuery(`
     *[_type == "category" && visibility == "active"]
       | order(coalesce(displayOrder, 9999) asc, title asc) {
@@ -140,7 +162,12 @@ export const STORE_SETTINGS_QUERY = defineQuery(`
     *[_id == "storeSettings"][0]{
       baseCurrency,
       ratesToNGN[]{ code, rate },
-      ratesUpdatedAt
+      ratesUpdatedAt,
+      shippingZones[]{
+        country,
+        defaultFeeNGN,
+        regionOverrides[]{ region, feeNGN }
+      }
     }
   `);
 

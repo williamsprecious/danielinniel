@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  SUPPORTED_SHIPPING_COUNTRY_CODES,
+  getRegionLabel,
+} from "@/lib/shipping/supported-countries";
 
 export const projectSchema = z
   .object({
@@ -45,20 +49,34 @@ export const contactSchema = z.object({
   message: z.string().min(5),
 });
 
-export const checkoutSchema = z.object({
-  // contact
-  email: z.string().email("Invalid email address"),
+export const checkoutSchema = z
+  .object({
+    // contact
+    email: z.string().email("Invalid email address"),
 
-  // shipping
-  country: z.string().min(2, "Select a country"),
-  firstName: z.string().min(1, "First name is required").max(60),
-  lastName: z.string().min(1, "Last name is required").max(60),
-  line1: z.string().min(3, "Address is required"),
-  line2: z.string().optional(),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State / region is required"),
-  postalCode: z.string().optional(),
-  phone: z.string().min(6, "Phone is required"),
-});
+    // shipping
+    country: z.enum(
+      SUPPORTED_SHIPPING_COUNTRY_CODES as unknown as [string, ...string[]],
+      { message: "Select a supported country" },
+    ),
+    firstName: z.string().min(1, "First name is required").max(60),
+    lastName: z.string().min(1, "Last name is required").max(60),
+    line1: z.string().min(3, "Address is required"),
+    line2: z.string().optional(),
+    city: z.string().min(1, "City is required"),
+    state: z.string().optional(),
+    postalCode: z.string().optional(),
+    phone: z.string().min(6, "Phone is required"),
+  })
+  .superRefine((data, ctx) => {
+    const label = getRegionLabel(data.country);
+    if (label && !data.state?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["state"],
+        message: `${label} is required`,
+      });
+    }
+  });
 
 export type CheckoutFormValues = z.infer<typeof checkoutSchema>;

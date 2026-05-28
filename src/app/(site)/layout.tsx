@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Road_Rage, Roboto_Mono } from "next/font/google";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
+import CartBootRevalidator from "@/components/shop/cart/CartBootRevalidator";
 import SparklesBackground from "@/components/SparklesBackground";
 import { SanityLive } from "@/sanity/lib/live";
 import { getStoreSettings } from "@/sanity/queries";
@@ -53,6 +54,7 @@ export default async function SiteLayout({
         <CurrencyProvider initialRates={initialRates}>
           {children}
         </CurrencyProvider>
+        <CartBootRevalidator />
         <SanityLive />
       </body>
     </html>

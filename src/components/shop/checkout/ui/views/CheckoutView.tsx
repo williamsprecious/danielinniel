@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import CheckoutForm, {
   type CheckoutFormHandle,
@@ -11,6 +11,7 @@ import OrderSummary from "@/components/shop/checkout/ui/components/OrderSummary"
 import EmptyCheckoutState from "@/components/shop/checkout/ui/components/EmptyCheckoutState";
 import {
   useCartHydrated,
+  useCartStore,
   useHydratedCart,
   useHydratedSubtotalNGN,
 } from "@/store/cart-store";
@@ -18,12 +19,26 @@ import { useHydratedCurrency, useCurrencyStore } from "@/store/currency-store";
 import type { CheckoutFormValues } from "@/schema";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format-price";
+import type { CountryShippingConfig } from "@/lib/shipping/types";
+import {
+  SUPPORTED_SHIPPING_COUNTRIES,
+  getRegionLabel,
+} from "@/lib/shipping/supported-countries";
+import { lookupShippingFee } from "@/lib/shipping/zone-lookup";
 
-const CheckoutView = () => {
+type CheckoutViewProps = {
+  shippingZones: CountryShippingConfig[];
+};
+
+const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
   const formRef = useRef<CheckoutFormHandle>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(true);
+  const [destination, setDestination] = useState<{
+    country: string;
+    state: string;
+  }>({ country: "", state: "" });
 
   const lines = useHydratedCart();
   const subtotalNGN = useHydratedSubtotalNGN();
@@ -31,15 +46,55 @@ const CheckoutView = () => {
   const rates = useCurrencyStore((s) => s.rates);
 
   const cartHydrated = useCartHydrated();
+  const revalidate = useCartStore((s) => s.revalidate);
+
+  // Silently revalidate once the cart hydrates so the customer reaches checkout with current prices/stock/availability. On a checkout-page reload this fires alongside CartBootRevalidator; the store's isRevalidating guard collapses the pair into a single network round-trip.
+  useEffect(() => {
+    if (!cartHydrated) return;
+    void revalidate();
+  }, [cartHydrated, revalidate]);
+
+  const availableCountries = useMemo(() => {
+    const configured = new Set(shippingZones.map((z) => z.country));
+    return SUPPORTED_SHIPPING_COUNTRIES.filter((c) => configured.has(c.code));
+  }, [shippingZones]);
+
+  const shippingQuote = useMemo(() => {
+    if (!destination.country) return null;
+    // Hold the preview until the customer picks a region for countries that have regional overrides — otherwise we'd show the country-default fee and then change it the moment they pick a state, which is confusing. UK (regionLabel === null) shows its flat fee immediately.
+    const regionLabel = getRegionLabel(destination.country);
+    if (regionLabel && !destination.state) return null;
+    return lookupShippingFee(
+      shippingZones,
+      destination.country,
+      destination.state,
+    );
+  }, [shippingZones, destination.country, destination.state]);
+
+  const shippingFeeNGN = shippingQuote?.ok ? shippingQuote.feeNGN : 0;
+  const totalNGN = subtotalNGN + shippingFeeNGN;
 
   const handleValid = (values: CheckoutFormValues) => {
     setIsSubmitting(true);
-    // TODO(checkout-submit): replace with server action that creates the
-    // Sanity order document + initializes Paystack. UI-only scope for now.
+    // TODO(shipping-server-recalc): the upcoming order-create server action
+    // must call lookupShippingFee(zones, values.country, values.state) on the
+    // server using a fresh storeSettings read, reject with a user-friendly
+    // error when ok=false, and snapshot the resulting fee onto the order.
+    // The client-computed preview is for UX only and must not be trusted.
+
+    // TODO(cart-server-recalc): the same action must also call revalidateCart
+    // server-side just before writing the order. Refuse to proceed if any
+    // line ends up "removed" or has a material price change the customer
+    // hasn't been shown — the client preview is not enough.
+
+    // Validates the cart products serverside also, its avalability, variation avalability, quantity, stock etc
+
     console.log("Checkout payload", {
       values,
       lines,
       subtotalNGN,
+      shippingFeeNGN,
+      totalNGN,
       currency,
     });
     setStatusMessage(
@@ -52,8 +107,6 @@ const CheckoutView = () => {
     setStatusMessage(null);
     formRef.current?.submit();
   };
-
-  const totalNGN = subtotalNGN;
 
   return (
     <>
@@ -83,7 +136,7 @@ const CheckoutView = () => {
                     />
                   </span>
                   <span className="text-sm tabular-nums text-foreground">
-                    {formatPrice(subtotalNGN, currency, rates)}
+                    {formatPrice(totalNGN, currency, rates)}
                   </span>
                 </button>
                 {mobileSummaryOpen && (
@@ -99,7 +152,7 @@ const CheckoutView = () => {
                         {statusMessage}
                       </div>
                     )}
-                    <OrderSummary />
+                    <OrderSummary shippingQuote={shippingQuote} />
                   </div>
                 )}
               </div>
@@ -111,9 +164,14 @@ const CheckoutView = () => {
                     aria-label="Contact and shipping"
                     className="rounded-2xl border border-border/30 bg-foreground/[0.03] p-6 md:p-8"
                   >
-                    <CheckoutForm ref={formRef} onValid={handleValid} />
+                    <CheckoutForm
+                      ref={formRef}
+                      onValid={handleValid}
+                      availableCountries={availableCountries}
+                      onDestinationChange={setDestination}
+                    />
                   </section>
-                  <ShippingMethodCard />
+                  <ShippingMethodCard shippingQuote={shippingQuote} />
                   <PaymentMethodCard />
                 </div>
                 <aside
@@ -128,11 +186,15 @@ const CheckoutView = () => {
                       {statusMessage}
                     </div>
                   )}
-                  <OrderSummary />
+                  <OrderSummary shippingQuote={shippingQuote} />
                   <button
                     type="button"
                     onClick={handlePlaceOrder}
-                    disabled={isSubmitting || lines.length === 0}
+                    disabled={
+                      isSubmitting ||
+                      lines.length === 0 ||
+                      availableCountries.length === 0
+                    }
                     className="flex h-14 w-full cursor-pointer items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isSubmitting ? "PROCESSING…" : "PLACE ORDER"}
@@ -153,7 +215,7 @@ const CheckoutView = () => {
           <button
             type="button"
             onClick={handlePlaceOrder}
-            disabled={isSubmitting}
+            disabled={isSubmitting || availableCountries.length === 0}
             className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary text-base font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span>{isSubmitting ? "PROCESSING…" : "PLACE ORDER"}</span>

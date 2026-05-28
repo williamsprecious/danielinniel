@@ -33,14 +33,16 @@ const SUBTOTAL_USD = DUMMY_LINES.reduce(
   (sum, l) => sum + l.priceUsd * l.qty,
   0,
 );
-const SHIPPING_USD = 0;
-const TOTAL_USD = SUBTOTAL_USD + SHIPPING_USD;
 
 const DUMMY_ORDER = {
   number: "DI-2026-0001",
   email: "you@example.com",
   date: "May 27, 2026",
   estimatedDelivery: "June 3 – 8, 2026",
+  // shippingFee is stored in the order's currency on the real schema. The
+  // DUMMY values here are illustrative; the real order detail page will read
+  // shippingFee from the order document once the order-create action lands.
+  shippingFee: 0,
   shipping: {
     name: "Williams Bolu",
     line1: "12 Marina Road",
@@ -51,6 +53,8 @@ const DUMMY_ORDER = {
     country: "Nigeria",
   },
 };
+
+const TOTAL_USD = SUBTOTAL_USD + DUMMY_ORDER.shippingFee;
 
 const fmt = (usd: number) => `$${usd.toFixed(2)}`;
 
@@ -127,7 +131,9 @@ const OrderConfirmationView = () => {
             <div className="flex items-center justify-between">
               <dt className="text-foreground/70">Shipping</dt>
               <dd className="tabular-nums text-foreground">
-                {fmt(SHIPPING_USD)}
+                {DUMMY_ORDER.shippingFee === 0
+                  ? "Free"
+                  : fmt(DUMMY_ORDER.shippingFee)}
               </dd>
             </div>
           </dl>

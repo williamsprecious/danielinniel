@@ -112,9 +112,11 @@ export const orderType = defineType({
             }),
             defineField({ name: "image", type: "image" }),
             defineField({
-              name: "unitPriceNGN",
-              title: "Unit Price (NGN)",
+              name: "unitPrice",
+              title: "Unit Price",
               type: "number",
+              description:
+                "Per-unit price snapshotted at order creation, in the order's currency (see parent order's 'currency' field).",
               validation: (Rule) => Rule.required().min(0),
             }),
             defineField({
@@ -123,9 +125,11 @@ export const orderType = defineType({
               validation: (Rule) => Rule.required().integer().min(1),
             }),
             defineField({
-              name: "lineTotalNGN",
-              title: "Line Total (NGN)",
+              name: "lineTotal",
+              title: "Line Total",
               type: "number",
+              description:
+                "Line total snapshotted at order creation, in the order's currency (see parent order's 'currency' field).",
               validation: (Rule) => Rule.required().min(0),
             }),
           ],
@@ -134,7 +138,7 @@ export const orderType = defineType({
               title: "title",
               variant: "variantTitle",
               qty: "quantity",
-              total: "lineTotalNGN",
+              total: "lineTotal",
               media: "image",
             },
             prepare: ({ title, variant, qty, total, media }) => ({
@@ -149,17 +153,30 @@ export const orderType = defineType({
 
     // ── Totals ───────────────────────────────────────────────
     defineField({
-      name: "subtotalNGN",
-      title: "Subtotal (NGN)",
+      name: "subtotal",
+      title: "Subtotal",
       type: "number",
       readOnly: true,
+      description:
+        "Items subtotal snapshotted at order creation, in the order's currency (see 'currency' field).",
       validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
-      name: "totalNGN",
-      title: "Total (NGN)",
+      name: "shippingFee",
+      title: "Shipping Fee",
       type: "number",
       readOnly: true,
+      description:
+        "Shipping fee snapshotted at order creation, in the order's currency (see 'currency' field). For NGN-settled orders this equals the matching shipping zone's feeNGN. 0 means free.",
+      validation: (Rule) => Rule.min(0),
+    }),
+    defineField({
+      name: "total",
+      title: "Total",
+      type: "number",
+      readOnly: true,
+      description:
+        "Order grand total snapshotted at order creation, in the order's currency (see 'currency' field).",
       validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
@@ -289,7 +306,8 @@ export const orderType = defineType({
       status: "status",
       firstName: "customer.firstName",
       lastName: "customer.lastName",
-      total: "totalNGN",
+      total: "total",
+      shipping: "shippingFee",
       createdAt: "createdAt",
     },
     prepare: ({
@@ -298,12 +316,17 @@ export const orderType = defineType({
       firstName,
       lastName,
       total,
+      shipping,
       createdAt,
     }) => {
       const name = [firstName, lastName].filter(Boolean).join(" ");
+      const shippingSegment =
+        typeof shipping === "number"
+          ? ` (ship ${shipping === 0 ? "Free" : `₦${shipping.toLocaleString()}`})`
+          : "";
       return {
         title: `${orderNumber || "Order"} • ${name || "Guest"}`,
-        subtitle: `${status} • ₦${total ?? 0}${
+        subtitle: `${status} • ₦${total ?? 0}${shippingSegment}${
           createdAt ? ` • ${new Date(createdAt).toLocaleDateString()}` : ""
         }`,
       };

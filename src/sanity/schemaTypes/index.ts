@@ -7,6 +7,12 @@ import { categoryType } from "./categoryType";
 import { productType } from "./productType";
 import { orderType } from "./orderType";
 import { storeSettingsType } from "./storeSettingsType";
+import {
+  shippingZoneCAType,
+  shippingZoneGBType,
+  shippingZoneNGType,
+  shippingZoneUSType,
+} from "./objects/shippingZoneTypes";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -17,5 +23,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     productType,
     orderType,
     storeSettingsType,
+    shippingZoneNGType,
+    shippingZoneUSType,
+    shippingZoneCAType,
+    shippingZoneGBType,
   ],
 };

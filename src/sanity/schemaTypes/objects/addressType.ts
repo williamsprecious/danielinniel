@@ -39,7 +39,8 @@ export const addressType = defineType({
       name: "state",
       title: "State / Region",
       type: "string",
-      validation: (Rule) => Rule.required(),
+      description:
+        "State or province. Optional — only applies to countries that use regional administrative divisions (e.g. NG, US, CA). United Kingdom orders have no state.",
     }),
     defineField({
       name: "postalCode",

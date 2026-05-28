@@ -1,4 +1,28 @@
-const ShippingMethodCard = () => {
+"use client";
+
+import { useCurrencyStore, useHydratedCurrency } from "@/store/currency-store";
+import { formatPrice } from "@/lib/format-price";
+import type { ShippingQuote } from "@/lib/shipping/types";
+
+type ShippingMethodCardProps = {
+  shippingQuote: ShippingQuote | null;
+};
+
+const ShippingMethodCard = ({ shippingQuote }: ShippingMethodCardProps) => {
+  const currency = useHydratedCurrency();
+  const rates = useCurrencyStore((s) => s.rates);
+
+  const display = (() => {
+    if (!shippingQuote) return "Enter address";
+    if (!shippingQuote.ok) {
+      return shippingQuote.reason === "unsupported-country"
+        ? "Unsupported"
+        : "Unavailable";
+    }
+    if (shippingQuote.feeNGN === 0) return "Free";
+    return formatPrice(shippingQuote.feeNGN, currency, rates);
+  })();
+
   return (
     <section
       aria-label="Shipping method"
@@ -25,8 +49,7 @@ const ShippingMethodCard = () => {
           </div>
         </div>
 
-        {/* replace with the shipping fee later */}
-        <span className="text-sm tabular-nums text-foreground">Free</span>
+        <span className="text-sm tabular-nums text-foreground">{display}</span>
       </div>
     </section>
   );

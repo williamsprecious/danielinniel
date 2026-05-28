@@ -1,7 +1,7 @@
 "use client";
 
-import { useImperativeHandle } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useImperativeHandle, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,8 +10,14 @@ import {
   FormField,
   FormItem,
 } from "@/components/ui/form";
-import CountryCombobox from "@/components/shop/checkout/ui/components/CountryCombobox";
+import ShippingCountryCombobox, {
+  type ShippingCountryOption,
+} from "@/components/shop/checkout/ui/components/ShippingCountryCombobox";
+import ShippingRegionCombobox from "@/components/shop/checkout/ui/components/ShippingRegionCombobox";
 import { checkoutSchema, type CheckoutFormValues } from "@/schema";
+import { getRegionLabel } from "@/lib/shipping/supported-countries";
+import { getRegionsForCountry } from "@/lib/shipping/regions";
+import { cn } from "@/lib/utils";
 
 export type CheckoutFormHandle = {
   submit: () => void;
@@ -20,14 +26,23 @@ export type CheckoutFormHandle = {
 type CheckoutFormProps = {
   ref?: React.Ref<CheckoutFormHandle>;
   onValid: (values: CheckoutFormValues) => void;
+  availableCountries: ReadonlyArray<ShippingCountryOption>;
+  onDestinationChange?: (destination: { country: string; state: string }) => void;
 };
 
-const CheckoutForm = ({ ref, onValid }: CheckoutFormProps) => {
+const CheckoutForm = ({
+  ref,
+  onValid,
+  availableCountries,
+  onDestinationChange,
+}: CheckoutFormProps) => {
+  const defaultCountry = availableCountries[0]?.code ?? "";
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       email: "",
-      country: "Nigeria",
+      country: defaultCountry,
       firstName: "",
       lastName: "",
       line1: "",
@@ -45,6 +60,45 @@ const CheckoutForm = ({ ref, onValid }: CheckoutFormProps) => {
       void form.handleSubmit(onValid)();
     },
   }));
+
+  const watchedCountry = useWatch({ control: form.control, name: "country" });
+  const watchedState = useWatch({ control: form.control, name: "state" });
+
+  const regionLabel = useMemo(
+    () => getRegionLabel(watchedCountry),
+    [watchedCountry],
+  );
+  const regions = useMemo(
+    () => getRegionsForCountry(watchedCountry),
+    [watchedCountry],
+  );
+
+  useEffect(() => {
+    onDestinationChange?.({
+      country: watchedCountry ?? "",
+      state: watchedState ?? "",
+    });
+  }, [watchedCountry, watchedState, onDestinationChange]);
+
+  // If the country no longer supports a region, clear any leftover state value
+  // so the form doesn't carry stale data into a hidden field.
+  useEffect(() => {
+    if (regionLabel === null && form.getValues("state")) {
+      form.setValue("state", "", { shouldValidate: false });
+    }
+  }, [regionLabel, form]);
+
+  if (availableCountries.length === 0) {
+    return (
+      <div
+        role="status"
+        className="rounded-md border border-border/40 bg-foreground/[0.04] p-5 text-sm text-foreground/80"
+      >
+        Shipping isn&apos;t configured yet — please contact us before placing
+        an order.
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -89,9 +143,10 @@ const CheckoutForm = ({ ref, onValid }: CheckoutFormProps) => {
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <CountryCombobox
+                  <ShippingCountryCombobox
                     value={field.value}
                     onChange={field.onChange}
+                    countries={availableCountries}
                     hasError={!!fieldState.error}
                   />
                 </FormControl>
@@ -168,7 +223,12 @@ const CheckoutForm = ({ ref, onValid }: CheckoutFormProps) => {
             )}
           />
 
-          <div className="grid gap-5 md:grid-cols-3">
+          <div
+            className={cn(
+              "grid gap-5",
+              regionLabel ? "md:grid-cols-3" : "md:grid-cols-2",
+            )}
+          >
             <FormField
               control={form.control}
               name="city"
@@ -185,22 +245,25 @@ const CheckoutForm = ({ ref, onValid }: CheckoutFormProps) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="state"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="State"
-                      aria-label="State or region"
-                      autoComplete="address-level1"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            {regionLabel && regions && (
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormControl>
+                      <ShippingRegionCombobox
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                        regions={regions}
+                        label={regionLabel}
+                        hasError={!!fieldState.error}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="postalCode"

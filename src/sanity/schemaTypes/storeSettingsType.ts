@@ -134,15 +134,45 @@ export const storeSettingsType = defineType({
         "Last time rates were refreshed by the currency sync job.",
     }),
 
-    // ── Orders ───────────────────────────────────────────────
+    // ── Shipping ─────────────────────────────────────────────
     defineField({
-      name: "orderNumberPrefix",
-      title: "Order Number Prefix",
-      type: "string",
-      initialValue: "DI-",
+      name: "shippingZones",
+      title: "Shipping Zones",
+      type: "array",
       description:
-        'Prefix prepended to generated order numbers (e.g., "DI-2025-0001").',
-      validation: (Rule) => Rule.required().max(8),
+        "Add one entry per country you ship to. Each entry has a default fee (used when no region matches) and optional region overrides for specific states/provinces. United Kingdom is flat-only (no regions). A fee of 0 means free shipping.",
+      of: [
+        defineArrayMember({ type: "shippingZoneNG" }),
+        defineArrayMember({ type: "shippingZoneUS" }),
+        defineArrayMember({ type: "shippingZoneCA" }),
+        defineArrayMember({ type: "shippingZoneGB" }),
+      ],
+      validation: (Rule) =>
+        Rule.custom((items) => {
+          const list = items as
+            | Array<{ country?: string; _type?: string }>
+            | undefined;
+          if (!list || list.length === 0) return true;
+          const NAMES: Record<string, string> = {
+            NG: "Nigeria",
+            US: "United States",
+            CA: "Canada",
+            GB: "United Kingdom",
+          };
+          const seen = new Set<string>();
+          const dups = new Set<string>();
+          for (const z of list) {
+            const country = z?.country;
+            if (!country) continue;
+            if (seen.has(country)) dups.add(country);
+            seen.add(country);
+          }
+          if (dups.size === 0) return true;
+          const labels = [...dups]
+            .map((c) => NAMES[c] ?? c)
+            .join(", ");
+          return `Each country can only be configured once — duplicates: ${labels}`;
+        }),
     }),
 
     // ── Digital delivery defaults ────────────────────────────

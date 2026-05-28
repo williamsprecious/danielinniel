@@ -8,15 +8,36 @@ import {
 import { useCurrencyStore, useHydratedCurrency } from "@/store/currency-store";
 import { formatPrice } from "@/lib/format-price";
 import { urlFor } from "@/sanity/lib/image";
+import type { ShippingQuote } from "@/lib/shipping/types";
 
-const OrderSummary = () => {
+type OrderSummaryProps = {
+  shippingQuote: ShippingQuote | null;
+};
+
+// TODO(shipping-server-recalc): the value rendered here is the optimistic
+// client-side preview. The order-create server action will recompute the fee
+// from the saved address using lookupShippingFee and that result is the
+// source of truth on the order document.
+
+const OrderSummary = ({ shippingQuote }: OrderSummaryProps) => {
   const lines = useHydratedCart();
   const subtotalNGN = useHydratedSubtotalNGN();
   const currency = useHydratedCurrency();
   const rates = useCurrencyStore((s) => s.rates);
 
-  const shippingNGN = 0;
-  const totalNGN = subtotalNGN + shippingNGN;
+  const shippingFeeNGN = shippingQuote?.ok ? shippingQuote.feeNGN : 0;
+  const totalNGN = subtotalNGN + shippingFeeNGN;
+
+  const shippingDisplay = (() => {
+    if (!shippingQuote) return "Enter shipping address";
+    if (!shippingQuote.ok) {
+      return shippingQuote.reason === "unsupported-country"
+        ? "Unsupported destination"
+        : "Not available for your destination";
+    }
+    if (shippingQuote.feeNGN === 0) return "Free";
+    return formatPrice(shippingQuote.feeNGN, currency, rates);
+  })();
 
   return (
     <div className="space-y-6">
@@ -78,9 +99,7 @@ const OrderSummary = () => {
         </div>
         <div className="flex items-center justify-between">
           <dt className="text-foreground/70">Shipping</dt>
-          <dd className="tabular-nums text-foreground">
-            {formatPrice(shippingNGN, currency, rates)}
-          </dd>
+          <dd className="tabular-nums text-foreground">{shippingDisplay}</dd>
         </div>
       </dl>
 

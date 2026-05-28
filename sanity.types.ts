@@ -15,6 +15,149 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type ShippingZoneGB = {
+  _type: "shippingZoneGB";
+  country?: string;
+  defaultFeeNGN?: number;
+};
+
+export type ShippingZoneCA = {
+  _type: "shippingZoneCA";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Alberta"
+      | "British Columbia"
+      | "Manitoba"
+      | "New Brunswick"
+      | "Newfoundland and Labrador"
+      | "Northwest Territories"
+      | "Nova Scotia"
+      | "Nunavut"
+      | "Ontario"
+      | "Prince Edward Island"
+      | "Quebec"
+      | "Saskatchewan"
+      | "Yukon";
+    feeNGN?: number;
+    _type: "shippingZoneCAOverride";
+    _key: string;
+  }>;
+};
+
+export type ShippingZoneUS = {
+  _type: "shippingZoneUS";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Alabama"
+      | "Alaska"
+      | "Arizona"
+      | "Arkansas"
+      | "California"
+      | "Colorado"
+      | "Connecticut"
+      | "Delaware"
+      | "District of Columbia"
+      | "Florida"
+      | "Georgia"
+      | "Hawaii"
+      | "Idaho"
+      | "Illinois"
+      | "Indiana"
+      | "Iowa"
+      | "Kansas"
+      | "Kentucky"
+      | "Louisiana"
+      | "Maine"
+      | "Maryland"
+      | "Massachusetts"
+      | "Michigan"
+      | "Minnesota"
+      | "Mississippi"
+      | "Missouri"
+      | "Montana"
+      | "Nebraska"
+      | "Nevada"
+      | "New Hampshire"
+      | "New Jersey"
+      | "New Mexico"
+      | "New York"
+      | "North Carolina"
+      | "North Dakota"
+      | "Ohio"
+      | "Oklahoma"
+      | "Oregon"
+      | "Pennsylvania"
+      | "Rhode Island"
+      | "South Carolina"
+      | "South Dakota"
+      | "Tennessee"
+      | "Texas"
+      | "Utah"
+      | "Vermont"
+      | "Virginia"
+      | "Washington"
+      | "West Virginia"
+      | "Wisconsin"
+      | "Wyoming";
+    feeNGN?: number;
+    _type: "shippingZoneUSOverride";
+    _key: string;
+  }>;
+};
+
+export type ShippingZoneNG = {
+  _type: "shippingZoneNG";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Abia"
+      | "Adamawa"
+      | "Akwa Ibom"
+      | "Anambra"
+      | "Bauchi"
+      | "Bayelsa"
+      | "Benue"
+      | "Borno"
+      | "Cross River"
+      | "Delta"
+      | "Ebonyi"
+      | "Edo"
+      | "Ekiti"
+      | "Enugu"
+      | "FCT - Abuja"
+      | "Gombe"
+      | "Imo"
+      | "Jigawa"
+      | "Kaduna"
+      | "Kano"
+      | "Katsina"
+      | "Kebbi"
+      | "Kogi"
+      | "Kwara"
+      | "Lagos"
+      | "Nasarawa"
+      | "Niger"
+      | "Ogun"
+      | "Ondo"
+      | "Osun"
+      | "Oyo"
+      | "Plateau"
+      | "Rivers"
+      | "Sokoto"
+      | "Taraba"
+      | "Yobe"
+      | "Zamfara";
+    feeNGN?: number;
+    _type: "shippingZoneNGOverride";
+    _key: string;
+  }>;
+};
+
 export type StoreSettings = {
   _id: string;
   _type: "storeSettings";
@@ -32,7 +175,20 @@ export type StoreSettings = {
     _key: string;
   }>;
   ratesUpdatedAt?: string;
-  orderNumberPrefix?: string;
+  shippingZones?: Array<
+    | ({
+        _key: string;
+      } & ShippingZoneNG)
+    | ({
+        _key: string;
+      } & ShippingZoneUS)
+    | ({
+        _key: string;
+      } & ShippingZoneCA)
+    | ({
+        _key: string;
+      } & ShippingZoneGB)
+  >;
   defaultDownloadExpiryDays?: number;
   defaultDownloadLimit?: number;
 };
@@ -80,14 +236,15 @@ export type Order = {
       crop?: SanityImageCrop;
       _type: "image";
     };
-    unitPriceNGN?: number;
+    unitPrice?: number;
     quantity?: number;
-    lineTotalNGN?: number;
+    lineTotal?: number;
     _type: "orderItem";
     _key: string;
   }>;
-  subtotalNGN?: number;
-  totalNGN?: number;
+  subtotal?: number;
+  shippingFee?: number;
+  total?: number;
   currency?: string;
   rateToNaira?: number;
   payment?: {
@@ -404,6 +561,10 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | ShippingZoneGB
+  | ShippingZoneCA
+  | ShippingZoneUS
+  | ShippingZoneNG
   | StoreSettings
   | ProductReference
   | SanityImageAssetReference
@@ -617,6 +778,49 @@ export type PRODUCT_BY_SLUG_QUERY_RESULT = {
 } | null;
 
 // Source: src/sanity/queries/index.ts
+// Variable: PRODUCTS_BY_IDS_FOR_CART_QUERY
+// Query: *[_type == "product" && _id in $ids]{      _id,      status,      "slug": slug.current,      title,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      "image": images[0]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      variants[]{        _key,        title,        priceNGN,        compareAtPriceNGN,        stock      }    }
+export type PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT = Array<{
+  _id: string;
+  status: "active" | "archived" | "draft" | null;
+  slug: string | null;
+  title: string | null;
+  type: "digital" | "physical" | null;
+  hasVariants: boolean | null;
+  priceNGN: number | null;
+  compareAtPriceNGN: number | null;
+  stock: number | null;
+  image:
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+        width: number | null;
+        height: number | null;
+        lqip: string | null;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+    | null;
+  variants: Array<{
+    _key: string;
+    title: string | null;
+    priceNGN: number | null;
+    compareAtPriceNGN: number | null;
+    stock: number | null;
+  }> | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
 // Variable: ACTIVE_CATEGORIES_QUERY
 // Query: *[_type == "category" && visibility == "active"]      | order(coalesce(displayOrder, 9999) asc, title asc) {      _id,      title,      "slug": slug.current    }
 export type ACTIVE_CATEGORIES_QUERY_RESULT = Array<{
@@ -634,12 +838,13 @@ export type ACTIVE_PRODUCT_SLUGS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries/index.ts
 // Variable: STORE_SETTINGS_QUERY
-// Query: *[_id == "storeSettings"][0]{      baseCurrency,      ratesToNGN[]{ code, rate },      ratesUpdatedAt    }
+// Query: *[_id == "storeSettings"][0]{      baseCurrency,      ratesToNGN[]{ code, rate },      ratesUpdatedAt,      shippingZones[]{        country,        defaultFeeNGN,        regionOverrides[]{ region, feeNGN }      }    }
 export type STORE_SETTINGS_QUERY_RESULT =
   | {
       baseCurrency: null;
       ratesToNGN: null;
       ratesUpdatedAt: null;
+      shippingZones: null;
     }
   | {
       baseCurrency: string | null;
@@ -657,6 +862,141 @@ export type STORE_SETTINGS_QUERY_RESULT =
         rate: number | null;
       }> | null;
       ratesUpdatedAt: string | null;
+      shippingZones: Array<
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Abia"
+                | "Adamawa"
+                | "Akwa Ibom"
+                | "Anambra"
+                | "Bauchi"
+                | "Bayelsa"
+                | "Benue"
+                | "Borno"
+                | "Cross River"
+                | "Delta"
+                | "Ebonyi"
+                | "Edo"
+                | "Ekiti"
+                | "Enugu"
+                | "FCT - Abuja"
+                | "Gombe"
+                | "Imo"
+                | "Jigawa"
+                | "Kaduna"
+                | "Kano"
+                | "Katsina"
+                | "Kebbi"
+                | "Kogi"
+                | "Kwara"
+                | "Lagos"
+                | "Nasarawa"
+                | "Niger"
+                | "Ogun"
+                | "Ondo"
+                | "Osun"
+                | "Oyo"
+                | "Plateau"
+                | "Rivers"
+                | "Sokoto"
+                | "Taraba"
+                | "Yobe"
+                | "Zamfara"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Alabama"
+                | "Alaska"
+                | "Arizona"
+                | "Arkansas"
+                | "California"
+                | "Colorado"
+                | "Connecticut"
+                | "Delaware"
+                | "District of Columbia"
+                | "Florida"
+                | "Georgia"
+                | "Hawaii"
+                | "Idaho"
+                | "Illinois"
+                | "Indiana"
+                | "Iowa"
+                | "Kansas"
+                | "Kentucky"
+                | "Louisiana"
+                | "Maine"
+                | "Maryland"
+                | "Massachusetts"
+                | "Michigan"
+                | "Minnesota"
+                | "Mississippi"
+                | "Missouri"
+                | "Montana"
+                | "Nebraska"
+                | "Nevada"
+                | "New Hampshire"
+                | "New Jersey"
+                | "New Mexico"
+                | "New York"
+                | "North Carolina"
+                | "North Dakota"
+                | "Ohio"
+                | "Oklahoma"
+                | "Oregon"
+                | "Pennsylvania"
+                | "Rhode Island"
+                | "South Carolina"
+                | "South Dakota"
+                | "Tennessee"
+                | "Texas"
+                | "Utah"
+                | "Vermont"
+                | "Virginia"
+                | "Washington"
+                | "West Virginia"
+                | "Wisconsin"
+                | "Wyoming"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Alberta"
+                | "British Columbia"
+                | "Manitoba"
+                | "New Brunswick"
+                | "Newfoundland and Labrador"
+                | "Northwest Territories"
+                | "Nova Scotia"
+                | "Nunavut"
+                | "Ontario"
+                | "Prince Edward Island"
+                | "Quebec"
+                | "Saskatchewan"
+                | "Yukon"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+      > | null;
     }
   | null;
 
@@ -671,8 +1011,9 @@ declare module "@sanity/client" {
     '\n    *[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ] | order(_createdAt desc) [$start...$end] {\n      _id,\n      title,\n      "slug": slug.current,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{ priceNGN, compareAtPriceNGN }\n    }\n  ': PRODUCT_LIST_QUERY_RESULT;
     '\n    count(*[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ])\n  ': PRODUCT_LIST_COUNT_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && slug.current == $slug][0]{\n      _id,\n      title,\n      "slug": slug.current,\n      shortDescription,\n      description,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      shipping,\n      specifications[]{ label, value },\n      "images": images[]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      "categories": categories[]->{ _id, title, "slug": slug.current },\n      options[]{ name, values },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCT_BY_SLUG_QUERY_RESULT;
+    '\n    *[_type == "product" && _id in $ids]{\n      _id,\n      status,\n      "slug": slug.current,\n      title,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{\n        _key,\n        title,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT;
     '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
-    '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
+    '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
   }
 }
