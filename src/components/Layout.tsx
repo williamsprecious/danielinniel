@@ -26,18 +26,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <BookingDialog />
 
       {/* Just so the footer can be fixed to the bottom */}
-      <div
-        className={cn(
-          "flex flex-col",
-          removeFooter
-            ? "min-h-screen"
-            : "min-h-[calc(100vh-140px)] md:min-h-[calc(100vh-100px)]",
-        )}
-      >
+      <div className="flex flex-col min-h-screen">
         <Header />
         <main
           className={cn(
-            "md:pt-0 mb-auto",
+            "md:pt-0 flex-1",
             pathname === "/" || pathname === "/about" ? "pt-0" : "pt-20",
           )}
         >

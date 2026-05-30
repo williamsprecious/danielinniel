@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import {
   SUPPORTED_SHIPPING_COUNTRY_CODES,
   getRegionLabel,
@@ -66,7 +67,10 @@ export const checkoutSchema = z
     city: z.string().min(1, "City is required"),
     state: z.string().optional(),
     postalCode: z.string().optional(),
-    phone: z.string().min(6, "Phone is required"),
+    phone: z
+      .string()
+      .min(1, "Phone is required")
+      .refine((v) => isValidPhoneNumber(v), "Enter a valid phone number"),
   })
   .superRefine((data, ctx) => {
     const label = getRegionLabel(data.country);

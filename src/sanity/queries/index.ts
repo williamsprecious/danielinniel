@@ -98,7 +98,6 @@ export const PRODUCT_BY_SLUG_QUERY = defineQuery(/* groq */ `
       _id,
       title,
       "slug": slug.current,
-      shortDescription,
       description,
       type,
       hasVariants,
@@ -168,6 +167,44 @@ export const STORE_SETTINGS_QUERY = defineQuery(`
         defaultFeeNGN,
         regionOverrides[]{ region, feeNGN }
       }
+    }
+  `);
+
+const orderAddressFields = /* groq */ `
+  firstName,
+  lastName,
+  line1,
+  line2,
+  city,
+  state,
+  postalCode,
+  country,
+  phone
+`;
+
+export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
+    *[_type == "order" && payment.reference == $reference][0]{
+      orderNumber,
+      status,
+      createdAt,
+      customer{ firstName, lastName, email, phone },
+      shippingAddress{ ${orderAddressFields} },
+      billingAddress{ ${orderAddressFields} },
+      items[]{
+        _key,
+        title,
+        variantTitle,
+        type,
+        quantity,
+        unitPrice,
+        lineTotal,
+        "image": image{ ${productImageFields} }
+      },
+      subtotal,
+      shippingFee,
+      total,
+      currency,
+      payment{ reference, paidAt }
     }
   `);
 

@@ -246,10 +246,9 @@ const reconcileLine = (
  * The client (cart store) replays these diffs onto the persisted cart
  * silently — no UI surface is shown to the customer.
  *
- * TODO(checkout-server-recalc): the future order-create server action MUST
- * call this same logic right before writing the order and refuse to proceed
- * if any line ends up "removed" or has a material price change the user
- * hasn't been shown — the client preview is not enough.
+ * Also reused server-side by `initializeCheckout` (src/actions/order.action.ts)
+ * right before payment: it refuses to proceed if any line ends up "removed",
+ * "qty-clamped", or has a material price change the customer hasn't been shown.
  */
 export async function revalidateCart(
   input: CartRevalidationInput,

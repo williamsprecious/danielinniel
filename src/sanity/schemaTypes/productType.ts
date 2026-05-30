@@ -19,13 +19,6 @@ export const productType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "shortDescription",
-      title: "Short Description",
-      type: "text",
-      rows: 2,
-      validation: (Rule) => Rule.max(220),
-    }),
-    defineField({
       name: "description",
       type: "array",
       of: [defineArrayMember({ type: "block" })],

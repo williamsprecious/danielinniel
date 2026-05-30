@@ -1,64 +1,33 @@
 import Link from "next/link";
+import { Image } from "next-sanity/image";
 import { CheckCircle2, MapPin, Package } from "lucide-react";
+import type { ORDER_BY_REFERENCE_QUERY_RESULT } from "../../../../../../sanity.types";
+import { urlFor } from "@/sanity/lib/image";
+import { formatPrice } from "@/lib/format-price";
 
-type OrderLine = {
-  id: string;
-  title: string;
-  variant?: string;
-  qty: number;
-  priceUsd: number;
-  type: "physical" | "digital";
-};
+export type OrderData = NonNullable<ORDER_BY_REFERENCE_QUERY_RESULT>;
 
-const DUMMY_LINES: OrderLine[] = [
-  {
-    id: "1",
-    title: "Fallout - Lucy",
-    variant: "Size: S",
-    qty: 1,
-    priceUsd: 14,
-    type: "physical",
-  },
-  {
-    id: "2",
-    title: "Fallout - Maximus",
-    variant: "Size: M",
-    qty: 2,
-    priceUsd: 14,
-    type: "physical",
-  },
-];
+// Orders are settled and stored in NGN — the currency switcher is display-only.
+const fmtNGN = (n: number) => formatPrice(n, "NGN", {});
 
-const SUBTOTAL_USD = DUMMY_LINES.reduce(
-  (sum, l) => sum + l.priceUsd * l.qty,
-  0,
-);
+const fmtDate = (iso?: string | null) =>
+  iso
+    ? new Date(iso).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
 
-const DUMMY_ORDER = {
-  number: "DI-2026-0001",
-  email: "you@example.com",
-  date: "May 27, 2026",
-  estimatedDelivery: "June 3 – 8, 2026",
-  // shippingFee is stored in the order's currency on the real schema. The
-  // DUMMY values here are illustrative; the real order detail page will read
-  // shippingFee from the order document once the order-create action lands.
-  shippingFee: 0,
-  shipping: {
-    name: "Williams Bolu",
-    line1: "12 Marina Road",
-    line2: "Apt 4B",
-    city: "Lagos",
-    state: "Lagos",
-    postal: "100001",
-    country: "Nigeria",
-  },
-};
+const OrderConfirmationView = ({ order }: { order: OrderData }) => {
+  const items = order.items ?? [];
+  const address = order.shippingAddress ?? order.billingAddress ?? null;
+  const addressLabel = order.shippingAddress ? "Shipping" : "Billing";
+  const subtotal = order.subtotal ?? 0;
+  const shippingFee = order.shippingFee ?? 0;
+  const total = order.total ?? 0;
+  const email = order.customer?.email ?? "";
 
-const TOTAL_USD = SUBTOTAL_USD + DUMMY_ORDER.shippingFee;
-
-const fmt = (usd: number) => `$${usd.toFixed(2)}`;
-
-const OrderConfirmationView = () => {
   return (
     <div className="mx-auto w-full max-w-[900px] px-6 py-10 lg:px-10 lg:py-14">
       <div className="mb-10 flex flex-col items-center gap-4 text-center">
@@ -70,13 +39,15 @@ const OrderConfirmationView = () => {
             Thank you for your order
           </h2>
           <p className="text-sm text-foreground/60">
-            Order <span className="text-foreground">{DUMMY_ORDER.number}</span>{" "}
-            · {DUMMY_ORDER.date}
+            Order <span className="text-foreground">{order.orderNumber}</span>
+            {order.createdAt ? <> · {fmtDate(order.createdAt)}</> : null}
           </p>
-          <p className="text-sm text-foreground/60">
-            A receipt has been sent to{" "}
-            <span className="text-foreground">{DUMMY_ORDER.email}</span>.
-          </p>
+          {email && (
+            <p className="text-sm text-foreground/60">
+              A receipt has been sent to{" "}
+              <span className="text-foreground">{email}</span>.
+            </p>
+          )}
         </div>
       </div>
 
@@ -91,29 +62,37 @@ const OrderConfirmationView = () => {
           </div>
 
           <ul className="space-y-4">
-            {DUMMY_LINES.map((line) => (
-              <li key={line.id} className="flex items-start gap-4">
-                <div
-                  className="size-14 shrink-0 rounded-md bg-foreground/[0.06]"
-                  aria-hidden
-                />
+            {items.map((line) => (
+              <li key={line._key} className="flex items-start gap-4">
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-foreground/[0.06]">
+                  {line.image && (
+                    <Image
+                      src={urlFor(line.image).width(112).url()}
+                      alt={line.title ?? "Item"}
+                      width={56}
+                      height={56}
+                      sizes="56px"
+                      className="absolute inset-0 size-full object-cover"
+                    />
+                  )}
+                </div>
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <span className="truncate text-sm text-foreground">
                     {line.title}
                   </span>
-                  {line.variant && (
+                  {line.variantTitle && (
                     <span className="text-xs text-foreground/55">
-                      {line.variant}
+                      {line.variantTitle}
                     </span>
                   )}
                   {line.type !== "digital" && (
                     <span className="text-xs text-foreground/55">
-                      Qty {line.qty}
+                      Qty {line.quantity}
                     </span>
                   )}
                 </div>
                 <span className="text-sm tabular-nums text-foreground">
-                  {fmt(line.priceUsd * line.qty)}
+                  {fmtNGN(line.lineTotal ?? 0)}
                 </span>
               </li>
             ))}
@@ -125,15 +104,13 @@ const OrderConfirmationView = () => {
             <div className="flex items-center justify-between">
               <dt className="text-foreground/70">Subtotal</dt>
               <dd className="tabular-nums text-foreground">
-                {fmt(SUBTOTAL_USD)}
+                {fmtNGN(subtotal)}
               </dd>
             </div>
             <div className="flex items-center justify-between">
               <dt className="text-foreground/70">Shipping</dt>
               <dd className="tabular-nums text-foreground">
-                {DUMMY_ORDER.shippingFee === 0
-                  ? "Free"
-                  : fmt(DUMMY_ORDER.shippingFee)}
+                {shippingFee === 0 ? "Free" : fmtNGN(shippingFee)}
               </dd>
             </div>
           </dl>
@@ -143,44 +120,36 @@ const OrderConfirmationView = () => {
           <div className="flex items-center justify-between">
             <span className="text-base text-foreground">Total</span>
             <span className="text-base tabular-nums text-foreground">
-              {fmt(TOTAL_USD)}
+              {fmtNGN(total)}
             </span>
           </div>
         </section>
 
-        <section
-          aria-label="Shipping details"
-          className="space-y-6 rounded-2xl border border-border/30 bg-foreground/[0.03] p-6 md:p-8"
-        >
-          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-foreground/60">
-            <MapPin size={14} />
-            Shipping
-          </div>
-
-          <address className="text-sm leading-relaxed text-foreground/80 not-italic">
-            <div className="text-foreground">{DUMMY_ORDER.shipping.name}</div>
-            <div>{DUMMY_ORDER.shipping.line1}</div>
-            {DUMMY_ORDER.shipping.line2 && (
-              <div>{DUMMY_ORDER.shipping.line2}</div>
-            )}
-            <div>
-              {DUMMY_ORDER.shipping.city}, {DUMMY_ORDER.shipping.state}{" "}
-              {DUMMY_ORDER.shipping.postal}
+        {address && (
+          <section
+            aria-label={`${addressLabel} details`}
+            className="space-y-6 rounded-2xl border border-border/30 bg-foreground/[0.03] p-6 md:p-8"
+          >
+            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-foreground/60">
+              <MapPin size={14} />
+              {addressLabel}
             </div>
-            <div>{DUMMY_ORDER.shipping.country}</div>
-          </address>
 
-          <div className="h-px w-full bg-border/30" />
-
-          <div className="space-y-1.5">
-            <p className="text-xs uppercase tracking-[0.18em] text-foreground/60">
-              Estimated Delivery
-            </p>
-            <p className="text-sm text-foreground">
-              {DUMMY_ORDER.estimatedDelivery}
-            </p>
-          </div>
-        </section>
+            <address className="text-sm leading-relaxed text-foreground/80 not-italic">
+              <div className="text-foreground">
+                {address.firstName} {address.lastName}
+              </div>
+              <div>{address.line1}</div>
+              {address.line2 && <div>{address.line2}</div>}
+              <div>
+                {[address.city, address.state, address.postalCode]
+                  .filter(Boolean)
+                  .join(", ")}
+              </div>
+              <div>{address.country}</div>
+            </address>
+          </section>
+        )}
       </div>
 
       <div className="mt-10 flex justify-center">

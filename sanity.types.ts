@@ -316,7 +316,6 @@ export type Product = {
   _rev: string;
   title?: string;
   slug?: Slug;
-  shortDescription?: string;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -703,12 +702,11 @@ export type PRODUCT_LIST_COUNT_QUERY_RESULT = number;
 
 // Source: src/sanity/queries/index.ts
 // Variable: PRODUCT_BY_SLUG_QUERY
-// Query: *[_type == "product" && status == "active" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      shortDescription,      description,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      shipping,      specifications[]{ label, value },      "images": images[]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      "categories": categories[]->{ _id, title, "slug": slug.current },      options[]{ name, values },      variants[]{        _key,        title,        optionValues,        priceNGN,        compareAtPriceNGN,        stock      }    }
+// Query: *[_type == "product" && status == "active" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      description,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      shipping,      specifications[]{ label, value },      "images": images[]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      "categories": categories[]->{ _id, title, "slug": slug.current },      options[]{ name, values },      variants[]{        _key,        title,        optionValues,        priceNGN,        compareAtPriceNGN,        stock      }    }
 export type PRODUCT_BY_SLUG_QUERY_RESULT = {
   _id: string;
   title: string | null;
   slug: string | null;
-  shortDescription: string | null;
   description: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -1000,6 +998,85 @@ export type STORE_SETTINGS_QUERY_RESULT =
     }
   | null;
 
+// Source: src/sanity/queries/index.ts
+// Variable: ORDER_BY_REFERENCE_QUERY
+// Query: *[_type == "order" && payment.reference == $reference][0]{      orderNumber,      status,      createdAt,      customer{ firstName, lastName, email, phone },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      items[]{        _key,        title,        variantTitle,        type,        quantity,        unitPrice,        lineTotal,        "image": image{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } }      },      subtotal,      shippingFee,      total,      currency,      payment{ reference, paidAt }    }
+export type ORDER_BY_REFERENCE_QUERY_RESULT = {
+  orderNumber: string | null;
+  status:
+    | "cancelled"
+    | "confirmed"
+    | "delivered"
+    | "processing"
+    | "refunded"
+    | null;
+  createdAt: string | null;
+  customer: {
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+    phone: string | null;
+  } | null;
+  shippingAddress: {
+    firstName: string | null;
+    lastName: string | null;
+    line1: string | null;
+    line2: string | null;
+    city: string | null;
+    state: string | null;
+    postalCode: string | null;
+    country: string | null;
+    phone: string | null;
+  } | null;
+  billingAddress: {
+    firstName: string | null;
+    lastName: string | null;
+    line1: string | null;
+    line2: string | null;
+    city: string | null;
+    state: string | null;
+    postalCode: string | null;
+    country: string | null;
+    phone: string | null;
+  } | null;
+  items: Array<{
+    _key: string;
+    title: string | null;
+    variantTitle: string | null;
+    type: "digital" | "physical" | null;
+    quantity: number | null;
+    unitPrice: number | null;
+    lineTotal: number | null;
+    image:
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+          width: number | null;
+          height: number | null;
+          lqip: string | null;
+        }
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        }
+      | null;
+  }> | null;
+  subtotal: number | null;
+  shippingFee: number | null;
+  total: number | null;
+  currency: string | null;
+  payment: {
+    reference: string | null;
+    paidAt: string | null;
+  } | null;
+} | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -1010,10 +1087,11 @@ declare module "@sanity/client" {
     '\n    *[_type == "category" && slug.current == $slug][0]._id\n  ': CATEGORY_ID_BY_SLUG_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ] | order(_createdAt desc) [$start...$end] {\n      _id,\n      title,\n      "slug": slug.current,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{ priceNGN, compareAtPriceNGN }\n    }\n  ': PRODUCT_LIST_QUERY_RESULT;
     '\n    count(*[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ])\n  ': PRODUCT_LIST_COUNT_QUERY_RESULT;
-    '\n    *[_type == "product" && status == "active" && slug.current == $slug][0]{\n      _id,\n      title,\n      "slug": slug.current,\n      shortDescription,\n      description,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      shipping,\n      specifications[]{ label, value },\n      "images": images[]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      "categories": categories[]->{ _id, title, "slug": slug.current },\n      options[]{ name, values },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCT_BY_SLUG_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active" && slug.current == $slug][0]{\n      _id,\n      title,\n      "slug": slug.current,\n      description,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      shipping,\n      specifications[]{ label, value },\n      "images": images[]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      "categories": categories[]->{ _id, title, "slug": slug.current },\n      options[]{ name, values },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCT_BY_SLUG_QUERY_RESULT;
     '\n    *[_type == "product" && _id in $ids]{\n      _id,\n      status,\n      "slug": slug.current,\n      title,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{\n        _key,\n        title,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT;
     '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
     '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
+    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      orderNumber,\n      status,\n      createdAt,\n      customer{ firstName, lastName, email, phone },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        unitPrice,\n        lineTotal,\n        "image": image{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n }\n      },\n      subtotal,\n      shippingFee,\n      total,\n      currency,\n      payment{ reference, paidAt }\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
   }
 }

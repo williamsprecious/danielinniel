@@ -17,6 +17,7 @@ import {
 } from "@/store/cart-store";
 import { useHydratedCurrency, useCurrencyStore } from "@/store/currency-store";
 import type { CheckoutFormValues } from "@/schema";
+import { initializeCheckout } from "@/actions/order.action";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format-price";
 import type { CountryShippingConfig } from "@/lib/shipping/types";
@@ -71,35 +72,42 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
     );
   }, [shippingZones, destination.country, destination.state]);
 
-  const shippingFeeNGN = shippingQuote?.ok ? shippingQuote.feeNGN : 0;
+  const isDigitalOnly = useMemo(
+    () => lines.length > 0 && lines.every((l) => l.type === "digital"),
+    [lines],
+  );
+
+  const shippingFeeNGN = isDigitalOnly
+    ? 0
+    : shippingQuote?.ok
+      ? shippingQuote.feeNGN
+      : 0;
   const totalNGN = subtotalNGN + shippingFeeNGN;
 
-  const handleValid = (values: CheckoutFormValues) => {
+  const handleValid = async (values: CheckoutFormValues) => {
     setIsSubmitting(true);
-    // TODO(shipping-server-recalc): the upcoming order-create server action
-    // must call lookupShippingFee(zones, values.country, values.state) on the
-    // server using a fresh storeSettings read, reject with a user-friendly
-    // error when ok=false, and snapshot the resulting fee onto the order.
-    // The client-computed preview is for UX only and must not be trusted.
+    setStatusMessage(null);
+    try {
+      const result = await initializeCheckout({
+        values,
+        lines,
+        displayCurrency: currency,
+      });
 
-    // TODO(cart-server-recalc): the same action must also call revalidateCart
-    // server-side just before writing the order. Refuse to proceed if any
-    // line ends up "removed" or has a material price change the customer
-    // hasn't been shown — the client preview is not enough.
+      if (result.ok) {
+        window.location.href = result.authorizationUrl;
+        return;
+      }
 
-    // Validates the cart products serverside also, its avalability, variation avalability, quantity, stock etc
-
-    console.log("Checkout payload", {
-      values,
-      lines,
-      subtotalNGN,
-      shippingFeeNGN,
-      totalNGN,
-      currency,
-    });
-    setStatusMessage(
-      "Checkout coming soon — order processing lands in the next release.",
-    );
+      // The server rejected the cart as stale — re-sync so the customer sees the corrected prices/availability before they retry.
+      if (result.reason === "cart-changed") {
+        void revalidate();
+      }
+      setStatusMessage(result.message);
+    } catch (error) {
+      console.error("Checkout failed", error);
+      setStatusMessage("Something went wrong. Please try again.");
+    }
     setIsSubmitting(false);
   };
 
@@ -169,6 +177,7 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                       onValid={handleValid}
                       availableCountries={availableCountries}
                       onDestinationChange={setDestination}
+                      isDigitalOnly={isDigitalOnly}
                     />
                   </section>
                   <ShippingMethodCard shippingQuote={shippingQuote} />

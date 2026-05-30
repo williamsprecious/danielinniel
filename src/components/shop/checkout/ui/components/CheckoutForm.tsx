@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useMemo } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import ShippingCountryCombobox, {
   type ShippingCountryOption,
 } from "@/components/shop/checkout/ui/components/ShippingCountryCombobox";
 import ShippingRegionCombobox from "@/components/shop/checkout/ui/components/ShippingRegionCombobox";
+import PhoneInput from "@/components/shop/checkout/ui/components/PhoneInput";
 import { checkoutSchema, type CheckoutFormValues } from "@/schema";
 import { getRegionLabel } from "@/lib/shipping/supported-countries";
 import { getRegionsForCountry } from "@/lib/shipping/regions";
@@ -28,6 +29,8 @@ type CheckoutFormProps = {
   onValid: (values: CheckoutFormValues) => void;
   availableCountries: ReadonlyArray<ShippingCountryOption>;
   onDestinationChange?: (destination: { country: string; state: string }) => void;
+  /** Digital-only carts ship nothing — the address is collected for billing. */
+  isDigitalOnly?: boolean;
 };
 
 const CheckoutForm = ({
@@ -35,6 +38,7 @@ const CheckoutForm = ({
   onValid,
   availableCountries,
   onDestinationChange,
+  isDigitalOnly = false,
 }: CheckoutFormProps) => {
   const defaultCountry = availableCountries[0]?.code ?? "";
 
@@ -88,6 +92,17 @@ const CheckoutForm = ({
     }
   }, [regionLabel, form]);
 
+  // Switching the address country resets the phone number (the PhoneInput is
+  // re-keyed on the same country, re-defaulting its flag to the new country).
+  const phoneResetGuard = useRef(false);
+  useEffect(() => {
+    if (!phoneResetGuard.current) {
+      phoneResetGuard.current = true;
+      return;
+    }
+    form.setValue("phone", "", { shouldValidate: false });
+  }, [watchedCountry, form]);
+
   if (availableCountries.length === 0) {
     return (
       <div
@@ -131,10 +146,10 @@ const CheckoutForm = ({
           />
         </fieldset>
 
-        {/* SHIPPING ADDRESS */}
+        {/* SHIPPING / BILLING ADDRESS */}
         <fieldset className="space-y-5">
           <legend className="mb-5 text-xs uppercase tracking-[0.18em] text-foreground/60">
-            Shipping Address
+            {isDigitalOnly ? "Billing Address" : "Shipping Address"}
           </legend>
 
           <FormField
@@ -285,15 +300,17 @@ const CheckoutForm = ({
           <FormField
             control={form.control}
             name="phone"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    type="tel"
-                    placeholder="Phone"
-                    aria-label="Phone"
-                    autoComplete="tel"
-                    {...field}
+                  {/* Re-keyed on the address country so switching it resets the
+                      number and re-defaults the flag to the new country. */}
+                  <PhoneInput
+                    key={watchedCountry}
+                    onChange={field.onChange}
+                    countries={availableCountries}
+                    country={watchedCountry}
+                    hasError={!!fieldState.error}
                   />
                 </FormControl>
               </FormItem>

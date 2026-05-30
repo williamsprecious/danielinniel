@@ -24,7 +24,6 @@ export const generateMetadata = async ({
 
   return {
     title: product.title,
-    description: product.shortDescription,
   };
 };
 

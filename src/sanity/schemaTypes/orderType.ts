@@ -62,11 +62,13 @@ export const orderType = defineType({
       name: "shippingAddress",
       title: "Shipping Address",
       type: "address",
+      readOnly: true,
     }),
     defineField({
       name: "billingAddress",
       title: "Billing Address",
       type: "address",
+      readOnly: true,
     }),
 
     // ── Items ────────────────────────────────────────────────

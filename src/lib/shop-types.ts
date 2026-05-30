@@ -44,7 +44,6 @@ export type ProductDetail = {
   slug: string;
   title: string;
   type: "physical" | "digital";
-  shortDescription?: string;
   description?: PortableTextBlock[];
   images: ShopImage[];
   hasVariants: boolean;

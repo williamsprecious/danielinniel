@@ -162,7 +162,6 @@ const normalizeDetail = (raw: RawDetail): ProductDetail | null => {
     slug: raw.slug,
     title: raw.title,
     type: raw.type,
-    shortDescription: raw.shortDescription ?? undefined,
     description: (raw.description ?? undefined) as
       | PortableTextBlock[]
       | undefined,
