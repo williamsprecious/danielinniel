@@ -21,6 +21,8 @@ const fmtDate = (iso?: string | null) =>
 
 const OrderConfirmationView = ({ order }: { order: OrderData }) => {
   const items = order.items ?? [];
+  const isDigitalOnly =
+    items.length > 0 && items.every((line) => line.type === "digital");
   const address = order.shippingAddress ?? order.billingAddress ?? null;
   const addressLabel = order.shippingAddress ? "Shipping" : "Billing";
   const subtotal = order.subtotal ?? 0;
@@ -107,12 +109,14 @@ const OrderConfirmationView = ({ order }: { order: OrderData }) => {
                 {fmtNGN(subtotal)}
               </dd>
             </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-foreground/70">Shipping</dt>
-              <dd className="tabular-nums text-foreground">
-                {shippingFee === 0 ? "Free" : fmtNGN(shippingFee)}
-              </dd>
-            </div>
+            {!isDigitalOnly && (
+              <div className="flex items-center justify-between">
+                <dt className="text-foreground/70">Shipping</dt>
+                <dd className="tabular-nums text-foreground">
+                  {shippingFee === 0 ? "Free" : fmtNGN(shippingFee)}
+                </dd>
+              </div>
+            )}
           </dl>
 
           <div className="h-px w-full bg-border/30" />

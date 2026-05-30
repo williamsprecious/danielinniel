@@ -160,7 +160,10 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                         {statusMessage}
                       </div>
                     )}
-                    <OrderSummary shippingQuote={shippingQuote} />
+                    <OrderSummary
+                      shippingQuote={shippingQuote}
+                      isDigitalOnly={isDigitalOnly}
+                    />
                   </div>
                 )}
               </div>
@@ -180,7 +183,9 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                       isDigitalOnly={isDigitalOnly}
                     />
                   </section>
-                  <ShippingMethodCard shippingQuote={shippingQuote} />
+                  {!isDigitalOnly && (
+                    <ShippingMethodCard shippingQuote={shippingQuote} />
+                  )}
                   <PaymentMethodCard />
                 </div>
                 <aside
@@ -195,7 +200,10 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                       {statusMessage}
                     </div>
                   )}
-                  <OrderSummary shippingQuote={shippingQuote} />
+                  <OrderSummary
+                    shippingQuote={shippingQuote}
+                    isDigitalOnly={isDigitalOnly}
+                  />
                   <button
                     type="button"
                     onClick={handlePlaceOrder}

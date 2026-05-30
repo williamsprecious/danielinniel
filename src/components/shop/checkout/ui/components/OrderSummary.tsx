@@ -12,6 +12,8 @@ import type { ShippingQuote } from "@/lib/shipping/types";
 
 type OrderSummaryProps = {
   shippingQuote: ShippingQuote | null;
+  /** Digital-only carts ship nothing — the Shipping row is hidden entirely. */
+  isDigitalOnly?: boolean;
 };
 
 // TODO(shipping-server-recalc): the value rendered here is the optimistic
@@ -19,13 +21,17 @@ type OrderSummaryProps = {
 // from the saved address using lookupShippingFee and that result is the
 // source of truth on the order document.
 
-const OrderSummary = ({ shippingQuote }: OrderSummaryProps) => {
+const OrderSummary = ({
+  shippingQuote,
+  isDigitalOnly = false,
+}: OrderSummaryProps) => {
   const lines = useHydratedCart();
   const subtotalNGN = useHydratedSubtotalNGN();
   const currency = useHydratedCurrency();
   const rates = useCurrencyStore((s) => s.rates);
 
-  const shippingFeeNGN = shippingQuote?.ok ? shippingQuote.feeNGN : 0;
+  const shippingFeeNGN =
+    isDigitalOnly || !shippingQuote?.ok ? 0 : shippingQuote.feeNGN;
   const totalNGN = subtotalNGN + shippingFeeNGN;
 
   const shippingDisplay = (() => {
@@ -97,10 +103,12 @@ const OrderSummary = ({ shippingQuote }: OrderSummaryProps) => {
             {formatPrice(subtotalNGN, currency, rates)}
           </dd>
         </div>
-        <div className="flex items-center justify-between">
-          <dt className="text-foreground/70">Shipping</dt>
-          <dd className="tabular-nums text-foreground">{shippingDisplay}</dd>
-        </div>
+        {!isDigitalOnly && (
+          <div className="flex items-center justify-between">
+            <dt className="text-foreground/70">Shipping</dt>
+            <dd className="tabular-nums text-foreground">{shippingDisplay}</dd>
+          </div>
+        )}
       </dl>
 
       <div className="h-px w-full bg-border/30" />
