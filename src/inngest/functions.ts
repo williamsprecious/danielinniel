@@ -6,6 +6,12 @@ import {
   type PaystackOrderLine,
   type PaystackOrderMetadata,
 } from "@/lib/paystack";
+import {
+  sendAdminOrderEmail,
+  sendDigitalDeliveryEmail,
+  sendOrderConfirmationEmail,
+} from "@/lib/email";
+import type { EmailAddress, EmailOrder } from "@/emails/types";
 
 const CURRENCYAPI_BASE =
   "https://api.currencyapi.com/v3/latest?base_currency=NGN";
@@ -163,6 +169,49 @@ const buildOrderItem = (line: PaystackOrderLine, index: number) => ({
   lineTotal: line.unitPriceNGN * line.qty,
 });
 
+const buildEmailAddress = (
+  address: PaystackOrderMetadata["address"],
+): EmailAddress => ({
+  firstName: address.firstName,
+  lastName: address.lastName,
+  line1: address.line1,
+  line2: cleanStr(address.line2) ?? null,
+  city: address.city,
+  state: cleanStr(address.state) ?? null,
+  postalCode: cleanStr(address.postalCode) ?? null,
+  country: address.countryName,
+  phone: address.phone,
+});
+
+/** Map the verified Paystack metadata into the shape the email templates accept. */
+const buildEmailOrder = (
+  metadata: PaystackOrderMetadata,
+  reference: string,
+  paidAt: string | null,
+): EmailOrder => ({
+  orderNumber: metadata.orderNumber,
+  customer: { ...metadata.customer },
+  items: metadata.lines.map((line) => ({
+    title: line.title,
+    variantTitle: line.variantTitle,
+    type: line.type,
+    qty: line.qty,
+    unitPriceNGN: line.unitPriceNGN,
+    lineTotalNGN: line.unitPriceNGN * line.qty,
+    imageAssetRef: line.imageAssetRef,
+  })),
+  subtotalNGN: metadata.subtotalNGN,
+  shippingFeeNGN: metadata.shippingFeeNGN,
+  totalNGN: metadata.totalNGN,
+  isDigitalOnly: metadata.isDigitalOnly,
+  shippingAddress: metadata.isDigitalOnly
+    ? null
+    : buildEmailAddress(metadata.address),
+  reference,
+  paidAt,
+  displayCurrency: metadata.displayCurrency,
+});
+
 /**
  * Processes a successful Paystack payment into a real order. Triggered by the
  * webhook via the `order/payment.succeeded` event.
@@ -218,20 +267,20 @@ export const processPaidOrder = inngest.createFunction(
       return { reference, created: false };
     }
 
+    // Deterministic figures shared by the order document and the emails below.
+    const amountChargedNGN = verified.amountKobo / 100;
+    const amountMismatch = amountChargedNGN !== metadata.totalNGN;
+    const adminNotes = [
+      `Display currency at checkout: ${metadata.displayCurrency}.`,
+      amountMismatch
+        ? `⚠️ Charged NGN ${amountChargedNGN} differs from computed total NGN ${metadata.totalNGN}.`
+        : null,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
     // 3. Create the order document. All amounts are NGN (settlement currency).
     await step.run("create-order", async () => {
-      const amountChargedNGN = verified.amountKobo / 100;
-      const amountMismatch = amountChargedNGN !== metadata.totalNGN;
-
-      const adminNotes = [
-        `Display currency at checkout: ${metadata.displayCurrency}.`,
-        amountMismatch
-          ? `⚠️ Charged NGN ${amountChargedNGN} differs from computed total NGN ${metadata.totalNGN}.`
-          : null,
-      ]
-        .filter(Boolean)
-        .join(" ");
-
       const address = buildAddress(metadata.address);
 
       await backendClient.createIfNotExists({
@@ -282,10 +331,61 @@ export const processPaidOrder = inngest.createFunction(
       return { decremented: physicalLines.length };
     });
 
-    // TODO(order-email): send the order confirmation email here (reuse
-    // src/lib/ses + a new order template).
-    // TODO(digital-delivery): for digital lines, email the file / a signed
-    // download link to metadata.customer.email.
+    const emailOrder = buildEmailOrder(metadata, reference, verified.paidAt);
+
+    // 5. Resolve download links for any digital lines (public Sanity CDN URLs).
+    const downloads = await step.run("load-digital-files", async () => {
+      const digitalLines = metadata.lines.filter((l) => l.type === "digital");
+      if (digitalLines.length === 0) return [];
+
+      const ids = Array.from(
+        new Set(digitalLines.map((l) => l.productId).filter(Boolean)),
+      );
+      const files = await backendClient.fetch<
+        Array<{ _id: string; url: string | null }>
+      >(`*[_type == "product" && _id in $ids]{ _id, "url": digitalFile.asset->url }`, {
+        ids,
+      });
+      const urlById = new Map(files.map((f) => [f._id, f.url]));
+
+      return digitalLines.map((l) => ({
+        title: l.title,
+        url: urlById.get(l.productId) ?? null,
+      }));
+    });
+
+    const validDownloads = downloads.filter(
+      (d): d is { title: string; url: string } => Boolean(d.url),
+    );
+    if (validDownloads.length < downloads.length) {
+      logger.warn("Some digital lines have no downloadable file", {
+        reference,
+        missing: downloads.length - validDownloads.length,
+      });
+    }
+
+    // 6. Customer confirmation. Digital-only orders include downloads inline.
+    await step.run("send-customer-email", () =>
+      sendOrderConfirmationEmail({
+        order: emailOrder,
+        downloads: metadata.isDigitalOnly ? validDownloads : undefined,
+      }),
+    );
+
+    // 7. Mixed carts (physical + digital): deliver files in a separate email.
+    if (!metadata.isDigitalOnly && validDownloads.length > 0) {
+      await step.run("send-digital-delivery", () =>
+        sendDigitalDeliveryEmail({
+          order: emailOrder,
+          downloads: validDownloads,
+        }),
+      );
+    }
+
+    // 8. Internal order notification to the store inbox.
+    await step.run("send-admin-email", () =>
+      sendAdminOrderEmail({ order: emailOrder }),
+    );
 
     logger.info("Order created", {
       reference,

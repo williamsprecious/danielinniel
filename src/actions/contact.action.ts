@@ -3,14 +3,8 @@
 import { z } from "zod";
 import { request as arcjetRequest, slidingWindow } from "@arcjet/next";
 import { aj } from "@/lib/arcjet";
-import { sendEmail } from "@/lib/ses";
+import { sendContactFormEmail, sendProjectInquiryEmail } from "@/lib/email";
 import { contactSchema, projectSchema } from "@/schema";
-import {
-  generatePlainTextContactEmail,
-  generatePlainTextProjectEmail,
-  getContactEmailTemplate,
-  getProjectEmailTemplate,
-} from "@/lib/ses/contact.template";
 
 export type FormEmailActionState = {
   success: boolean;
@@ -64,19 +58,7 @@ export async function sendProjectEmail(
     };
   }
 
-  const data = parsed.data;
-  const recipientEmail = process.env.CONTACT_EMAIL!;
-
-  await sendEmail({
-    from: "Danielinniel <no-reply@danielinniel.com>",
-    to: recipientEmail,
-    replyTo: data.email,
-    subject: `New Project Inquiry from ${data.name} - ${
-      data.category === "cover-art" ? "Cover Art" : "Concept & Design"
-    }`,
-    html: getProjectEmailTemplate(data),
-    text: generatePlainTextProjectEmail(data),
-  });
+  await sendProjectInquiryEmail(parsed.data);
 
   return {
     success: true,
@@ -99,17 +81,7 @@ export async function sendContactEmail(
     };
   }
 
-  const data = parsed.data;
-  const recipientEmail = process.env.CONTACT_EMAIL!;
-
-  await sendEmail({
-    from: "Danielinniel <no-reply@danielinniel.com>",
-    to: recipientEmail,
-    replyTo: data.email,
-    subject: `New Contact Message from ${data.name}`,
-    html: getContactEmailTemplate(data),
-    text: generatePlainTextContactEmail(data),
-  });
+  await sendContactFormEmail(parsed.data);
 
   return {
     success: true,

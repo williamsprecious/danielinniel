@@ -175,21 +175,6 @@ export const storeSettingsType = defineType({
         }),
     }),
 
-    // ── Digital delivery defaults ────────────────────────────
-    defineField({
-      name: "defaultDownloadExpiryDays",
-      title: "Default Download Expiry (days)",
-      type: "number",
-      initialValue: 30,
-      validation: (Rule) => Rule.required().integer().min(1),
-    }),
-    defineField({
-      name: "defaultDownloadLimit",
-      title: "Default Download Limit",
-      type: "number",
-      initialValue: 5,
-      validation: (Rule) => Rule.required().integer().min(1),
-    }),
   ],
   preview: {
     prepare: () => ({
