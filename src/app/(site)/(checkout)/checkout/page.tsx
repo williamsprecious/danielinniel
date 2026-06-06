@@ -26,9 +26,9 @@ export default async function CheckoutPage() {
     shippingZones.push({
       country: z.country,
       defaultFeeNGN: z.defaultFeeNGN,
-      regionOverrides:
-        regionOverrides.length > 0 ? regionOverrides : undefined,
+      regionOverrides: regionOverrides.length > 0 ? regionOverrides : undefined,
     });
   }
+
   return <CheckoutView shippingZones={shippingZones} />;
 }

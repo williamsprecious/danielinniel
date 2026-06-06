@@ -26,7 +26,7 @@ const ShippingMethodCard = ({ shippingQuote }: ShippingMethodCardProps) => {
   return (
     <section
       aria-label="Shipping method"
-      className="space-y-5 rounded-2xl border border-border/30 bg-foreground/[0.03] p-6 md:p-8"
+      className="space-y-5 rounded-2xl border border-border/30 bg-foreground/[0.03] px-4 py-6 md:p-8"
     >
       <h2 className="text-xs uppercase tracking-[0.18em] text-foreground/60">
         Shipping Method

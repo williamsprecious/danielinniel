@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { ProductListItem } from "@/lib/shop-types";
 
 export type CategoryFilterOption = {
   _id: string;
@@ -14,6 +15,7 @@ type CategoryFilterProps = {
   value: string | null;
   onChange: (slug: string | null) => void;
   className?: string;
+  items: ProductListItem[];
 };
 
 const CategoryFilter = ({
@@ -21,6 +23,7 @@ const CategoryFilter = ({
   value,
   onChange,
   className,
+  items,
 }: CategoryFilterProps) => {
   if (options.length === 0) return null;
 
@@ -32,7 +35,8 @@ const CategoryFilter = ({
       aria-label="Filter products by category"
       role="tablist"
       className={cn(
-        "border-b border-border/60 pt-8 pb-12 flex w-full flex-wrap justify-center gap-x-2 gap-y-3 md:pt-8 md:pb-16 2xl:pb-20 2xl:pt-10",
+        "pt-8 pb-12 flex w-full flex-wrap justify-center gap-x-2 gap-y-3 md:pt-8 md:pb-16 2xl:pb-20 2xl:pt-10",
+        items.length && "border-b border-border/60",
         className,
       )}
     >

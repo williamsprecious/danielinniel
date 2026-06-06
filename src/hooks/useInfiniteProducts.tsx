@@ -2,10 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { loadMoreProducts } from "@/actions/product.action";
-import type {
-  ProductListItem,
-  ProductListResult,
-} from "@/lib/shop-types";
+import type { ProductListItem, ProductListResult } from "@/lib/shop-types";
 
 interface UseInfiniteProductsProps {
   categorySlug: string | null;
@@ -31,9 +28,7 @@ export const useInfiniteProducts = ({
   initialCategorySlug = null,
   limit = 12,
 }: UseInfiniteProductsProps): UseInfiniteProductsReturn => {
-  const [items, setItems] = useState<ProductListItem[]>(
-    initialProducts.items,
-  );
+  const [items, setItems] = useState<ProductListItem[]>(initialProducts.items);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(initialProducts.hasMore);

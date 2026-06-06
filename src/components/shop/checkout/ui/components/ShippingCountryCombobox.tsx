@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +98,7 @@ const ShippingCountryCombobox = ({
         aria-disabled={disabled || undefined}
         disabled={disabled}
         className={cn(
-          "flex h-16 w-full cursor-pointer items-center justify-between rounded-md border border-transparent bg-[#131313] p-5 text-left text-lg text-foreground/80 transition-colors",
+          "flex h-16 w-full cursor-pointer items-center justify-between rounded-md border border-transparent bg-[#131313] p-5 text-left text-sm text-foreground/80 transition-colors md:text-lg",
           !selectedName && "text-muted-foreground/60 font-medium",
           hasError && "border-destructive/90",
           disabled && "cursor-not-allowed opacity-60",
@@ -148,9 +155,7 @@ const ShippingCountryCombobox = ({
                       )}
                     >
                       <span>{country.name}</span>
-                      {selected && (
-                        <Check size={14} className="text-primary" />
-                      )}
+                      {selected && <Check size={14} className="text-primary" />}
                     </button>
                   </li>
                 );

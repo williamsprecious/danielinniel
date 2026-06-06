@@ -1,10 +1,7 @@
 "use client";
 
 import { Image } from "next-sanity/image";
-import {
-  useHydratedCart,
-  useHydratedSubtotalNGN,
-} from "@/store/cart-store";
+import { useHydratedCart, useHydratedSubtotalNGN } from "@/store/cart-store";
 import { useCurrencyStore, useHydratedCurrency } from "@/store/currency-store";
 import { formatPrice } from "@/lib/format-price";
 import { urlFor } from "@/sanity/lib/image";
@@ -47,7 +44,7 @@ const OrderSummary = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xs uppercase tracking-[0.18em] text-foreground/60">
+      <h2 className="hidden text-xs uppercase tracking-[0.18em] text-foreground/60 lg:block">
         Order Summary
       </h2>
 

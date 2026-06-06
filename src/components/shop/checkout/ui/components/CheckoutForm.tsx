@@ -4,12 +4,7 @@ import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import ShippingCountryCombobox, {
   type ShippingCountryOption,
 } from "@/components/shop/checkout/ui/components/ShippingCountryCombobox";
@@ -28,7 +23,10 @@ type CheckoutFormProps = {
   ref?: React.Ref<CheckoutFormHandle>;
   onValid: (values: CheckoutFormValues) => void;
   availableCountries: ReadonlyArray<ShippingCountryOption>;
-  onDestinationChange?: (destination: { country: string; state: string }) => void;
+  onDestinationChange?: (destination: {
+    country: string;
+    state: string;
+  }) => void;
   /** Digital-only carts ship nothing — the address is collected for billing. */
   isDigitalOnly?: boolean;
 };
@@ -109,8 +107,8 @@ const CheckoutForm = ({
         role="status"
         className="rounded-md border border-border/40 bg-foreground/[0.04] p-5 text-sm text-foreground/80"
       >
-        Shipping isn&apos;t configured yet — please contact us before placing
-        an order.
+        Shipping isn&apos;t configured yet — please contact us before placing an
+        order.
       </div>
     );
   }
@@ -138,6 +136,7 @@ const CheckoutForm = ({
                     placeholder="Email"
                     aria-label="Email"
                     autoComplete="email"
+                    className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                     {...field}
                   />
                 </FormControl>
@@ -180,6 +179,7 @@ const CheckoutForm = ({
                       placeholder="First Name"
                       aria-label="First name"
                       autoComplete="given-name"
+                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>
@@ -196,6 +196,7 @@ const CheckoutForm = ({
                       placeholder="Last Name"
                       aria-label="Last name"
                       autoComplete="family-name"
+                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>
@@ -214,6 +215,7 @@ const CheckoutForm = ({
                     placeholder="Address"
                     aria-label="Address line 1"
                     autoComplete="address-line1"
+                    className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                     {...field}
                   />
                 </FormControl>
@@ -231,6 +233,7 @@ const CheckoutForm = ({
                     placeholder="Apartment, Suite, etc. (optional)"
                     aria-label="Apartment, suite, etc."
                     autoComplete="address-line2"
+                    className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                     {...field}
                   />
                 </FormControl>
@@ -254,6 +257,7 @@ const CheckoutForm = ({
                       placeholder="City"
                       aria-label="City"
                       autoComplete="address-level2"
+                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>
@@ -289,6 +293,7 @@ const CheckoutForm = ({
                       placeholder="Zip code"
                       aria-label="Postal code"
                       autoComplete="postal-code"
+                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>

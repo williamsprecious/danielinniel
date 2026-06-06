@@ -134,7 +134,7 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                   className="flex w-full cursor-pointer items-center justify-between rounded-2xl border border-border/30 bg-foreground/[0.03] px-5 py-4 text-left"
                 >
                   <span className="flex items-center gap-2 text-sm text-foreground/70">
-                    Order summary
+                    Order Summary
                     <ChevronDown
                       size={14}
                       className={cn(
@@ -150,7 +150,7 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                 {mobileSummaryOpen && (
                   <div
                     id="mobile-order-summary"
-                    className="mt-3 rounded-2xl border border-border/30 bg-foreground/[0.03] p-6"
+                    className="mt-3 rounded-2xl border border-border/30 bg-foreground/[0.03] px-4 py-6"
                   >
                     {statusMessage && (
                       <div
@@ -173,7 +173,7 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                 <div className="space-y-6 pb-40 lg:pb-0">
                   <section
                     aria-label="Contact and shipping"
-                    className="rounded-2xl border border-border/30 bg-foreground/[0.03] p-6 md:p-8"
+                    className="rounded-2xl border border-border/30 bg-foreground/[0.03] px-4 py-6 md:p-8"
                   >
                     <CheckoutForm
                       ref={formRef}

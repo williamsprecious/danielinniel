@@ -59,24 +59,27 @@ const ShopView = ({
   return (
     <>
       <section className="row-container pt-16 pb-24 md:pt-36 md:pb-32 2xl:pt-44 2xl:pb-40">
-        <motion.h1
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center text-5xl font-heading md:text-7xl"
-        >
-          Shop All
-        </motion.h1>
+        <div className="">
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center text-5xl font-heading md:text-7xl"
+          >
+            Shop All
+          </motion.h1>
 
-        {hasCategories && (
-          <CategoryFilter
-            options={options}
-            value={categorySlug}
-            onChange={setCategorySlug}
-          />
-        )}
+          {hasCategories && (
+            <CategoryFilter
+              options={options}
+              value={categorySlug}
+              onChange={setCategorySlug}
+              items={items}
+            />
+          )}
+        </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-2 sm:gap-y-12 md:mt-10 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-14 2xl:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-2 sm:gap-y-12 md:mt-10 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14 2xl:grid-cols-4">
           {items.map((product, i) => (
             <ProductCard key={product._id} product={product} index={i} />
           ))}
@@ -88,8 +91,8 @@ const ShopView = ({
 
         {items.length === 0 && !loading && !hasMore && (
           <div className="py-8">
-            <p className="text-lg opacity-85 text-center font-light tracking-wide italic">
-              No products yet. Check back later.
+            <p className="text-base opacity-85 text-center font-light tracking-wide italic md:text-lg">
+              No items yet. Check back later.
             </p>
           </div>
         )}

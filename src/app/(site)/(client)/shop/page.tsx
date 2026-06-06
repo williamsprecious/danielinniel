@@ -1,9 +1,6 @@
 import { Metadata } from "next";
 import ShopView from "@/components/shop/products/ui/views/ShopView";
-import {
-  getActiveCategories,
-  getProducts,
-} from "@/sanity/queries/products";
+import { getActiveCategories, getProducts } from "@/sanity/queries/products";
 
 export const metadata: Metadata = {
   title: "Shop",

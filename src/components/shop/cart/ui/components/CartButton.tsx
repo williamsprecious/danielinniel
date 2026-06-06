@@ -24,14 +24,16 @@ const CartButton = ({ className }: CartButtonProps) => {
           : "Open cart"
       }
       className={cn(
-        "relative grid size-9 cursor-pointer place-items-center text-foreground/85 transition-colors hover:text-foreground",
+        "relative grid size-9 cursor-pointer place-items-center text-foreground/95 transition-colors hover:text-foreground",
         className,
       )}
     >
-      <BiShoppingBag className="size-5" />
-      <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-medium leading-none tabular-nums text-primary-foreground">
-        {totalQty > 99 ? "99+" : totalQty}
-      </span>
+      <BiShoppingBag className="size-5.5 md:size-5" />
+      {hasItems && (
+        <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-medium leading-none tabular-nums text-primary-foreground">
+          {totalQty > 99 ? "99+" : totalQty}
+        </span>
+      )}
     </button>
   );
 };

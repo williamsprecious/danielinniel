@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Check, ChevronDown } from "lucide-react";
 import {
   AsYouType,
@@ -121,7 +128,7 @@ const PhoneInput = ({
       <div
         aria-invalid={hasError || undefined}
         className={cn(
-          "flex h-16 w-full items-center rounded-md border border-transparent bg-[#131313] transition-colors",
+          "flex h-14 w-full items-center rounded-md border border-transparent bg-[#131313] transition-colors md:h-16",
           "aria-invalid:border-destructive/90",
           hasError && "border-destructive/90",
         )}
@@ -137,7 +144,7 @@ const PhoneInput = ({
           className="flex h-full shrink-0 cursor-pointer items-center gap-2 rounded-l-md pr-3 pl-5 text-foreground/80"
         >
           <SelectedFlag className="h-4 w-6 shrink-0 rounded-sm object-cover" />
-          <span className="text-lg tabular-nums">
+          <span className="text-sm tabular-nums md:text-lg">
             +{getCountryCallingCode(selected)}
           </span>
           <ChevronDown
@@ -159,7 +166,7 @@ const PhoneInput = ({
           placeholder="Phone number"
           value={display}
           onChange={(e) => handleType(e.target.value)}
-          className="h-full w-full min-w-0 bg-transparent px-4 font-sans text-lg text-foreground/80 placeholder:text-lg placeholder:font-medium placeholder:text-muted-foreground/60 outline-none"
+          className="h-full w-full min-w-0 bg-transparent px-4 font-sans text-sm text-foreground/80 placeholder:text-sm placeholder:font-medium placeholder:text-muted-foreground/60 outline-none md:text-lg md:placeholder:text-lg"
         />
       </div>
 

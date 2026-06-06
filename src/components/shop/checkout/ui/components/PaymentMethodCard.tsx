@@ -10,7 +10,7 @@ const PaymentMethodCard = () => {
   return (
     <section
       aria-label="Payment method"
-      className="space-y-5 rounded-2xl border border-border/30 bg-foreground/[0.03] p-6 md:p-8"
+      className="space-y-5 rounded-2xl border border-border/30 bg-foreground/[0.03] px-4 py-6 md:p-8"
     >
       <div className="space-y-1.5">
         <h2 className="text-xs uppercase tracking-[0.18em] text-foreground/60">
