@@ -189,8 +189,6 @@ export type StoreSettings = {
         _key: string;
       } & ShippingZoneGB)
   >;
-  defaultDownloadExpiryDays?: number;
-  defaultDownloadLimit?: number;
 };
 
 export type ProductReference = {
@@ -1000,7 +998,7 @@ export type STORE_SETTINGS_QUERY_RESULT =
 
 // Source: src/sanity/queries/index.ts
 // Variable: ORDER_BY_REFERENCE_QUERY
-// Query: *[_type == "order" && payment.reference == $reference][0]{      orderNumber,      status,      createdAt,      customer{ firstName, lastName, email, phone },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      items[]{        _key,        title,        variantTitle,        type,        quantity,        unitPrice,        lineTotal,        "image": image{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } }      },      subtotal,      shippingFee,      total,      currency,      payment{ reference, paidAt }    }
+// Query: *[_type == "order" && payment.reference == $reference][0]{      orderNumber,      status,      createdAt,      customer{ firstName, lastName, email, phone },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      items[]{        _key,        title,        variantTitle,        type,        quantity,        unitPrice,        lineTotal,        "image": image{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },        "downloadUrl": product->digitalFile.asset->url + "?dl="      },      subtotal,      shippingFee,      total,      currency,      payment{ reference, paidAt }    }
 export type ORDER_BY_REFERENCE_QUERY_RESULT = {
   orderNumber: string | null;
   status:
@@ -1066,6 +1064,7 @@ export type ORDER_BY_REFERENCE_QUERY_RESULT = {
           _type: "image";
         }
       | null;
+    downloadUrl: string | null;
   }> | null;
   subtotal: number | null;
   shippingFee: number | null;
@@ -1092,6 +1091,6 @@ declare module "@sanity/client" {
     '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
     '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
-    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      orderNumber,\n      status,\n      createdAt,\n      customer{ firstName, lastName, email, phone },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        unitPrice,\n        lineTotal,\n        "image": image{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n }\n      },\n      subtotal,\n      shippingFee,\n      total,\n      currency,\n      payment{ reference, paidAt }\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
+    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      orderNumber,\n      status,\n      createdAt,\n      customer{ firstName, lastName, email, phone },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        unitPrice,\n        lineTotal,\n        "image": image{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n        "downloadUrl": product->digitalFile.asset->url + "?dl="\n      },\n      subtotal,\n      shippingFee,\n      total,\n      currency,\n      payment{ reference, paidAt }\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
   }
 }

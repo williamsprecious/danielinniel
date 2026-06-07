@@ -241,8 +241,7 @@ export async function initializeCheckout(
     };
   }
   // Paystack appends its own `?reference=…&trxref=…` to the callback URL, so we must NOT add our own — a duplicated `reference` param would arrive as an array and break the lookup.
-  const callbackUrl = `http://localhost:3000/order`;
-  // const callbackUrl = `${appUrl}/order`;
+  const callbackUrl = `${appUrl}/order`;
 
   try {
     const { authorizationUrl } = await initializeTransaction({

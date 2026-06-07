@@ -198,7 +198,8 @@ export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
         quantity,
         unitPrice,
         lineTotal,
-        "image": image{ ${productImageFields} }
+        "image": image{ ${productImageFields} },
+        "downloadUrl": product->digitalFile.asset->url + "?dl="
       },
       subtotal,
       shippingFee,

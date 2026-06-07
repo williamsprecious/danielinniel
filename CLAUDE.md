@@ -55,7 +55,8 @@ Dynamic route params are validated against allowed values via `checkValidParams`
 - Forms use React Hook Form + Zod. Schemas are in `src/schema.ts`.
 - Three schemas: project inquiry (`projectSchema`), contact (`contactSchema`), checkout (`checkoutSchema`). Checkout submits through `initializeCheckout` (see Checkout & order pipeline). The `phone` field is an E.164 string validated with `libphonenumber-js`, entered via the custom `PhoneInput` (`src/components/shop/checkout/ui/components/PhoneInput.tsx`) whose country list mirrors the configured shipping zones.
 - Contact + project submissions go through server actions in `src/actions/contact.action.ts`.
-- Email is sent via AWS SES client (`src/lib/ses/index.ts`) using templates in `src/lib/ses/contact.template.ts`.
+- Email rendering + sending lives in `src/lib/email/index.tsx`: `renderEmail` renders React Email templates (`src/emails/*`, `react-email`) to HTML + plain text, then sends via the AWS SES client (`src/lib/ses/index.ts`). Senders: `sendContactFormEmail`, `sendProjectInquiryEmail`, `sendOrderConfirmationEmail`, `sendDigitalDeliveryEmail`, `sendAdminOrderEmail`.
+- Templates: contact/project (`ContactMessage.tsx`, `ProjectInquiry.tsx`), order pipeline (`OrderConfirmation.tsx`, `DigitalDelivery.tsx`, `AdminOrderNotification.tsx`); shared layout/parts in `src/emails/components/` + tokens in `src/emails/theme.ts`.
 
 ### Shop client state
 
@@ -88,6 +89,12 @@ Dynamic route params are validated against allowed values via `checkValidParams`
 - Webhook `src/app/api/webhooks/paystack/route.ts` verifies the signature and emits `order/payment.succeeded`; the `process-paid-order` Inngest fn verifies with Paystack, creates the order, and decrements stock. Idempotent via function `idempotency` + deterministic `_id: order.<reference>` + `createIfNotExists`.
 - Read an order back with `ORDER_BY_REFERENCE_QUERY` (`payment.reference == $reference`).
 - Local dev: the webhook reaches localhost via the ngrok URL in `NEXT_PUBLIC_APP_URL`; set the Paystack dashboard webhook to `${NEXT_PUBLIC_APP_URL}/api/webhooks/paystack`.
+
+### Digital product delivery
+
+- Digital products carry a Sanity `file` field `digitalFile` (`src/sanity/schemaTypes/productType.ts`, shown when `type == "digital"`). Delivery uses the raw `cdn.sanity.io/files/...` asset URL directly — public, permanent, no auth, no expiry. Acceptable here: the project/dataset are already public (`NEXT_PUBLIC_*`, exposed in every image URL), and streaming through our own server to hide the URL would double Vercel bandwidth for marginal benefit.
+- Two delivery surfaces, both using the direct CDN URL: emails (`processPaidOrder` `load-digital-files` step resolves `digitalFile.asset->url`; templates `OrderConfirmation.tsx` / `DigitalDelivery.tsx`) and the order page (`ORDER_BY_REFERENCE_QUERY` projects `"downloadUrl": product->digitalFile.asset->url + "?dl="` per item → download buttons in `OrderConfirmationView.tsx`). The order page is a durable re-download source (email isn't the only channel).
+- Both surfaces append Sanity's **`?dl=`** query param so the CDN returns `Content-Disposition: attachment` (blank value → the asset's original filename). Required because the HTML `download` attribute is ignored for cross-origin URLs.
 
 ### Background Jobs (Inngest)
 

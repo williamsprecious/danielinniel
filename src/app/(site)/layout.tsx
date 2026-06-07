@@ -23,7 +23,7 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: {
     default: "Danielinniel - Digital Artist",
-    template: "%s | Danielinniel",
+    template: "%s - Danielinniel",
   },
   description:
     "DANIELINNIEL is a digital artist focused on illustration, concept art, and motion graphics. His work blends emotional storytelling with bold, character-driven visuals. Through Inn & Iel, he explores identity, mythology, and human connection.",

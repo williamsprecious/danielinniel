@@ -343,15 +343,18 @@ export const processPaidOrder = inngest.createFunction(
       );
       const files = await backendClient.fetch<
         Array<{ _id: string; url: string | null }>
-      >(`*[_type == "product" && _id in $ids]{ _id, "url": digitalFile.asset->url }`, {
-        ids,
-      });
+      >(
+        `*[_type == "product" && _id in $ids]{ _id, "url": digitalFile.asset->url }`,
+        { ids },
+      );
       const urlById = new Map(files.map((f) => [f._id, f.url]));
 
-      return digitalLines.map((l) => ({
-        title: l.title,
-        url: urlById.get(l.productId) ?? null,
-      }));
+      return digitalLines.map((l) => {
+        const url = urlById.get(l.productId);
+        // `?dl=` makes the CDN send Content-Disposition: attachment so the link
+        // downloads the file (with its original name) instead of opening it.
+        return { title: l.title, url: url ? `${url}?dl=` : null };
+      });
     });
 
     const validDownloads = downloads.filter(

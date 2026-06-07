@@ -883,20 +883,6 @@
           }
         },
         "optional": true
-      },
-      "defaultDownloadExpiryDays": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "number"
-        },
-        "optional": true
-      },
-      "defaultDownloadLimit": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "number"
-        },
-        "optional": true
       }
     }
   },
