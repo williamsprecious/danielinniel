@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils";
 
 const HeaderText = ({
   title,
-  underline,
   delay = 0,
   className,
   textType = "h2",
+  underline = false,
 }: {
   title: string;
-  underline?: boolean;
   delay?: number;
   className?: string;
   textType?: "h1" | "h2";
+  underline?: boolean;
 }) => {
   if (textType === "h1") {
     return (
@@ -34,7 +34,11 @@ const HeaderText = ({
           delay,
         }}
         viewport={{ amount: 0.3, once: true }}
-        className={cn(underline && "underline", className)}
+        className={cn(
+          "font-heading text-6xl md:text-7xl lg:text-8xl 2xl:text-9xl",
+          underline && "underline underline-offset-8",
+          className,
+        )}
       >
         {title}
       </motion.h1>
@@ -59,7 +63,11 @@ const HeaderText = ({
         delay,
       }}
       viewport={{ amount: 0.3, once: true }}
-      className={cn(underline && "underline", className)}
+      className={cn(
+        "font-heading text-5xl text-center md:text-6xl lg:text-7xl 2xl:text-8xl",
+        underline && "underline underline-offset-8",
+        className,
+      )}
     >
       {title}
     </motion.h2>

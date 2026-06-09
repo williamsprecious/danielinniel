@@ -5,6 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Number of products fetched per page in the shop — used for the initial
+ * server load and each infinite-scroll page. Keep every product page-size
+ * default pointing here so they can never drift apart.
+ */
+export const PRODUCT_PAGE_SIZE = 12;
+
 export const checkValidParams = ({
   params,
   expectedParams,

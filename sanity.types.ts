@@ -15,6 +15,189 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type ShippingZoneGB = {
+  _type: "shippingZoneGB";
+  country?: string;
+  defaultFeeNGN?: number;
+};
+
+export type ShippingZoneCA = {
+  _type: "shippingZoneCA";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Alberta"
+      | "British Columbia"
+      | "Manitoba"
+      | "New Brunswick"
+      | "Newfoundland and Labrador"
+      | "Northwest Territories"
+      | "Nova Scotia"
+      | "Nunavut"
+      | "Ontario"
+      | "Prince Edward Island"
+      | "Quebec"
+      | "Saskatchewan"
+      | "Yukon";
+    feeNGN?: number;
+    _type: "shippingZoneCAOverride";
+    _key: string;
+  }>;
+};
+
+export type ShippingZoneUS = {
+  _type: "shippingZoneUS";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Alabama"
+      | "Alaska"
+      | "Arizona"
+      | "Arkansas"
+      | "California"
+      | "Colorado"
+      | "Connecticut"
+      | "Delaware"
+      | "District of Columbia"
+      | "Florida"
+      | "Georgia"
+      | "Hawaii"
+      | "Idaho"
+      | "Illinois"
+      | "Indiana"
+      | "Iowa"
+      | "Kansas"
+      | "Kentucky"
+      | "Louisiana"
+      | "Maine"
+      | "Maryland"
+      | "Massachusetts"
+      | "Michigan"
+      | "Minnesota"
+      | "Mississippi"
+      | "Missouri"
+      | "Montana"
+      | "Nebraska"
+      | "Nevada"
+      | "New Hampshire"
+      | "New Jersey"
+      | "New Mexico"
+      | "New York"
+      | "North Carolina"
+      | "North Dakota"
+      | "Ohio"
+      | "Oklahoma"
+      | "Oregon"
+      | "Pennsylvania"
+      | "Rhode Island"
+      | "South Carolina"
+      | "South Dakota"
+      | "Tennessee"
+      | "Texas"
+      | "Utah"
+      | "Vermont"
+      | "Virginia"
+      | "Washington"
+      | "West Virginia"
+      | "Wisconsin"
+      | "Wyoming";
+    feeNGN?: number;
+    _type: "shippingZoneUSOverride";
+    _key: string;
+  }>;
+};
+
+export type ShippingZoneNG = {
+  _type: "shippingZoneNG";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Abia"
+      | "Adamawa"
+      | "Akwa Ibom"
+      | "Anambra"
+      | "Bauchi"
+      | "Bayelsa"
+      | "Benue"
+      | "Borno"
+      | "Cross River"
+      | "Delta"
+      | "Ebonyi"
+      | "Edo"
+      | "Ekiti"
+      | "Enugu"
+      | "FCT - Abuja"
+      | "Gombe"
+      | "Imo"
+      | "Jigawa"
+      | "Kaduna"
+      | "Kano"
+      | "Katsina"
+      | "Kebbi"
+      | "Kogi"
+      | "Kwara"
+      | "Lagos"
+      | "Nasarawa"
+      | "Niger"
+      | "Ogun"
+      | "Ondo"
+      | "Osun"
+      | "Oyo"
+      | "Plateau"
+      | "Rivers"
+      | "Sokoto"
+      | "Taraba"
+      | "Yobe"
+      | "Zamfara";
+    feeNGN?: number;
+    _type: "shippingZoneNGOverride";
+    _key: string;
+  }>;
+};
+
+export type StoreSettings = {
+  _id: string;
+  _type: "storeSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  storeName?: string;
+  contactEmails?: Array<string>;
+  emailFromName?: string;
+  baseCurrency?: string;
+  ratesToNGN?: Array<{
+    code?: "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "ZAR" | "GHS" | "JPY";
+    rate?: number;
+    _type: "currencyRate";
+    _key: string;
+  }>;
+  ratesUpdatedAt?: string;
+  shippingZones?: Array<
+    | ({
+        _key: string;
+      } & ShippingZoneNG)
+    | ({
+        _key: string;
+      } & ShippingZoneUS)
+    | ({
+        _key: string;
+      } & ShippingZoneCA)
+    | ({
+        _key: string;
+      } & ShippingZoneGB)
+  >;
+};
+
+export type ProductReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "product";
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -22,11 +205,222 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type Order = {
+  _id: string;
+  _type: "order";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  orderNumber?: string;
+  status?: "confirmed" | "processing" | "delivered" | "cancelled" | "refunded";
+  customer?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  };
+  shippingAddress?: Address;
+  billingAddress?: Address;
+  items?: Array<{
+    product?: ProductReference;
+    variantKey?: string;
+    title?: string;
+    variantTitle?: string;
+    type?: "physical" | "digital";
+    image?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    unitPrice?: number;
+    quantity?: number;
+    lineTotal?: number;
+    _type: "orderItem";
+    _key: string;
+  }>;
+  subtotal?: number;
+  shippingFee?: number;
+  total?: number;
+  currency?: string;
+  rateToNaira?: number;
+  payment?: {
+    provider?: string;
+    reference?: string;
+    amountNGN?: number;
+    paidAt?: string;
+    gatewayResponse?: string;
+  };
+  fulfillment?: {
+    carrier?: string;
+    trackingNumber?: string;
+    trackingUrl?: string;
+    shippedAt?: string;
+    deliveredAt?: string;
+  };
+  adminNotes?: string;
+  createdAt?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Address = {
+  _type: "address";
+  firstName?: string;
+  lastName?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  phone?: string;
+};
+
+export type CategoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "category";
+};
+
 export type SanityFileAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
+export type Product = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  images?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  categories?: Array<
+    {
+      _key: string;
+    } & CategoryReference
+  >;
+  status?: "draft" | "active" | "archived";
+  type?: "physical" | "digital";
+  digitalFile?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  hasVariants?: boolean;
+  priceNGN?: number;
+  compareAtPriceNGN?: number;
+  stock?: number;
+  options?: Array<{
+    name?: string;
+    values?: Array<string>;
+    _type: "productOption";
+    _key: string;
+  }>;
+  variants?: Array<{
+    title?: string;
+    optionValues?: Array<string>;
+    priceNGN?: number;
+    compareAtPriceNGN?: number;
+    stock?: number;
+    _type: "productVariant";
+    _key: string;
+  }>;
+  specifications?: Array<{
+    label?: string;
+    value?: string;
+    _type: "specRow";
+    _key: string;
+  }>;
+  shipping?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type Category = {
+  _id: string;
+  _type: "category";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  displayOrder?: number;
+  visibility?: "active" | "hidden";
 };
 
 export type Gallery = {
@@ -64,22 +458,6 @@ export type Gallery = {
     _type: "file";
   };
   createdAt?: string;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
 };
 
 export type Featured = {
@@ -196,18 +574,24 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type AllSanitySchemaTypes =
+  | ShippingZoneGB
+  | ShippingZoneCA
+  | ShippingZoneUS
+  | ShippingZoneNG
+  | StoreSettings
+  | ProductReference
   | SanityImageAssetReference
-  | SanityFileAssetReference
-  | Gallery
+  | Order
   | SanityImageCrop
   | SanityImageHotspot
+  | Address
+  | CategoryReference
+  | SanityFileAssetReference
+  | Product
+  | Slug
+  | Category
+  | Gallery
   | Featured
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -216,10 +600,9 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
-  | Slug;
+  | Geopoint;
 
-// Source: src/sanity/queries/query.ts
+// Source: src/sanity/queries/index.ts
 // Variable: FEATURE_QUERY
 // Query: *[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }
 export type FEATURE_QUERY_RESULT = Array<{
@@ -235,7 +618,7 @@ export type FEATURE_QUERY_RESULT = Array<{
   workUrl: string | null;
 }>;
 
-// Source: src/sanity/queries/query.ts
+// Source: src/sanity/queries/index.ts
 // Variable: GALLERY_QUERY
 // Query: *[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ] | order(createdAt desc) [$start...$end] {      _id,      galleryType,      videoType,      category,      conceptType,      grade,      image {        asset-> {          _id,          url,          metadata {            lqip,            dimensions          }        }      },      description,      videoUrl,      video {        asset-> {          _id,          url,          mimeType        }      },      videoPreview {        asset-> {          _id,          url,          mimeType        }      },      createdAt    }
 export type GALLERY_QUERY_RESULT = Array<{
@@ -279,10 +662,453 @@ export type GALLERY_QUERY_RESULT = Array<{
   createdAt: string | null;
 }>;
 
-// Source: src/sanity/queries/query.ts
+// Source: src/sanity/queries/index.ts
 // Variable: GALLERY_COUNT_QUERY
 // Query: count(*[_type == "gallery" && category == $category &&      ($filterParam == null ||       (category == "cover-art" && grade == $filterParam) ||       (category == "concept-and-design" && conceptType == $filterParam))    ])
 export type GALLERY_COUNT_QUERY_RESULT = number;
+
+// Source: src/sanity/queries/index.ts
+// Variable: CATEGORY_ID_BY_SLUG_QUERY
+// Query: *[_type == "category" && slug.current == $slug][0]._id
+export type CATEGORY_ID_BY_SLUG_QUERY_RESULT = string | null;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCT_LIST_QUERY
+// Query: *[_type == "product" && status == "active"      && ($categoryId == null || references($categoryId))    ] | order(_createdAt desc) [$start...$end] {      _id,      title,      "slug": slug.current,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      "image": images[0]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      variants[]{ priceNGN, compareAtPriceNGN }    }
+export type PRODUCT_LIST_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  type: "digital" | "physical" | null;
+  hasVariants: boolean | null;
+  priceNGN: number | null;
+  compareAtPriceNGN: number | null;
+  image:
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+        width: number | null;
+        height: number | null;
+        lqip: string | null;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+    | null;
+  variants: Array<{
+    priceNGN: number | null;
+    compareAtPriceNGN: number | null;
+  }> | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCT_LIST_COUNT_QUERY
+// Query: count(*[_type == "product" && status == "active"      && ($categoryId == null || references($categoryId))    ])
+export type PRODUCT_LIST_COUNT_QUERY_RESULT = number;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCT_BY_SLUG_QUERY
+// Query: *[_type == "product" && status == "active" && slug.current == $slug][0]{      _id,      title,      "slug": slug.current,      description,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      shipping,      specifications[]{ label, value },      "images": images[]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      "categories": categories[]->{ _id, title, "slug": slug.current },      options[]{ name, values },      variants[]{        _key,        title,        optionValues,        priceNGN,        compareAtPriceNGN,        stock      }    }
+export type PRODUCT_BY_SLUG_QUERY_RESULT = {
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+  type: "digital" | "physical" | null;
+  hasVariants: boolean | null;
+  priceNGN: number | null;
+  compareAtPriceNGN: number | null;
+  stock: number | null;
+  shipping: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+  specifications: Array<{
+    label: string | null;
+    value: string | null;
+  }> | null;
+  images: Array<
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+        width: number | null;
+        height: number | null;
+        lqip: string | null;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+  categories: Array<{
+    _id: string;
+    title: string | null;
+    slug: string | null;
+  }> | null;
+  options: Array<{
+    name: string | null;
+    values: Array<string> | null;
+  }> | null;
+  variants: Array<{
+    _key: string;
+    title: string | null;
+    optionValues: Array<string> | null;
+    priceNGN: number | null;
+    compareAtPriceNGN: number | null;
+    stock: number | null;
+  }> | null;
+} | null;
+
+// Source: src/sanity/queries/index.ts
+// Variable: PRODUCTS_BY_IDS_FOR_CART_QUERY
+// Query: *[_type == "product" && _id in $ids]{      _id,      status,      "slug": slug.current,      title,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      "image": images[0]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      variants[]{        _key,        title,        priceNGN,        compareAtPriceNGN,        stock      }    }
+export type PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT = Array<{
+  _id: string;
+  status: "active" | "archived" | "draft" | null;
+  slug: string | null;
+  title: string | null;
+  type: "digital" | "physical" | null;
+  hasVariants: boolean | null;
+  priceNGN: number | null;
+  compareAtPriceNGN: number | null;
+  stock: number | null;
+  image:
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+        width: number | null;
+        height: number | null;
+        lqip: string | null;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+    | null;
+  variants: Array<{
+    _key: string;
+    title: string | null;
+    priceNGN: number | null;
+    compareAtPriceNGN: number | null;
+    stock: number | null;
+  }> | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: ACTIVE_CATEGORIES_QUERY
+// Query: *[_type == "category" && visibility == "active"]      | order(coalesce(displayOrder, 9999) asc, title asc) {      _id,      title,      "slug": slug.current    }
+export type ACTIVE_CATEGORIES_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  slug: string | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: ACTIVE_PRODUCT_SLUGS_QUERY
+// Query: *[_type == "product" && status == "active" && defined(slug.current)]{      "slug": slug.current    }
+export type ACTIVE_PRODUCT_SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+}>;
+
+// Source: src/sanity/queries/index.ts
+// Variable: STORE_SETTINGS_QUERY
+// Query: *[_id == "storeSettings"][0]{      baseCurrency,      ratesToNGN[]{ code, rate },      ratesUpdatedAt,      shippingZones[]{        country,        defaultFeeNGN,        regionOverrides[]{ region, feeNGN }      }    }
+export type STORE_SETTINGS_QUERY_RESULT =
+  | {
+      baseCurrency: null;
+      ratesToNGN: null;
+      ratesUpdatedAt: null;
+      shippingZones: null;
+    }
+  | {
+      baseCurrency: string | null;
+      ratesToNGN: Array<{
+        code:
+          | "AUD"
+          | "CAD"
+          | "EUR"
+          | "GBP"
+          | "GHS"
+          | "JPY"
+          | "USD"
+          | "ZAR"
+          | null;
+        rate: number | null;
+      }> | null;
+      ratesUpdatedAt: string | null;
+      shippingZones: Array<
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Abia"
+                | "Adamawa"
+                | "Akwa Ibom"
+                | "Anambra"
+                | "Bauchi"
+                | "Bayelsa"
+                | "Benue"
+                | "Borno"
+                | "Cross River"
+                | "Delta"
+                | "Ebonyi"
+                | "Edo"
+                | "Ekiti"
+                | "Enugu"
+                | "FCT - Abuja"
+                | "Gombe"
+                | "Imo"
+                | "Jigawa"
+                | "Kaduna"
+                | "Kano"
+                | "Katsina"
+                | "Kebbi"
+                | "Kogi"
+                | "Kwara"
+                | "Lagos"
+                | "Nasarawa"
+                | "Niger"
+                | "Ogun"
+                | "Ondo"
+                | "Osun"
+                | "Oyo"
+                | "Plateau"
+                | "Rivers"
+                | "Sokoto"
+                | "Taraba"
+                | "Yobe"
+                | "Zamfara"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Alabama"
+                | "Alaska"
+                | "Arizona"
+                | "Arkansas"
+                | "California"
+                | "Colorado"
+                | "Connecticut"
+                | "Delaware"
+                | "District of Columbia"
+                | "Florida"
+                | "Georgia"
+                | "Hawaii"
+                | "Idaho"
+                | "Illinois"
+                | "Indiana"
+                | "Iowa"
+                | "Kansas"
+                | "Kentucky"
+                | "Louisiana"
+                | "Maine"
+                | "Maryland"
+                | "Massachusetts"
+                | "Michigan"
+                | "Minnesota"
+                | "Mississippi"
+                | "Missouri"
+                | "Montana"
+                | "Nebraska"
+                | "Nevada"
+                | "New Hampshire"
+                | "New Jersey"
+                | "New Mexico"
+                | "New York"
+                | "North Carolina"
+                | "North Dakota"
+                | "Ohio"
+                | "Oklahoma"
+                | "Oregon"
+                | "Pennsylvania"
+                | "Rhode Island"
+                | "South Carolina"
+                | "South Dakota"
+                | "Tennessee"
+                | "Texas"
+                | "Utah"
+                | "Vermont"
+                | "Virginia"
+                | "Washington"
+                | "West Virginia"
+                | "Wisconsin"
+                | "Wyoming"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Alberta"
+                | "British Columbia"
+                | "Manitoba"
+                | "New Brunswick"
+                | "Newfoundland and Labrador"
+                | "Northwest Territories"
+                | "Nova Scotia"
+                | "Nunavut"
+                | "Ontario"
+                | "Prince Edward Island"
+                | "Quebec"
+                | "Saskatchewan"
+                | "Yukon"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+      > | null;
+    }
+  | null;
+
+// Source: src/sanity/queries/index.ts
+// Variable: ORDER_BY_REFERENCE_QUERY
+// Query: *[_type == "order" && payment.reference == $reference][0]{      orderNumber,      status,      createdAt,      customer{ firstName, lastName, email, phone },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      items[]{        _key,        title,        variantTitle,        type,        quantity,        unitPrice,        lineTotal,        "image": image{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },        "downloadUrl": product->digitalFile.asset->url + "?dl="      },      subtotal,      shippingFee,      total,      currency,      payment{ reference, paidAt }    }
+export type ORDER_BY_REFERENCE_QUERY_RESULT = {
+  orderNumber: string | null;
+  status:
+    | "cancelled"
+    | "confirmed"
+    | "delivered"
+    | "processing"
+    | "refunded"
+    | null;
+  createdAt: string | null;
+  customer: {
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+    phone: string | null;
+  } | null;
+  shippingAddress: {
+    firstName: string | null;
+    lastName: string | null;
+    line1: string | null;
+    line2: string | null;
+    city: string | null;
+    state: string | null;
+    postalCode: string | null;
+    country: string | null;
+    phone: string | null;
+  } | null;
+  billingAddress: {
+    firstName: string | null;
+    lastName: string | null;
+    line1: string | null;
+    line2: string | null;
+    city: string | null;
+    state: string | null;
+    postalCode: string | null;
+    country: string | null;
+    phone: string | null;
+  } | null;
+  items: Array<{
+    _key: string;
+    title: string | null;
+    variantTitle: string | null;
+    type: "digital" | "physical" | null;
+    quantity: number | null;
+    unitPrice: number | null;
+    lineTotal: number | null;
+    image:
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+          width: number | null;
+          height: number | null;
+          lqip: string | null;
+        }
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        }
+      | null;
+    downloadUrl: string | null;
+  }> | null;
+  subtotal: number | null;
+  shippingFee: number | null;
+  total: number | null;
+  currency: string | null;
+  payment: {
+    reference: string | null;
+    paidAt: string | null;
+  } | null;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
@@ -291,5 +1117,14 @@ declare module "@sanity/client" {
     '*[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }': FEATURE_QUERY_RESULT;
     '\n    *[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ] | order(createdAt desc) [$start...$end] {\n      _id,\n      galleryType,\n      videoType,\n      category,\n      conceptType,\n      grade,\n      image {\n        asset-> {\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions\n          }\n        }\n      },\n      description,\n      videoUrl,\n      video {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      videoPreview {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      createdAt\n    }\n  ': GALLERY_QUERY_RESULT;
     '\n    count(*[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ])\n  ': GALLERY_COUNT_QUERY_RESULT;
+    '\n    *[_type == "category" && slug.current == $slug][0]._id\n  ': CATEGORY_ID_BY_SLUG_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ] | order(_createdAt desc) [$start...$end] {\n      _id,\n      title,\n      "slug": slug.current,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{ priceNGN, compareAtPriceNGN }\n    }\n  ': PRODUCT_LIST_QUERY_RESULT;
+    '\n    count(*[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ])\n  ': PRODUCT_LIST_COUNT_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active" && slug.current == $slug][0]{\n      _id,\n      title,\n      "slug": slug.current,\n      description,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      shipping,\n      specifications[]{ label, value },\n      "images": images[]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      "categories": categories[]->{ _id, title, "slug": slug.current },\n      options[]{ name, values },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCT_BY_SLUG_QUERY_RESULT;
+    '\n    *[_type == "product" && _id in $ids]{\n      _id,\n      status,\n      "slug": slug.current,\n      title,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{\n        _key,\n        title,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT;
+    '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
+    '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
+    '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
+    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      orderNumber,\n      status,\n      createdAt,\n      customer{ firstName, lastName, email, phone },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        unitPrice,\n        lineTotal,\n        "image": image{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n        "downloadUrl": product->digitalFile.asset->url + "?dl="\n      },\n      subtotal,\n      shippingFee,\n      total,\n      currency,\n      payment{ reference, paidAt }\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
   }
 }

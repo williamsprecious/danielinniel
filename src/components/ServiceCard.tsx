@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import { TbArrowBigRightLines } from "react-icons/tb";
@@ -25,11 +25,14 @@ const ServiceCard = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Reset state when src changes to handle prop updates correctly
-  useEffect(() => {
+  // Reset load/error state when src changes (React docs "adjust state when
+  // prop changes" pattern — runs during render, not in an effect).
+  const [prevSrc, setPrevSrc] = useState(src);
+  if (src !== prevSrc) {
+    setPrevSrc(src);
     setImageLoaded(false);
     setImageError(false);
-  }, [src]);
+  }
 
   // Determine if we should use fallback permanently (main image errored)
   const useFallbackPermanently = imageError && !!fallbackSrc;

@@ -11,14 +11,8 @@ const GalleryFilter = ({
   type,
 }: GalleryFilterProps) => {
   return (
-    // className="space-y-8 md:space-y-10 overflow-x-auto"
     <>
-      <HeaderText
-        title={title}
-        underline
-        delay={0.1}
-        className="mb-2 md:mb-4 2xl:mb-6"
-      />
+      <HeaderText title={title} delay={0.1} className="mb-2 md:mb-4 2xl:mb-6" />
 
       <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm py-5 md:py-4 2xl:py-6">
         <motion.div

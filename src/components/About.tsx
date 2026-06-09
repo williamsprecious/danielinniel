@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -14,6 +14,20 @@ const About = () => {
 
   const text = `I create compelling visuals that bring your ideas to life, designed to inspire, engage, and tell authentic stories.`;
   const words = useMemo(() => text.split(" "), [text]);
+
+  // Remove this line incase on any i notice more bugs later
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => ScrollTrigger.refresh(), 150);
+    });
+    ro.observe(document.body);
+    return () => {
+      clearTimeout(timeoutId);
+      ro.disconnect();
+    };
+  }, []);
 
   useGSAP(
     () => {
@@ -122,7 +136,7 @@ const About = () => {
           ref={textRef}
           className="absolute top-full left-0 w-full h-full flex flex-col items-center justify-center p-8 z-10"
         >
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-center leading-[1.3] md:leading-[1.15] text-foreground/90 mix-blend-difference w-[95%] md:w-[85%] lg:w-[80%] xl:w-[70%] 2xl:text-6xl">
+          <p className="text-3xl font-heading sm:text-4xl md:text-5xl lg:text-6xl text-center leading-[1.3] md:leading-[1.15] text-foreground/90 mix-blend-difference w-[95%] md:w-[85%] lg:w-[80%] xl:w-[70%] 2xl:text-7xl">
             {words.map((word, wordIndex) => (
               <span key={`word-${wordIndex}`} className="inline-block">
                 {word.split("").map((char, charIndex) => (

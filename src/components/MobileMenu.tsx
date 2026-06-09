@@ -39,7 +39,7 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              "max-[360px]:py-6 min-[900px]:hidden fixed top-[78px] left-2 right-2 border border-border backdrop-blur-sm rounded-[8px] py-11 px-4 shadow-lg z-40 md:mx-4",
+              "max-[360px]:py-6 min-[900px]:hidden fixed top-[78px] left-2 right-2 border border-border/50 backdrop-blur-sm rounded-[8px] py-11 px-4 shadow-lg z-40 md:mx-4",
               "bg-background/85",
             )}
             onClick={handleMenuClick}
@@ -88,7 +88,7 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
                   whileTap={{ scale: 0.95 }}
                 >
                   <Button
-                    variant="default"
+                    variant="outline"
                     size="mobile-menu"
                     onClick={() => {
                       onClose();
@@ -97,7 +97,7 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
                       setCategory("concept-and-design");
                       toggleOpen(true);
                     }}
-                    className="px-2 py-2.5 text-base! sm:py-3"
+                    className="px-2 py-2.5 text-base! sm:py-3 bg-primary hover:bg-primary"
                     aria-label="Start Project"
                   >
                     <ScrollingText

@@ -24,7 +24,6 @@ import { useNewBooking } from "@/hooks/use-new-booking";
 import { cn } from "@/lib/utils";
 import { getBudgetList } from "@/constants";
 import ButtonAnimationWrapper from "@/components/ButtonAnimationWrapper";
-import { CircleAlert } from "lucide-react";
 
 const ProjectForm = ({
   register,

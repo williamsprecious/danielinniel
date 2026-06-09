@@ -56,6 +56,11 @@ const GalleryGrid = ({ category }: GalleryGridProps) => {
           const hasImage = !!item.image;
 
           const imageUrl = hasImage ? urlFor(item.image!).url() : null;
+          const thumbnailUrl = hasImage
+            ? urlFor(item.image!).width(800).url()
+            : null;
+          const lqip =
+            item.image?.asset?.metadata?.lqip ?? undefined;
 
           const videoPreviewUrl = item.videoPreview?.asset?.url || null;
           const fullVideoUrl = item.video?.asset?.url || null;
@@ -69,6 +74,8 @@ const GalleryGrid = ({ category }: GalleryGridProps) => {
             <GalleryGridItem
               key={item._id}
               url={primaryUrl!}
+              thumbnailUrl={!isVideoFile ? (thumbnailUrl ?? undefined) : undefined}
+              lqip={!isVideoFile ? lqip : undefined}
               type={item.galleryType!}
               videoType={item.videoType || undefined}
               videoUrl={item.videoUrl || undefined}

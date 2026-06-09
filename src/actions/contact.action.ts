@@ -1,14 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import { sendEmail } from "@/lib/ses";
+import { request as arcjetRequest, slidingWindow } from "@arcjet/next";
+import { aj } from "@/lib/arcjet";
+import { sendContactFormEmail, sendProjectInquiryEmail } from "@/lib/email";
 import { contactSchema, projectSchema } from "@/schema";
-import {
-  generatePlainTextContactEmail,
-  generatePlainTextProjectEmail,
-  getContactEmailTemplate,
-  getProjectEmailTemplate,
-} from "@/lib/ses/contact.template";
 
 export type FormEmailActionState = {
   success: boolean;
@@ -16,9 +12,43 @@ export type FormEmailActionState = {
   errors?: Record<string, string[]>;
 };
 
+const contactFormRateLimit = slidingWindow({
+  mode: "LIVE",
+  interval: "1h",
+  max: 5,
+});
+
+async function checkRateLimit(): Promise<FormEmailActionState | null> {
+  const req = await arcjetRequest();
+  const decision = await aj.withRule(contactFormRateLimit).protect(req);
+
+  if (decision.isDenied()) {
+    if (decision.reason.isRateLimit()) {
+      return {
+        success: false,
+        message:
+          "You've sent too many messages. Please try again in an hour.",
+      };
+    }
+    return {
+      success: false,
+      message: "Your request was blocked. Please try again later.",
+    };
+  }
+
+  if (decision.isErrored()) {
+    console.warn("Arcjet error:", decision.reason.message);
+  }
+
+  return null;
+}
+
 export async function sendProjectEmail(
   formData: unknown
 ): Promise<FormEmailActionState> {
+  const blocked = await checkRateLimit();
+  if (blocked) return blocked;
+
   const parsed = projectSchema.safeParse(formData);
   if (!parsed.success) {
     return {
@@ -28,19 +58,7 @@ export async function sendProjectEmail(
     };
   }
 
-  const data = parsed.data;
-  const recipientEmail = process.env.CONTACT_EMAIL!;
-
-  await sendEmail({
-    from: "Danielinniel <no-reply@danielinniel.com>",
-    to: recipientEmail,
-    replyTo: data.email,
-    subject: `New Project Inquiry from ${data.name} - ${
-      data.category === "cover-art" ? "Cover Art" : "Concept & Design"
-    }`,
-    html: getProjectEmailTemplate(data),
-    text: generatePlainTextProjectEmail(data),
-  });
+  await sendProjectInquiryEmail(parsed.data);
 
   return {
     success: true,
@@ -51,6 +69,9 @@ export async function sendProjectEmail(
 export async function sendContactEmail(
   formData: unknown
 ): Promise<FormEmailActionState> {
+  const blocked = await checkRateLimit();
+  if (blocked) return blocked;
+
   const parsed = contactSchema.safeParse(formData);
   if (!parsed.success) {
     return {
@@ -60,17 +81,7 @@ export async function sendContactEmail(
     };
   }
 
-  const data = parsed.data;
-  const recipientEmail = process.env.CONTACT_EMAIL!;
-
-  await sendEmail({
-    from: "Danielinniel <no-reply@danielinniel.com>",
-    to: recipientEmail,
-    replyTo: data.email,
-    subject: `New Contact Message from ${data.name}`,
-    html: getContactEmailTemplate(data),
-    text: generatePlainTextContactEmail(data),
-  });
+  await sendContactFormEmail(parsed.data);
 
   return {
     success: true,

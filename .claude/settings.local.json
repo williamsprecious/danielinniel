@@ -6,7 +6,13 @@
       "Bash(npm install *)",
       "Bash(npm pkg *)",
       "Bash(npm run *)",
-      "WebFetch(domain:www.sanity.io)"
+      "WebFetch(domain:www.sanity.io)",
+      "Skill(sanity-best-practices)",
+      "Skill(content-modeling-best-practices)",
+      "Bash(npx sanity *)",
+      "Bash(npx tsc *)",
+      "Skill(inngest-events)",
+      "Bash(npx eslint *)"
     ]
   }
 }

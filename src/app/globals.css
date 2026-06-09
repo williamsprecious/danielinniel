@@ -1,12 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   /* Font */
-  --font-sans: var(--font-roboto);
-  --font-bowlby: var(--font-bowlby);
+  --font-sans: var(--font-roboto-mono);
+  --font-heading: var(--font-road-rage);
 
   --breakpoint-3xs: 16rem;
   --breakpoint-2xs: 18rem;
@@ -100,12 +101,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  h1 {
-    @apply font-bowlby max-[400px]:text-[30px] text-[32px] sm:text-[38px] md:text-[44px] 2xl:text-[52px];
-  }
-  h2 {
-    @apply text-[26px] font-bowlby text-center md:text-3xl lg:text-4xl 2xl:text-[46px];
-  }
+
   .modal-custom-scrollbar {
     scrollbar-width: thin !important;
     scrollbar-color: hsl(var(--border) / 0.3) transparent !important;
@@ -116,6 +112,29 @@
   .row-container {
     @apply max-w-[1900px] w-full mx-auto px-5 md:px-10 2xl:px-20;
   }
+}
+
+/* Brand styling for rendered Portable Text / markdown. @tailwindcss/typography
+   defaults to a gray palette (and `prose-invert` to flat white); map its color
+   variables to our theme tokens so prose content uses the site foreground.
+   Kept unlayered so it wins over the plugin's `utilities`-layer defaults. */
+.prose {
+  --tw-prose-body: color-mix(in oklab, var(--foreground) 85%, transparent);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: color-mix(in oklab, var(--foreground) 85%, transparent);
+  --tw-prose-links: var(--foreground);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: color-mix(in oklab, var(--foreground) 70%, transparent);
+  --tw-prose-bullets: color-mix(in oklab, var(--foreground) 50%, transparent);
+  --tw-prose-quotes: color-mix(in oklab, var(--foreground) 75%, transparent);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-hr: var(--border);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
 }
 
 ::selection {
