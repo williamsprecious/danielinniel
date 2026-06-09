@@ -383,8 +383,8 @@ export const productType = defineType({
     defineField({
       name: "shipping",
       title: "Shipping & Returns",
-      type: "text",
-      rows: 3,
+      type: "array",
+      of: [defineArrayMember({ type: "block" })],
       description:
         "Shipping window + returns blurb shown in the Shipping accordion. For digital products, use this to describe delivery (e.g., 'Instant download — link sent on purchase'). Leave empty to hide.",
     }),

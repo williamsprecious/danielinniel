@@ -11,6 +11,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useInfiniteProducts } from "@/hooks/useInfiniteProducts";
 import type { ProductListResult, ShopCategory } from "@/lib/shop-types";
+import { PRODUCT_PAGE_SIZE } from "@/lib/utils";
 
 type ShopViewProps = {
   categories: ShopCategory[];
@@ -27,7 +28,7 @@ const ALL_OPTION: CategoryFilterOption = {
 const ShopView = ({
   categories,
   initialProducts,
-  pageSize = 12,
+  pageSize = PRODUCT_PAGE_SIZE,
 }: ShopViewProps) => {
   const [categorySlug, setCategorySlug] = useState<string | null>(null);
 
@@ -75,6 +76,7 @@ const ShopView = ({
               value={categorySlug}
               onChange={setCategorySlug}
               items={items}
+              loading={loading}
             />
           )}
         </div>
@@ -85,7 +87,7 @@ const ShopView = ({
           ))}
         </div>
 
-        {loading && <LoadingSpinner className="py-8" />}
+        {loading && <LoadingSpinner className="py-12" />}
 
         {hasMore && !loading && <div ref={loadMoreRef} className="h-4" />}
 

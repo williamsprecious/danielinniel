@@ -40,7 +40,7 @@ const ProductAccordion = ({
               className="group flex w-full cursor-pointer items-center justify-between py-5 text-left transition-colors hover:text-foreground"
               aria-expanded={isOpen}
             >
-              <span className="text-base font-medium text-foreground/90 group-hover:text-foreground">
+              <span className="text-base font-medium text-foreground/90 group-hover:text-foreground md:text-lg">
                 {section.title}
               </span>
               <motion.span

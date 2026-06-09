@@ -121,14 +121,10 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
     });
   }
 
-  if (product.shipping) {
+  if (product.shipping?.length) {
     accordionSections.push({
       title: product.type === "digital" ? "Delivery" : "Shipping & Returns",
-      content: (
-        <div className="flex flex-col gap-3">
-          <p>{product.shipping}</p>
-        </div>
-      ),
+      content: <PortableText value={product.shipping} />,
     });
   }
 
@@ -263,7 +259,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || isAdding}
                 className={cn(
-                  "flex h-16 w-96 max-w-full flex-1 items-center justify-center gap-2.5 rounded-full transition-all duration-300 2xl:h-20 2xl:w-[400px] 2xl:gap-3.5",
+                  "max-sm:w-full flex h-16 w-96 max-w-full flex-1 items-center justify-center gap-2.5 rounded-full transition-all duration-300 2xl:h-20 2xl:w-[400px] 2xl:gap-3.5",
                   isOutOfStock
                     ? "cursor-not-allowed bg-foreground/10 text-foreground/40"
                     : isAdding
@@ -273,13 +269,21 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
               >
                 <ShoppingBag className="size-4 md:size-5 2xl:size-6" />
                 <span className="text-base font-medium tracking-wide lg:text-base 2xl:text-xl">
-                  {isOutOfStock ? "Out of Stock" : isAdding ? "Adding..." : "Add To Cart"}
+                  {isOutOfStock
+                    ? "Out of Stock"
+                    : isAdding
+                      ? "Adding..."
+                      : "Add To Cart"}
                 </span>
               </button>
             </div>
 
             {accordionSections.length > 0 && (
-              <ProductAccordion className="mt-2" sections={accordionSections} />
+              <ProductAccordion
+                className="mt-2"
+                sections={accordionSections}
+                defaultOpen={product.description?.length ? 0 : undefined}
+              />
             )}
           </motion.div>
         </div>

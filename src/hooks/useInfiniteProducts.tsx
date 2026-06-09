@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { loadMoreProducts } from "@/actions/product.action";
 import type { ProductListItem, ProductListResult } from "@/lib/shop-types";
+import { PRODUCT_PAGE_SIZE } from "@/lib/utils";
 
 interface UseInfiniteProductsProps {
   categorySlug: string | null;
@@ -26,7 +27,7 @@ export const useInfiniteProducts = ({
   categorySlug,
   initialProducts,
   initialCategorySlug = null,
-  limit = 12,
+  limit = PRODUCT_PAGE_SIZE,
 }: UseInfiniteProductsProps): UseInfiniteProductsReturn => {
   const [items, setItems] = useState<ProductListItem[]>(initialProducts.items);
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,7 @@ export const useInfiniteProducts = ({
       loadingRef.current = true;
       setLoading(true);
       setError(null);
+      if (reset) setItems([]);
 
       try {
         const start = page * limit;

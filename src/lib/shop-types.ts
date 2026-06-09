@@ -53,7 +53,7 @@ export type ProductDetail = {
   options: ProductOption[];
   variants: ProductVariant[];
   specifications: { label: string; value: string }[];
-  shipping?: string;
+  shipping?: PortableTextBlock[];
 };
 
 export type ProductListResult = {

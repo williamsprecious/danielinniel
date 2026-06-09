@@ -377,7 +377,24 @@ export type Product = {
     _type: "specRow";
     _key: string;
   }>;
-  shipping?: string;
+  shipping?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
 };
 
 export type Slug = {
@@ -728,7 +745,24 @@ export type PRODUCT_BY_SLUG_QUERY_RESULT = {
   priceNGN: number | null;
   compareAtPriceNGN: number | null;
   stock: number | null;
-  shipping: string | null;
+  shipping: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
   specifications: Array<{
     label: string | null;
     value: string | null;

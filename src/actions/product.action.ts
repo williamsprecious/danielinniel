@@ -2,19 +2,12 @@
 
 import { getProducts } from "@/sanity/queries/products";
 import type { ProductListResult } from "@/lib/shop-types";
+import { PRODUCT_PAGE_SIZE } from "@/lib/utils";
 
-/**
- * Server Action used by the client-side infinite-scroll hook to fetch
- * subsequent pages and re-filter on category change. Initial page-load
- * data is fetched directly in the shop server component via
- * `getProducts` from `@/sanity/queries/products` — calling that
- * directly preserves Sanity Live caching that the action boundary
- * would otherwise bypass.
- */
 export async function loadMoreProducts(
   categorySlug: string | null,
   start: number,
-  limit = 12,
+  limit = PRODUCT_PAGE_SIZE,
 ): Promise<ProductListResult> {
   return getProducts(categorySlug, start, limit);
 }

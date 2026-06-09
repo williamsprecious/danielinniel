@@ -1,5 +1,6 @@
 import type { PortableTextBlock } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/live";
+import { PRODUCT_PAGE_SIZE } from "@/lib/utils";
 import {
   PRODUCT_LIST_QUERY,
   PRODUCT_LIST_COUNT_QUERY,
@@ -173,14 +174,14 @@ const normalizeDetail = (raw: RawDetail): ProductDetail | null => {
     options,
     variants,
     specifications,
-    shipping: raw.shipping ?? undefined,
+    shipping: (raw.shipping ?? undefined) as PortableTextBlock[] | undefined,
   };
 };
 
 export async function getProducts(
   categorySlug: string | null,
   start = 0,
-  limit = 12,
+  limit = PRODUCT_PAGE_SIZE,
 ): Promise<ProductListResult> {
   try {
     let categoryId: string | null = null;
