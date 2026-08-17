@@ -11,7 +11,7 @@ const WorksPage = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section className="row-container pt-20 pb-36 space-y-12 md:space-y-16 md:pt-44 md:pb-40 lg:space-y-20 2xl:space-y-24 2xl:pt-52 2xl:pb-48">
+    <section className="row-container pt-40 pb-36 space-y-12 md:space-y-16 md:pt-44 md:pb-40 lg:space-y-20 2xl:space-y-24 2xl:pt-52 2xl:pb-48">
       <div className="max-w-2xl mx-auto space-y-6 min-[580px]:px-10 md:px-5 2xl:max-w-3xl 2xl:space-y-7">
         <HeaderText title="My Works" />
 

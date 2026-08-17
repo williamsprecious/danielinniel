@@ -59,7 +59,7 @@ const ShopView = ({
 
   return (
     <>
-      <section className="row-container pt-16 pb-24 md:pt-36 md:pb-32 2xl:pt-44 2xl:pb-40">
+      <section className="row-container pt-36 pb-24 md:pt-36 md:pb-32 2xl:pt-44 2xl:pb-40">
         <div className="">
           <motion.h1
             initial={{ opacity: 0, y: 14 }}

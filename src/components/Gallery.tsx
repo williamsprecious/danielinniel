@@ -11,7 +11,7 @@ const Gallery = ({
   type,
 }: GalleryProps) => {
   return (
-    <section className="relative pt-20 pb-20 md:pt-40 md:pb-24 2xl:pt-48">
+    <section className="relative pt-40 pb-20 md:pt-40 md:pb-24 2xl:pt-48">
       <GalleryFilter
         title={title}
         filterValues={filterValues}

@@ -41,7 +41,8 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 
   const faceCount: number = galleryImages.length;
   // Calculate radius so the edges of the square faces perfectly touch (forming a prism)
-  const radius: number = faceWidth / 2 / Math.tan(Math.PI / faceCount);
+  const radius: number =
+    Math.round((faceWidth / 2 / Math.tan(Math.PI / faceCount)) * 100) / 100;
 
   const dragFactor: number = 0.05;
   const rotation = useMotionValue(0);

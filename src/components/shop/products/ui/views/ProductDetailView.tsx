@@ -156,7 +156,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
 
   return (
     <>
-      <section className="row-container pt-16 pb-24 md:pt-32 md:pb-32 2xl:pt-40 2xl:pb-40">
+      <section className="row-container pt-36 pb-24 md:pt-32 md:pb-32 2xl:pt-40 2xl:pb-40">
         <Breadcrumb className="text-xs sm:text-sm">
           <BreadcrumbList>
             <BreadcrumbItem>
