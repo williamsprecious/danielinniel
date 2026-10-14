@@ -21,7 +21,7 @@ const CoverArtPage = () => {
           }}
           whileInView={{
             y: 0,
-            opacity: 0.95,
+            opacity: 1,
           }}
           transition={{
             type: "spring",
@@ -31,17 +31,17 @@ const CoverArtPage = () => {
             delay: 0.25,
           }}
           viewport={{ amount: 0.3, once: true }}
-          className="text-center text-base max-sm:leading-[1.4] font-light sm:text-lg md:text-xl"
+          className="mx-auto max-w-xl text-center text-base font-normal leading-relaxed text-foreground/75 sm:text-lg"
         >
-          Cover Art grades ranges from{" "}
-          <span className="text-transparent font-semibold bg-clip-text bg-radial from-[#a5d4d0] via-[#7cbcc3] to-[#6cb0bb]">
+          Choose{" "}
+          <span className="font-medium text-primary">
             Essential
           </span>{" "}
-          for standard artworks to{" "}
-          <span className="text-transparent font-semibold bg-clip-text bg-radial from-[#a5d4d0] via-[#7cbcc3] to-[#6cb0bb]">
+          for a focused illustration, or{" "}
+          <span className="font-medium text-primary">
             Advanced
           </span>{" "}
-          for more detailed and polished artworks.
+          for greater detail and richer motion.
         </motion.p>
       </div>
 

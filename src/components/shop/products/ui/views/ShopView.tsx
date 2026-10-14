@@ -65,7 +65,7 @@ const ShopView = ({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center text-5xl font-heading md:text-7xl"
+            className="text-center text-4xl font-heading md:text-5xl lg:text-6xl 2xl:text-7xl"
           >
             Shop All
           </motion.h1>

@@ -170,9 +170,9 @@ const About = () => {
 
         <div
           ref={textRef}
-          className="absolute inset-0 flex flex-col items-center justify-center p-8 z-10"
+          className="absolute inset-0 flex flex-col items-center justify-center px-5 py-8 md:p-8 z-10"
         >
-          <p className="text-3xl font-heading sm:text-4xl md:text-5xl lg:text-6xl text-center leading-[1.3] md:leading-[1.15] text-foreground/90 md:mix-blend-difference w-[95%] md:w-[85%] lg:w-[80%] xl:w-[70%] 2xl:text-7xl">
+          <p className="text-3xl font-heading sm:text-[34px] md:text-[40px] lg:text-5xl text-center leading-[1.3] md:leading-[1.15] text-foreground/90 md:mix-blend-difference w-full md:w-[85%] lg:w-[80%] xl:w-[70%] 2xl:text-6xl">
             {WORDS.map((word, wordIndex) => (
               <span
                 key={`word-${wordIndex}`}

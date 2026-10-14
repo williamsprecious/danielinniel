@@ -41,7 +41,7 @@ const CoverCard = ({
         </div>
         <div className="flex flex-1 flex-col px-4 pt-6 pb-2 sm:px-5 2xl:px-6 2xl:pt-7">
           <div className="flex items-center justify-between gap-4">
-            <h3 className="font-heading text-4xl tracking-wide 2xl:text-5xl">
+            <h3 className="font-heading text-3xl tracking-wide 2xl:text-4xl">
               {text}
             </h3>
             <div className="shrink-0 text-right">

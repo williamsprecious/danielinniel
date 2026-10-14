@@ -206,7 +206,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
                 </div>
               )}
 
-              <h1 className="max-[360px]:text-5xl font-heading text-6xl md:text-7xl lg:text-8xl 2xl:text-9xl">
+              <h1 className="max-[360px]:text-4xl font-heading text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl">
                 {product.title}
               </h1>
 

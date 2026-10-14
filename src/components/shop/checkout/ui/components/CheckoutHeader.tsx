@@ -43,7 +43,7 @@ const CheckoutHeader = () => {
         ) : (
           <div className="size-9" aria-hidden />
         )}
-        <h1 className="flex-1 text-center font-heading text-3xl md:text-4xl tracking-wider">
+        <h1 className="flex-1 text-center font-heading text-2xl md:text-3xl tracking-wider">
           {title}
         </h1>
         <div className="size-9" aria-hidden />

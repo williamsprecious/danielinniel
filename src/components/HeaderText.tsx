@@ -35,7 +35,7 @@ const HeaderText = ({
         }}
         viewport={{ amount: 0.3, once: true }}
         className={cn(
-          "font-heading text-6xl md:text-7xl lg:text-8xl 2xl:text-9xl",
+          "font-heading text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl",
           underline && "underline underline-offset-8",
           className,
         )}
@@ -64,7 +64,7 @@ const HeaderText = ({
       }}
       viewport={{ amount: 0.3, once: true }}
       className={cn(
-        "font-heading text-5xl text-center md:text-6xl lg:text-7xl 2xl:text-8xl",
+        "font-heading text-4xl text-center md:text-5xl lg:text-6xl 2xl:text-7xl",
         underline && "underline underline-offset-8",
         className,
       )}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Road_Rage, Inter } from "next/font/google";
+import { Barlow_Condensed, Inter } from "next/font/google";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
 import CartBootRevalidator from "@/components/shop/cart/CartBootRevalidator";
 import SparklesBackground from "@/components/SparklesBackground";
@@ -9,10 +9,10 @@ import { isCurrencyCode, type CurrencyRates } from "@/lib/currencies";
 
 import "../globals.css";
 
-const roadRage = Road_Rage({
+const headingFont = Barlow_Condensed({
   subsets: ["latin"],
-  variable: "--font-road-rage",
-  weight: ["400"],
+  variable: "--font-site-heading",
+  weight: ["600"],
 });
 
 const inter = Inter({
@@ -48,7 +48,7 @@ export default async function SiteLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roadRage.variable} ${inter.variable} font-sans relative antialiased`}
+        className={`${headingFont.variable} ${inter.variable} font-sans relative antialiased`}
       >
         <SparklesBackground />
         <CurrencyProvider initialRates={initialRates}>

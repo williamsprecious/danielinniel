@@ -70,7 +70,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
       <div className="flex flex-col gap-1.5 px-0.5">
         <Link href={`/shop/${product.slug}`} className="w-fit">
-          <h3 className="text-2xl font-heading font-normal leading-tight text-foreground sm:text-3xl">
+          <h3 className="text-xl font-heading font-normal leading-tight text-foreground sm:text-2xl">
             {product.title}
           </h3>
         </Link>
