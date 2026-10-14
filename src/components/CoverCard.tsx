@@ -29,7 +29,7 @@ const CoverCard = ({
     >
       <Link
         href={href}
-        className="group flex h-full w-full flex-col rounded-2xl border border-border/60 bg-background p-2 text-left transition-colors duration-300 hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary 2xl:p-3"
+        className="group flex h-full w-full flex-col rounded-2xl border border-border/60 bg-background p-2 text-left transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary 2xl:p-3"
       >
         <div className="aspect-square overflow-hidden rounded-xl">
           <Image
