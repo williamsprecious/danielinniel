@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Road_Rage, Roboto_Mono } from "next/font/google";
+import { Road_Rage, Inter } from "next/font/google";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
 import CartBootRevalidator from "@/components/shop/cart/CartBootRevalidator";
 import SparklesBackground from "@/components/SparklesBackground";
@@ -15,9 +15,9 @@ const roadRage = Road_Rage({
   weight: ["400"],
 });
 
-const robotoMono = Roboto_Mono({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-roboto-mono",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -48,7 +48,7 @@ export default async function SiteLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roadRage.variable} ${robotoMono.variable} font-sans relative antialiased`}
+        className={`${roadRage.variable} ${inter.variable} font-sans relative antialiased`}
       >
         <SparklesBackground />
         <CurrencyProvider initialRates={initialRates}>

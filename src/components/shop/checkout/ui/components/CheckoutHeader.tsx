@@ -22,7 +22,7 @@ const CheckoutHeader = () => {
       {pathname === "/checkout" && (
         <StickyBanner
           storageKey="checkout-ngn-notice"
-          className="bg-primary text-foreground text-sm"
+          className="bg-secondary text-secondary-foreground text-xs md:text-sm"
         >
           <span className="text-center">
             Payment settles in <span className="font-semibold">NGN</span>,

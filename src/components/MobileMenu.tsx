@@ -88,7 +88,7 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
                   whileTap={{ scale: 0.95 }}
                 >
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="mobile-menu"
                     onClick={() => {
                       onClose();
@@ -97,7 +97,7 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
                       setCategory("concept-and-design");
                       toggleOpen(true);
                     }}
-                    className="px-2 py-2.5 text-base! sm:py-3 bg-primary hover:bg-primary"
+                    className="px-2 py-2.5 text-base! sm:py-3"
                     aria-label="Start Project"
                   >
                     <ScrollingText

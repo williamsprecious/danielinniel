@@ -108,7 +108,7 @@ const ServiceCard = ({
           )}
         </div>
         <div className="z-2 flex flex-shrink-0 items-center justify-between font-sans px-4 pb-3 sm:pb-3.5 lg:pb-1.5 lg:px-2 2xl:pt-1.5 2xl:pb-4">
-          <h3 className="font-medium max-sm:text-[22px] max-md:text-xl max-lg:text-xl lg:text-xl 2xl:text-[26px]">
+          <h3 className="font-semibold max-sm:text-[22px] max-md:text-xl max-lg:text-xl lg:text-xl 2xl:text-[26px]">
             {text}
           </h3>
           <span className="text-xs opacity-50">

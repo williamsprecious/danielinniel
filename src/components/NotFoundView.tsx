@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const NotFoundView = () => {
   return (
@@ -8,29 +9,26 @@ const NotFoundView = () => {
           404
         </p>
 
-        <h1 className="font-heading text-3xl tracking-wider md:text-4xl">
-          Lost in the canvas
-        </h1>
-
-        <p className="max-w-md text-sm text-foreground/60 md:text-base">
-          The page you&apos;re looking for has drifted off-canvas — or never
-          existed. Find your way back below.
-        </p>
-
-        <div className="mt-2 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Link
-            href="/"
-            className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            BACK TO HOME
-          </Link>
-          <Link
-            href="/shop"
-            className="text-sm font-medium text-foreground/80 underline-offset-4 transition-colors hover:text-foreground hover:underline"
-          >
-            Browse the shop →
-          </Link>
+        <div className="space-y-3">
+          <h1 className="text-2xl font-medium tracking-tight md:text-3xl">
+            Page not found
+          </h1>
+          <p className="max-w-sm text-sm leading-relaxed text-foreground/70 md:text-base">
+            This page may have moved or is no longer available.
+          </p>
         </div>
+
+        <nav
+          aria-label="Page recovery"
+          className="mt-2 grid w-full max-w-xs gap-3 sm:max-w-md sm:grid-cols-2"
+        >
+          <Button asChild size="md" className="h-12 w-full">
+            <Link href="/">Go to homepage</Link>
+          </Button>
+          <Button asChild variant="outline" size="md" className="h-12 w-full">
+            <Link href="/shop">Browse shop</Link>
+          </Button>
+        </nav>
       </div>
     </main>
   );

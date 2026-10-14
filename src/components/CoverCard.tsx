@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
-import { TbCircleCheck } from "react-icons/tb";
-import { cn } from "@/lib/utils";
+import { ArrowUpRight, Check } from "lucide-react";
 import { CometCard } from "./ui/comet-card";
 
 interface CoverCardProps {
@@ -22,44 +21,65 @@ const CoverCard = ({
   features,
 }: CoverCardProps) => {
   return (
-    <CometCard viewDelay={viewDelay}>
+    <CometCard
+      viewDelay={viewDelay}
+      rotateDepth={6}
+      translateDepth={5}
+      className="h-full w-full"
+    >
       <Link
         href={href}
-        className={cn(
-          "flex w-full h-full cursor-pointer flex-col items-stretch rounded-[16px] border border-solid border-border/50 bg-[#0e0d0d] px-2 pt-4 2xl:px-3",
-        )}
+        className="group flex h-full w-full flex-col rounded-2xl border border-border/60 bg-background p-2 text-left transition-colors duration-300 hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary 2xl:p-3"
       >
-        <div className="mx-2">
-          <Image src={src} className="rounded-[8px]" alt="Character" />
+        <div className="aspect-square overflow-hidden rounded-xl">
+          <Image
+            src={src}
+            className="h-full w-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.025]"
+            alt={`${text} cover art example`}
+            sizes="(min-width: 1536px) 552px, (min-width: 768px) 424px, calc(100vw - 56px)"
+          />
         </div>
-        <div
-          className={cn(
-            "z-2 flex flex-shrink-0 flex-col gap-3 font-sans py-5 px-3.5 md:py-6",
-          )}
-        >
-          <div className="flex items-center justify-between">
-            <h3
-              className={cn("font-medium text-xl lg:text-[22px] 2xl:text-2xl")}
-            >
+        <div className="flex flex-1 flex-col px-4 pt-6 pb-2 sm:px-5 2xl:px-6 2xl:pt-7">
+          <div className="flex items-center justify-between gap-4">
+            <h3 className="font-heading text-4xl tracking-wide 2xl:text-5xl">
               {text}
             </h3>
-            <span className="text-lg opacity-60 lg:text-xl 2xl:text-[22px]">
-              ${priceTag}
-            </span>
+            <div className="shrink-0 text-right">
+              <span className="block text-xs text-foreground/60">
+                Starting at
+              </span>
+              <span className="mt-1 block text-xl font-medium tabular-nums 2xl:text-2xl">
+                ${priceTag.replace(/\+$/, "")}
+              </span>
+            </div>
           </div>
 
           {features && features.length > 0 && (
-            <ul className="mt-1.5 grid grid-cols-1 gap-1.5 text-xs leading-snug text-white/70 2xl:grid-cols-2">
-              {features.map((feature) => (
-                <li key={feature} className="flex items-start gap-2">
-                  <span className="mt-[2px] text-[#a5d4d0]">
-                    <TbCircleCheck className="size-3.5" />
-                  </span>
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-5 border-t border-border/60 pt-5">
+              <p className="mb-4 text-xs font-medium tracking-widest text-foreground/50 uppercase">
+                What&apos;s included
+              </p>
+              <ul className="space-y-3 text-sm leading-relaxed text-foreground/80 2xl:text-base">
+                {features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3">
+                    <Check
+                      aria-hidden="true"
+                      className="mt-1 size-4 shrink-0 text-primary"
+                      strokeWidth={1.75}
+                    />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
+          <div className="flex-1" />
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-border/60 py-4 text-sm font-medium 2xl:mt-7">
+            <span>View {text.toLowerCase()} examples</span>
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-secondary-foreground group-focus-visible:bg-primary group-focus-visible:text-secondary-foreground">
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+            </span>
+          </div>
         </div>
       </Link>
     </CometCard>

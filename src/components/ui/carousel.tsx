@@ -1,12 +1,14 @@
 "use client";
 
 import { IconArrowNarrowRight } from "@tabler/icons-react";
-import { useState, useRef, useId, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, type PanInfo } from "motion/react";
 import ButtonAnimationWrapper from "@/components/ButtonAnimationWrapper";
 import { Button } from "@/components/ui/button";
 import useFancybox from "@/hooks/useFancybox";
 import { Image } from "next-sanity/image";
 import Link from "next/link";
+import { getSwipeDirection } from "@/lib/carousel-gesture";
 
 interface SlideData {
   title: string;
@@ -64,6 +66,11 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   }, []);
 
   const handleMouseMove = (event: React.MouseEvent) => {
+    if (event.buttons !== 0) {
+      xRef.current = 0;
+      yRef.current = 0;
+      return;
+    }
     const el = slideRef.current;
     if (!el) return;
 
@@ -86,7 +93,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   return (
     <li
       ref={slideRef}
-      className="flex flex-1 flex-col cursor-pointer items-center justify-center relative text-center text-white opacity-100 transition-all duration-300 ease-in-out w-[70vmin] h-[70vmin] mx-[4vmin] z-10 [perspective:1200px] [transform-style:preserve-3d] sm:w-[65vmin] sm:h-[65vmin]"
+      className="flex flex-1 flex-col cursor-grab active:cursor-grabbing items-center justify-center relative text-center text-white opacity-100 transition-all duration-300 ease-in-out w-[70vmin] h-[70vmin] mx-[4vmin] z-10 [perspective:1200px] [transform-style:preserve-3d] sm:w-[65vmin] sm:h-[65vmin]"
       onClick={() => handleSlideClick(index)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -120,6 +127,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
           onLoad={imageLoaded}
           loading="eager"
           decoding="sync"
+          draggable={false}
         />
         {current === index && (
           <div className="absolute inset-0 bg-black/30 transition-all duration-1000" />
@@ -131,7 +139,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
           current === index ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        <h2 className="text-xl text-center md:text-2xl lg:text-3xl font-sans font-semibold relative 2xl:text-4xl">
+        <h2 className="text-xl text-center tracking-[-1px] md:text-2xl lg:text-3xl font-sans font-semibold relative 2xl:text-4xl">
           {title}
         </h2>
         <div
@@ -145,6 +153,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block"
+                draggable={false}
                 onClick={(e) => e.stopPropagation()}
               >
                 <Button
@@ -161,6 +170,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
                 data-fancybox="featured-gallery"
                 data-caption={slide.title}
                 className="inline-block"
+                draggable={false}
                 onClick={(e) => e.stopPropagation()}
               >
                 <Button
@@ -192,10 +202,12 @@ const CarouselControl = ({
 }: CarouselControlProps) => {
   return (
     <button
+      type="button"
       className={`w-10 h-10 cursor-pointer flex items-center mx-2 justify-center bg-neutral-200 dark:bg-neutral-800 border-3 border-transparent rounded-full focus:border-primary focus:outline-none hover:-translate-y-0.5 active:translate-y-0.5 transition duration-200 ${
         type === "previous" ? "rotate-180" : ""
       }`}
       title={title}
+      aria-label={title}
       onClick={handleClick}
     >
       <IconArrowNarrowRight className="text-neutral-600 dark:text-neutral-200" />
@@ -206,7 +218,7 @@ const CarouselControl = ({
 interface CarouselProps {
   slides: SlideData[];
   autoPlayInterval?: number;
-  pauseOnHover?: boolean; // Pause auto-play on hover (default: true)
+  pauseOnHover?: boolean;
 }
 
 const DEFAULT_AUTO_PLAY_INTERVAL = 5000;
@@ -217,13 +229,16 @@ export default function Carousel({
   autoPlayInterval = DEFAULT_AUTO_PLAY_INTERVAL,
   pauseOnHover = false,
 }: CarouselProps) {
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(slides.length > 1 ? 1 : 0);
+  const activeIndex = current % Math.max(slides.length, 1);
 
   // Refs to track auto-play state without causing re-renders
   const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPausedRef = useRef(false);
   const isHoveredRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const suppressClickRef = useRef(false);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
   const [fancyboxRef] = useFancybox({
@@ -247,10 +262,8 @@ export default function Carousel({
   );
 
   const advanceToNext = useCallback(() => {
-    setCurrent((prev) => {
-      const next = prev + 1;
-      return next === slides.length ? 0 : next;
-    });
+    if (slides.length <= 1) return;
+    setCurrent((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
 
   const stopAutoPlay = useCallback(() => {
@@ -262,7 +275,12 @@ export default function Carousel({
 
   const startAutoPlay = useCallback(() => {
     // Don't start if paused, hovered, or only one slide
-    if (isPausedRef.current || isHoveredRef.current || slides.length <= 1) {
+    if (
+      isPausedRef.current ||
+      isHoveredRef.current ||
+      isDraggingRef.current ||
+      slides.length <= 1
+    ) {
       return;
     }
 
@@ -273,7 +291,11 @@ export default function Carousel({
 
     autoPlayIntervalRef.current = setInterval(() => {
       // Double-check pause state before advancing
-      if (!isPausedRef.current && !isHoveredRef.current) {
+      if (
+        !isPausedRef.current &&
+        !isHoveredRef.current &&
+        !isDraggingRef.current
+      ) {
         advanceToNext();
       }
     }, autoPlayInterval);
@@ -301,6 +323,7 @@ export default function Carousel({
   }, [stopAutoPlay, startAutoPlay]);
 
   const resumeAutoPlay = useCallback(() => {
+    if (isDraggingRef.current) return;
     // Clear any existing resume timeout
     if (resumeTimeoutRef.current) {
       clearTimeout(resumeTimeoutRef.current);
@@ -309,7 +332,7 @@ export default function Carousel({
 
     // Resume after a delay, but only if conditions are met
     resumeTimeoutRef.current = setTimeout(() => {
-      if (!isHoveredRef.current) {
+      if (!isHoveredRef.current && !isDraggingRef.current) {
         isPausedRef.current = false;
         startAutoPlay();
       }
@@ -351,10 +374,10 @@ export default function Carousel({
   }, [pauseOnHover, resumeAutoPlay]);
 
   const handlePreviousClick = useCallback(() => {
-    const previous = current - 1;
-    setCurrent(previous < 0 ? slides.length - 1 : previous);
+    if (slides.length <= 1) return;
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
     resetAutoPlay();
-  }, [current, slides.length, resetAutoPlay]);
+  }, [slides.length, resetAutoPlay]);
 
   const handleNextClick = useCallback(() => {
     advanceToNext();
@@ -363,40 +386,92 @@ export default function Carousel({
 
   const handleSlideClick = useCallback(
     (index: number) => {
-      if (current !== index) {
+      if (activeIndex !== index) {
         setCurrent(index);
         resetAutoPlay();
       }
     },
-    [current, resetAutoPlay],
+    [activeIndex, resetAutoPlay],
   );
 
-  const id = useId();
+  const handleDragStart = useCallback(() => {
+    isDraggingRef.current = true;
+    suppressClickRef.current = true;
+    pauseAutoPlay();
+  }, [pauseAutoPlay]);
+
+  const handleDragEnd = useCallback(
+    (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      isDraggingRef.current = false;
+      if (event.type !== "pointercancel" && slides.length > 1) {
+        const direction = getSwipeDirection(
+          info,
+          carouselRef.current?.clientWidth ?? 0,
+        );
+        if (direction !== 0) {
+          setCurrent(
+            (prev) => (prev + direction + slides.length) % slides.length,
+          );
+        }
+      }
+      resumeAutoPlay();
+    },
+    [slides.length, resumeAutoPlay],
+  );
+
+  const handleClickCapture = useCallback((event: React.MouseEvent) => {
+    // Block the click generated by a drag release, including Fancybox links.
+    // A new pointer press clears this flag; keyboard clicks remain available.
+    if (suppressClickRef.current && event.detail !== 0) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, []);
+
+  if (slides.length === 0) return null;
 
   return (
     <div
       ref={setCombinedRefs}
       className="relative w-[70vmin] h-[70vmin] mx-auto sm:w-[65vmin] sm:h-[65vmin]"
-      aria-labelledby={`carousel-heading-${id}`}
+      role="region"
+      aria-label="Featured works"
+      aria-roledescription="carousel"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <ul
-        className="absolute flex mx-[-4vmin] transition-transform duration-1000 ease-in-out"
-        style={{
-          transform: `translateX(-${current * (100 / slides.length)}%)`,
+      <motion.div
+        className="absolute inset-0 touch-pan-y select-none cursor-grab active:cursor-grabbing"
+        drag={slides.length > 1 ? "x" : false}
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={1}
+        dragMomentum={false}
+        dragSnapToOrigin
+        dragTransition={{ bounceStiffness: 600, bounceDamping: 40 }}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onPointerDownCapture={() => {
+          suppressClickRef.current = false;
         }}
+        onClickCapture={handleClickCapture}
       >
-        {slides.map((slide, index) => (
-          <Slide
-            key={index}
-            slide={slide}
-            index={index}
-            current={current}
-            handleSlideClick={handleSlideClick}
-          />
-        ))}
-      </ul>
+        <ul
+          className="absolute flex mx-[-4vmin] transition-transform duration-1000 ease-in-out"
+          style={{
+            transform: `translateX(-${activeIndex * (100 / slides.length)}%)`,
+          }}
+        >
+          {slides.map((slide, index) => (
+            <Slide
+              key={slide._id}
+              slide={slide}
+              index={index}
+              current={activeIndex}
+              handleSlideClick={handleSlideClick}
+            />
+          ))}
+        </ul>
+      </motion.div>
 
       <div className="absolute flex justify-center w-full top-[calc(100%+2rem)] lg:top-[calc(100%+3rem)] 2xl:top-[calc(100%+4rem)]">
         <CarouselControl

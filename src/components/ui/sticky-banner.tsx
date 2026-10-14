@@ -69,7 +69,7 @@ export const StickyBanner = ({
           className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
           onClick={handleDismiss}
         >
-          <CloseIcon className="h-5 w-5 text-white" />
+          <CloseIcon className="h-5 w-5 text-current" />
         </button>
       </div>
     </motion.div>

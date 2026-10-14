@@ -6,7 +6,7 @@
 
 @theme inline {
   /* Font */
-  --font-sans: var(--font-roboto-mono);
+  --font-sans: var(--font-inter);
   --font-heading: var(--font-road-rage);
 
   --breakpoint-3xs: 16rem;

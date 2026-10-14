@@ -20,63 +20,71 @@ import ScrollingText from "@/components/ScrollingText";
 
 const Header = () => {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+
+  // A new route gets fresh scroll/menu state and a fresh Motion initial position.
+  return <HeaderContent key={pathname} isHomePage={pathname === "/"} />;
+};
+
+const hasReachedHomeServices = () => {
+  const services = document.getElementById("services-section");
+  return services !== null && services.getBoundingClientRect().top <= 0;
+};
+
+const HeaderContent = ({ isHomePage }: { isHomePage: boolean }) => {
   const [isVisible, setIsVisible] = useState(!isHomePage); // Hide on home page initially
+  const [isPastHomeIntro, setIsPastHomeIntro] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const headerRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { toggleOpen, setCategory, setStep, step } = useNewBooking();
+  const isHeaderVisible = isVisible && (!isHomePage || isPastHomeIntro);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious();
-
-    // Check if we've scrolled past the About section (into Services)
-    let hasReachedServices = false;
-    const aboutElement = document.getElementById("about-section");
-    if (aboutElement) {
-      const rect = aboutElement.getBoundingClientRect();
-      hasReachedServices = rect.bottom <= 100;
-    }
-
-    if (previous !== undefined) {
-      if (isHomePage) {
-        // On home page: only show header after scrolling past About into Services
-        if (hasReachedServices) {
-          // Once in Services, use normal scroll behavior
-          if (latest < previous || latest < 100) {
-            setIsVisible(true);
-          } else {
-            setIsVisible(false);
-            setIsMenuOpen(false);
-          }
-        } else {
-          // Before Services section, hide header
-          setIsVisible(false);
-          setIsMenuOpen(false);
-        }
-      } else {
-        // On other pages: original behavior
-        if (latest < previous || latest < 100) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-          setIsMenuOpen(false);
-        }
+    if (isHomePage) {
+      const hasReachedServices = hasReachedHomeServices();
+      setIsPastHomeIntro(hasReachedServices);
+      if (!hasReachedServices) {
+        setIsVisible(false);
+        setIsMenuOpen(false);
+        return;
       }
     }
+
+    const previous = scrollY.getPrevious();
+    if (previous === undefined || latest === previous) return;
+
+    const shouldShow = latest < previous || latest < 100;
+    setIsVisible(shouldShow);
+    if (!shouldShow) setIsMenuOpen(false);
   });
 
-  // Reset header visibility + close menu when route changes.
-  // React docs pattern for "adjust state when a prop changes" — runs during
-  // render via a prev-value comparison, not in an effect.
-  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  const [prevIsHomePage, setPrevIsHomePage] = useState(isHomePage);
-  if (isHomePage !== prevIsHomePage) {
-    setPrevIsHomePage(isHomePage);
-    setIsVisible(!isHomePage);
-    setIsMenuOpen(false);
-  }
+  useEffect(() => {
+    if (!isHomePage) return;
+
+    const syncHomeBoundary = () => {
+      const hasReachedServices = hasReachedHomeServices();
+      setIsPastHomeIntro(hasReachedServices);
+      if (!hasReachedServices) {
+        setIsVisible(false);
+        setIsMenuOpen(false);
+      }
+      return hasReachedServices;
+    };
+
+    // Also handle initial loads/history restoration without waiting for a scroll.
+    const frame = requestAnimationFrame(() => {
+      setIsVisible(syncHomeBoundary());
+    });
+    window.addEventListener("resize", syncHomeBoundary);
+    window.addEventListener("pageshow", syncHomeBoundary);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", syncHomeBoundary);
+      window.removeEventListener("pageshow", syncHomeBoundary);
+    };
+  }, [isHomePage]);
 
   // ? Close menu when clicking outside
   useEffect(() => {
@@ -109,7 +117,14 @@ const Header = () => {
       <motion.header
         ref={headerRef}
         initial={{ y: isHomePage ? -100 : 0 }}
-        animate={{ y: isVisible ? 0 : -100 }}
+        animate={{ y: isHeaderVisible ? 0 : -100 }}
+        aria-hidden={!isHeaderVisible}
+        inert={!isHeaderVisible}
+        style={{
+          // Hide immediately in the opening sections, even during an animation.
+          visibility: isHomePage && !isPastHomeIntro ? "hidden" : undefined,
+          pointerEvents: isHeaderVisible ? undefined : "none",
+        }}
         transition={{
           type: "spring",
           stiffness: 300,
@@ -124,7 +139,7 @@ const Header = () => {
           <ul className="flex items-center gap-1 md:gap-4 lg:gap-5">
             <li>
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 className="px-2 2xl:px-2"
                 onClick={() => {
@@ -215,7 +230,7 @@ const Header = () => {
       </motion.header>
 
       {/* Backdrop overlay to prevent clicks outside header and menu when mobile nav is open */}
-      {isMenuOpen && (
+      {isMenuOpen && isHeaderVisible && (
         <div
           className="fixed inset-0 z-30 md:hidden"
           onClick={() => setIsMenuOpen(false)}
@@ -224,7 +239,7 @@ const Header = () => {
       )}
 
       <MobileMenu
-        isOpen={isMenuOpen}
+        isOpen={isMenuOpen && isHeaderVisible}
         onClose={() => setIsMenuOpen(false)}
         ref={mobileMenuRef}
       />

@@ -242,7 +242,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
               </div>
             )}
 
-            <div className="mb-5 space-y-4 md:mb-12">
+            <div className="mb-5 flex flex-col items-start gap-4 md:mb-12">
               {product.type !== "digital" && (
                 <QuantityStepper
                   value={quantity}
@@ -259,7 +259,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || isAdding}
                 className={cn(
-                  "max-sm:w-full flex h-16 w-96 max-w-full flex-1 items-center justify-center gap-2.5 rounded-full transition-all duration-300 2xl:h-20 2xl:w-[400px] 2xl:gap-3.5",
+                  "inline-flex h-12 w-full max-w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-medium tracking-wide transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:w-auto sm:min-w-60 sm:px-8 lg:h-13 lg:min-w-64 lg:text-base 2xl:h-14 2xl:min-w-72",
                   isOutOfStock
                     ? "cursor-not-allowed bg-foreground/10 text-foreground/40"
                     : isAdding
@@ -267,8 +267,11 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
                       : "cursor-pointer bg-primary text-primary-foreground",
                 )}
               >
-                <ShoppingBag className="size-4 md:size-5 2xl:size-6" />
-                <span className="text-base font-medium tracking-wide lg:text-base 2xl:text-xl">
+                <ShoppingBag
+                  aria-hidden="true"
+                  className="size-4 shrink-0 lg:size-5"
+                />
+                <span>
                   {isOutOfStock
                     ? "Out of Stock"
                     : isAdding

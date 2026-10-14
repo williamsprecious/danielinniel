@@ -141,7 +141,7 @@ const Nft = () => {
             duration: 1,
           }}
           viewport={{ amount: 0.3, once: true }}
-          className="w-[100%] text-center text-sm opacity-85 min-[680px]:w-[90%] sm:text-base md:text-base md:mx-auto md:max-w-[640px] lg:max-w-2xl 2xl:text-xl 2xl:max-w-3xl"
+          className="w-[100%] text-center text-sm font-normal opacity-85 min-[680px]:w-[90%] sm:text-base md:text-lg md:mx-auto md:max-w-[640px] lg:max-w-2xl 2xl:text-xl 2xl:max-w-3xl"
         >
           Enter the inn & iel universe with curated collections of original,
           collectible characters.

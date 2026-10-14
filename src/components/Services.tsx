@@ -10,7 +10,10 @@ import shop from "../../public/shop.webp";
 const Services = () => {
   const isMobile = useIsMobile();
   return (
-    <section className="row-container py-20 space-y-12 md:py-24 lg:to-60% 2xl:py-32 2xl:to-50% md:space-y-16 lg:space-y-20 2xl:space-y-24">
+    <section
+      id="services-section"
+      className="row-container py-20 space-y-12 md:py-24 lg:to-60% 2xl:py-32 2xl:to-50% md:space-y-16 lg:space-y-20 2xl:space-y-24"
+    >
       <ServicesHeading />
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-5 md:gap-7 lg:gap-10 lg:grid-cols-3 lg-xl:gap-16 2xl:gap-20">
