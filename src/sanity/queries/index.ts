@@ -211,7 +211,7 @@ export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
 
 export const getStoreSettings = async () => {
   try {
-    const { data } = await sanityFetch({ query: STORE_SETTINGS_QUERY });
+    const { data } = await sanityFetch({ query: STORE_SETTINGS_QUERY, stega: false });
     return data ?? null;
   } catch (error) {
     console.log("Error fetching store settings", error);

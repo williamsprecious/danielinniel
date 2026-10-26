@@ -46,6 +46,7 @@ const WorksPage = () => {
           viewDelay={isMobile ? 0.6 : 0.4}
           src="https://d1o0lg255tq9i5.cloudfront.net/cover-motion-compressed.gif"
           fallbackSrc={coverArt}
+          sizes="(max-width: 639px) 100vw, (max-width: 1535px) 448px, 576px"
         />
         <ServiceCard
           text="Concept & Design"
@@ -53,6 +54,7 @@ const WorksPage = () => {
           viewDelay={isMobile ? 0.3 : 0.2}
           src="https://d1o0lg255tq9i5.cloudfront.net/concept-motion-compressed.gif"
           fallbackSrc={conceptArt}
+          sizes="(max-width: 639px) 100vw, (max-width: 1535px) 448px, 576px"
         />
       </div>
     </section>

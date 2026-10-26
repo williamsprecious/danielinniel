@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { CogIcon } from "@sanity/icons";
+import { CogIcon } from "@sanity/icons/Cog";
 
 export const storeSettingsType = defineType({
   name: "storeSettings",

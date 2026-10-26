@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { PackageIcon } from "@sanity/icons";
+import { PackageIcon } from "@sanity/icons/Package";
 
 export const productType = defineType({
   name: "product",

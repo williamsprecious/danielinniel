@@ -1,9 +1,10 @@
+import { fixupConfigRules } from "@eslint/compat";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 
 const eslintConfig = [
-  ...nextCoreWebVitals,
-  ...nextTypescript,
+  // Keep Next.js's lint rules while adapting older plugin APIs to ESLint 10.
+  ...fixupConfigRules([...nextCoreWebVitals, ...nextTypescript]),
   {
     rules: {
       // Allow intentionally unused vars/args prefixed with _ — standard convention.

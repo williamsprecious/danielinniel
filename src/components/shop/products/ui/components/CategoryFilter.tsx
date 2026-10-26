@@ -38,7 +38,7 @@ const CategoryFilter = ({
       role="tablist"
       className={cn(
         "pt-8 pb-12 flex w-full flex-wrap justify-center gap-x-2 gap-y-3 md:pt-8 md:pb-16 2xl:pb-20 2xl:pt-10",
-        (items.length || loading) && "border-b border-border/60",
+        items.length && "border-b border-border/60",
         className,
       )}
     >

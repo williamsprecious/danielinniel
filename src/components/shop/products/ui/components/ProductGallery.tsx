@@ -17,7 +17,7 @@ type ProductGalleryProps = {
 
 const ProductGallery = ({ images, alt }: ProductGalleryProps) => {
   const [index, setIndex] = useState(0);
-  const fancyboxOptions = useMemo(() => ({ Carousel: { Thumbs: false } }), []);
+  const fancyboxOptions = useMemo(() => ({ Carousel: { Thumbs: false as const } }), []);
   const [setFancyboxRoot] = useFancybox(fancyboxOptions);
   const anchorRefs = useRef<Array<HTMLAnchorElement | null>>([]);
 

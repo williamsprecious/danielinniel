@@ -13,6 +13,7 @@ const ServiceCard = ({
   href = "/",
   src,
   fallbackSrc,
+  sizes = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw",
   viewDelay = 0.6,
 }: {
   highlighted?: boolean;
@@ -20,6 +21,7 @@ const ServiceCard = ({
   href?: string;
   src: StaticImageData | string;
   fallbackSrc?: StaticImageData | string;
+  sizes?: string;
   viewDelay?: number;
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -34,19 +36,8 @@ const ServiceCard = ({
     setImageError(false);
   }
 
-  // Determine if we should use fallback permanently (main image errored)
   const useFallbackPermanently = imageError && !!fallbackSrc;
-
-  // Show fallback when:
-  // Fallback exists AND main image hasn't loaded yet, OR
-  // Main image errored (use fallback permanently)
-  const showFallback = fallbackSrc && (!imageLoaded || useFallbackPermanently);
-
-  // Determine if main image should be rendered
-  // Render main image when:
-  // - Not using fallback permanently (no error OR no fallback), AND
-  // - Either image is loaded OR we're still trying to load it (not loaded yet)
-  // This ensures the image stays in DOM during loading to maintain container dimensions
+  const showMainImage = imageLoaded && !imageError;
   const shouldRenderMainImage = !useFallbackPermanently;
 
   return (
@@ -63,43 +54,42 @@ const ServiceCard = ({
           opacity: 1,
         }}
       >
-        {/* Container with aspect ratio to prevent collapse - always maintains dimensions */}
+        {/* Both image layers share one reserved area, including while loading. */}
         <div
-          className="mx-2"
+          key={typeof src === "string" ? src : src.src}
+          className="relative mx-2 overflow-hidden"
           style={{
             aspectRatio: "1 / 1",
             minHeight: "300px",
           }}
         >
-          {/* Fallback image - ALWAYS shown when fallback exists and main image hasn't loaded or errored */}
-          {showFallback && fallbackSrc && (
+          {/* Keep the fallback mounted so it can crossfade and survive errors. */}
+          {fallbackSrc && (
             <Image
               src={fallbackSrc}
-              className="w-full h-full object-cover"
-              width={500}
-              height={500}
-              alt="Character"
-              unoptimized
-              priority={useFallbackPermanently}
+              className={cn(
+                "object-cover transition-opacity duration-300",
+                showMainImage ? "opacity-0" : "opacity-100",
+              )}
+              fill
+              sizes={sizes}
+              alt=""
             />
           )}
-          {/* Main image - Keep in DOM but hidden when using fallback permanently to maintain dimensions */}
           {shouldRenderMainImage && (
             <Image
               src={src}
               className={cn(
-                "w-full h-full object-cover transition-opacity duration-300",
-                showFallback && "opacity-0 invisible",
-                !showFallback && "opacity-100 visible",
+                "object-cover transition-opacity duration-300",
+                !fallbackSrc || showMainImage ? "opacity-100" : "opacity-0",
               )}
-              width={500}
-              height={500}
-              alt="Character"
+              fill
+              sizes={sizes}
+              alt=""
               unoptimized
               onLoad={() => setImageLoaded(true)}
               onError={() => {
                 setImageError(true);
-                // Ensure fallback is shown when error occurs
                 if (fallbackSrc) {
                   setImageLoaded(false);
                 }
@@ -107,7 +97,7 @@ const ServiceCard = ({
             />
           )}
         </div>
-        <div className="z-2 flex flex-shrink-0 items-center justify-between font-sans px-4 pb-3 sm:pb-3.5 lg:pb-1.5 lg:px-2 2xl:pt-1.5 2xl:pb-4">
+        <div className="z-2 flex shrink-0 items-center justify-between font-sans px-4 pb-3 sm:pb-3.5 lg:pb-1.5 lg:px-2 2xl:pt-1.5 2xl:pb-4">
           <h3 className="font-semibold max-sm:text-[22px] max-md:text-xl max-lg:text-xl lg:text-xl 2xl:text-[26px]">
             {text}
           </h3>

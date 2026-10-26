@@ -31,17 +31,11 @@ const CoverArtPage = () => {
             delay: 0.25,
           }}
           viewport={{ amount: 0.3, once: true }}
-          className="mx-auto max-w-xl text-center text-base font-normal leading-relaxed text-foreground/75 sm:text-lg"
+          className="mx-auto max-w-xl text-center text-base font-light leading-relaxed text-foreground/75 sm:text-lg md:text-xl"
         >
-          Choose{" "}
-          <span className="font-medium text-primary">
-            Essential
-          </span>{" "}
-          for a focused illustration, or{" "}
-          <span className="font-medium text-primary">
-            Advanced
-          </span>{" "}
-          for greater detail and richer motion.
+          Choose <span className="font-medium">Essential</span> for a focused
+          illustration, or <span className="font-medium">Advanced</span> for
+          greater detail and richer motion.
         </motion.p>
       </div>
 

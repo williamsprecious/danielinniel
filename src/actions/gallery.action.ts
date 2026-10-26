@@ -25,7 +25,8 @@ export const getGalleryData = async (
     };
 
     const [{ data: items }, { data: totalCount }] = await Promise.all([
-      sanityFetch({ query: GALLERY_QUERY, params }),
+      // These results contain discriminants used for filtering and rendering.
+      sanityFetch({ query: GALLERY_QUERY, params, stega: false }),
       sanityFetch({
         query: GALLERY_COUNT_QUERY,
         params: { category, filterParam: filterParam || null },

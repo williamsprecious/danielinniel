@@ -1,11 +1,9 @@
 import type { StructureResolver } from "sanity/structure";
-import {
-  BasketIcon,
-  BillIcon,
-  CogIcon,
-  PackageIcon,
-  TagIcon,
-} from "@sanity/icons";
+import { BasketIcon } from "@sanity/icons/Basket";
+import { BillIcon } from "@sanity/icons/Bill";
+import { CogIcon } from "@sanity/icons/Cog";
+import { PackageIcon } from "@sanity/icons/Package";
+import { TagIcon } from "@sanity/icons/Tag";
 
 const STORE_TYPES = ["product", "category", "order", "storeSettings"];
 const TOP_LEVEL_TYPES = ["featured", "gallery", ...STORE_TYPES];

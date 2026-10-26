@@ -200,6 +200,7 @@ export async function getProducts(
       sanityFetch({
         query: PRODUCT_LIST_QUERY,
         params: { categoryId, start, end: start + limit },
+        stega: false,
       }),
       sanityFetch({
         query: PRODUCT_LIST_COUNT_QUERY,
@@ -229,7 +230,8 @@ export async function getProductBySlug(
     const { data } = await sanityFetch({
       query: PRODUCT_BY_SLUG_QUERY,
       params: { slug },
-      // ...options,
+      // Commerce discriminants and prices must use clean, unencoded values.
+      stega: false,
     });
     if (!data) return null;
     return normalizeDetail(data);

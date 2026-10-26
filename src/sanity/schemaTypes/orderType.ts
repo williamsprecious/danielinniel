@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { BillIcon } from "@sanity/icons";
+import { BillIcon } from "@sanity/icons/Bill";
 
 export const orderType = defineType({
   name: "order",
