@@ -9,18 +9,12 @@ export const storeSettingsType = defineType({
   fields: [
     // ── Identity ─────────────────────────────────────────────
     defineField({
-      name: "storeName",
-      title: "Store Name",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
       name: "contactEmails",
       title: "Contact Emails",
       type: "array",
       of: [defineArrayMember({ type: "string" })],
       description:
-        "Email addresses used for store contact and order notifications. Add at least one.",
+        "Email addresses used for new order notifications. Add at least one.",
       validation: (Rule) =>
         Rule.required()
           .min(1)
@@ -36,14 +30,6 @@ export const storeSettingsType = defineType({
             }
             return true;
           }),
-    }),
-    defineField({
-      name: "emailFromName",
-      title: "Email Sender Name",
-      type: "string",
-      initialValue: "Danielinniel Store",
-      description:
-        'Sender name used on customer emails (e.g., "Danielinniel Store <no-reply@…>")',
     }),
 
     // ── Currency ─────────────────────────────────────────────
@@ -130,8 +116,7 @@ export const storeSettingsType = defineType({
       title: "Rates Last Updated",
       type: "datetime",
       readOnly: true,
-      description:
-        "Last time rates were refreshed by the currency sync job.",
+      description: "Last time rates were refreshed and synced.",
     }),
 
     // ── Shipping ─────────────────────────────────────────────
@@ -150,8 +135,7 @@ export const storeSettingsType = defineType({
       validation: (Rule) =>
         Rule.custom((items) => {
           const list = items as
-            | Array<{ country?: string; _type?: string }>
-            | undefined;
+            Array<{ country?: string; _type?: string }> | undefined;
           if (!list || list.length === 0) return true;
           const NAMES: Record<string, string> = {
             NG: "Nigeria",
@@ -168,13 +152,10 @@ export const storeSettingsType = defineType({
             seen.add(country);
           }
           if (dups.size === 0) return true;
-          const labels = [...dups]
-            .map((c) => NAMES[c] ?? c)
-            .join(", ");
+          const labels = [...dups].map((c) => NAMES[c] ?? c).join(", ");
           return `Each country can only be configured once — duplicates: ${labels}`;
         }),
     }),
-
   ],
   preview: {
     prepare: () => ({

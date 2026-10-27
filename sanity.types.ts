@@ -164,9 +164,7 @@ export type StoreSettings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  storeName?: string;
   contactEmails?: Array<string>;
-  emailFromName?: string;
   baseCurrency?: string;
   ratesToNGN?: Array<{
     code?: "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "ZAR" | "GHS" | "JPY";
@@ -433,10 +431,7 @@ export type Gallery = {
   videoType?: "url" | "file";
   category?: "concept-and-design" | "cover-art";
   conceptType?:
-    | "concept-art"
-    | "logo"
-    | "character-design"
-    | "fashion-illustration";
+    "concept-art" | "logo" | "character-design" | "fashion-illustration";
   grade?: "essential" | "advanced";
   image?: {
     asset?: SanityImageAssetReference;
@@ -602,6 +597,13 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | Geopoint;
 
+// Source: src/lib/email/settings.ts
+// Variable: STORE_CONTACT_EMAILS_QUERY
+// Query: *[_type == "storeSettings" && _id == "storeSettings"][0]{contactEmails}
+export type STORE_CONTACT_EMAILS_QUERY_RESULT = {
+  contactEmails: Array<string> | null;
+} | null;
+
 // Source: src/sanity/queries/index.ts
 // Variable: FEATURE_QUERY
 // Query: *[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }
@@ -627,11 +629,7 @@ export type GALLERY_QUERY_RESULT = Array<{
   videoType: "file" | "url" | null;
   category: "concept-and-design" | "cover-art" | null;
   conceptType:
-    | "character-design"
-    | "concept-art"
-    | "fashion-illustration"
-    | "logo"
-    | null;
+    "character-design" | "concept-art" | "fashion-illustration" | "logo" | null;
   grade: "advanced" | "essential" | null;
   image: {
     asset: {
@@ -880,15 +878,7 @@ export type STORE_SETTINGS_QUERY_RESULT =
       baseCurrency: string | null;
       ratesToNGN: Array<{
         code:
-          | "AUD"
-          | "CAD"
-          | "EUR"
-          | "GBP"
-          | "GHS"
-          | "JPY"
-          | "USD"
-          | "ZAR"
-          | null;
+          "AUD" | "CAD" | "EUR" | "GBP" | "GHS" | "JPY" | "USD" | "ZAR" | null;
         rate: number | null;
       }> | null;
       ratesUpdatedAt: string | null;
@@ -1032,22 +1022,10 @@ export type STORE_SETTINGS_QUERY_RESULT =
 
 // Source: src/sanity/queries/index.ts
 // Variable: ORDER_BY_REFERENCE_QUERY
-// Query: *[_type == "order" && payment.reference == $reference][0]{      orderNumber,      status,      createdAt,      customer{ firstName, lastName, email, phone },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country,  phone },      items[]{        _key,        title,        variantTitle,        type,        quantity,        unitPrice,        lineTotal,        "image": image{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },        "downloadUrl": product->digitalFile.asset->url + "?dl="      },      subtotal,      shippingFee,      total,      currency,      payment{ reference, paidAt }    }
+// Query: *[_type == "order" && payment.reference == $reference][0]{      customer{ email },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country },      items[]{        _key,        title,        variantTitle,        type,        quantity,        lineTotal,        image{ asset, crop, hotspot },        "downloadUrl": product->digitalFile.asset->url + "?dl="      },      subtotal,      shippingFee,      total    }
 export type ORDER_BY_REFERENCE_QUERY_RESULT = {
-  orderNumber: string | null;
-  status:
-    | "cancelled"
-    | "confirmed"
-    | "delivered"
-    | "processing"
-    | "refunded"
-    | null;
-  createdAt: string | null;
   customer: {
-    firstName: string | null;
-    lastName: string | null;
     email: string | null;
-    phone: string | null;
   } | null;
   shippingAddress: {
     firstName: string | null;
@@ -1058,7 +1036,6 @@ export type ORDER_BY_REFERENCE_QUERY_RESULT = {
     state: string | null;
     postalCode: string | null;
     country: string | null;
-    phone: string | null;
   } | null;
   billingAddress: {
     firstName: string | null;
@@ -1069,7 +1046,6 @@ export type ORDER_BY_REFERENCE_QUERY_RESULT = {
     state: string | null;
     postalCode: string | null;
     country: string | null;
-    phone: string | null;
   } | null;
   items: Array<{
     _key: string;
@@ -1077,43 +1053,23 @@ export type ORDER_BY_REFERENCE_QUERY_RESULT = {
     variantTitle: string | null;
     type: "digital" | "physical" | null;
     quantity: number | null;
-    unitPrice: number | null;
     lineTotal: number | null;
-    image:
-      | {
-          asset?: SanityImageAssetReference;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-          width: number | null;
-          height: number | null;
-          lqip: string | null;
-        }
-      | {
-          asset?: SanityImageAssetReference;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-        }
-      | null;
+    image: {
+      asset: SanityImageAssetReference | null;
+      crop: SanityImageCrop | null;
+      hotspot: SanityImageHotspot | null;
+    } | null;
     downloadUrl: string | null;
   }> | null;
   subtotal: number | null;
   shippingFee: number | null;
   total: number | null;
-  currency: string | null;
-  payment: {
-    reference: string | null;
-    paidAt: string | null;
-  } | null;
 } | null;
 
 // Query TypeMap
-import "@sanity/client";
-declare module "@sanity/client" {
+declare global {
   interface SanityQueries {
+    '\n  *[_type == "storeSettings" && _id == "storeSettings"][0]{contactEmails}\n': STORE_CONTACT_EMAILS_QUERY_RESULT;
     '*[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }': FEATURE_QUERY_RESULT;
     '\n    *[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ] | order(createdAt desc) [$start...$end] {\n      _id,\n      galleryType,\n      videoType,\n      category,\n      conceptType,\n      grade,\n      image {\n        asset-> {\n          _id,\n          url,\n          metadata {\n            lqip,\n            dimensions\n          }\n        }\n      },\n      description,\n      videoUrl,\n      video {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      videoPreview {\n        asset-> {\n          _id,\n          url,\n          mimeType\n        }\n      },\n      createdAt\n    }\n  ': GALLERY_QUERY_RESULT;
     '\n    count(*[_type == "gallery" && category == $category &&\n      ($filterParam == null ||\n       (category == "cover-art" && grade == $filterParam) ||\n       (category == "concept-and-design" && conceptType == $filterParam))\n    ])\n  ': GALLERY_COUNT_QUERY_RESULT;
@@ -1125,6 +1081,10 @@ declare module "@sanity/client" {
     '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
     '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
-    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      orderNumber,\n      status,\n      createdAt,\n      customer{ firstName, lastName, email, phone },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country,\n  phone\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        unitPrice,\n        lineTotal,\n        "image": image{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n        "downloadUrl": product->digitalFile.asset->url + "?dl="\n      },\n      subtotal,\n      shippingFee,\n      total,\n      currency,\n      payment{ reference, paidAt }\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
+    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      customer{ email },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        lineTotal,\n        image{ asset, crop, hotspot },\n        "downloadUrl": product->digitalFile.asset->url + "?dl="\n      },\n      subtotal,\n      shippingFee,\n      total\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
   }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
 }

@@ -178,16 +178,12 @@ const orderAddressFields = /* groq */ `
   city,
   state,
   postalCode,
-  country,
-  phone
+  country
 `;
 
 export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
     *[_type == "order" && payment.reference == $reference][0]{
-      orderNumber,
-      status,
-      createdAt,
-      customer{ firstName, lastName, email, phone },
+      customer{ email },
       shippingAddress{ ${orderAddressFields} },
       billingAddress{ ${orderAddressFields} },
       items[]{
@@ -196,16 +192,13 @@ export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
         variantTitle,
         type,
         quantity,
-        unitPrice,
         lineTotal,
-        "image": image{ ${productImageFields} },
+        image{ asset, crop, hotspot },
         "downloadUrl": product->digitalFile.asset->url + "?dl="
       },
       subtotal,
       shippingFee,
-      total,
-      currency,
-      payment{ reference, paidAt }
+      total
     }
   `);
 

@@ -12,6 +12,7 @@ import {
   sendOrderConfirmationEmail,
 } from "@/lib/email";
 import type { EmailAddress, EmailOrder } from "@/emails/types";
+import { getStoreContactEmails } from "@/lib/email/settings";
 
 const CURRENCYAPI_BASE =
   "https://api.currencyapi.com/v3/latest?base_currency=NGN";
@@ -385,9 +386,16 @@ export const processPaidOrder = inngest.createFunction(
       );
     }
 
-    // 8. Internal order notification to the store inbox.
-    await step.run("send-admin-email", () =>
-      sendAdminOrderEmail({ order: emailOrder }),
+    // 8. Notify each store inbox in its own retryable step.
+    const contactEmails = await step.run("load-store-contact-emails", () =>
+      getStoreContactEmails(),
+    );
+    await Promise.all(
+      contactEmails.map((email, index) =>
+        step.run(`send-admin-email-${index}`, () =>
+          sendAdminOrderEmail({ order: emailOrder, contactEmails: [email] }),
+        ),
+      ),
     );
 
     logger.info("Order created", {

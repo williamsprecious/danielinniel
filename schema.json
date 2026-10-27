@@ -696,13 +696,6 @@
           "type": "string"
         }
       },
-      "storeName": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "contactEmails": {
         "type": "objectAttribute",
         "value": {
@@ -710,13 +703,6 @@
           "of": {
             "type": "string"
           }
-        },
-        "optional": true
-      },
-      "emailFromName": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       },

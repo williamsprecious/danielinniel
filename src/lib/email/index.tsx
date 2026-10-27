@@ -1,12 +1,12 @@
 /**
  * Mailer layer: renders React Email templates to HTML + plain text and sends
- * them through the existing AWS SES client. Lives OUTSIDE `src/emails` so the
+ * them through Mailtrap SMTP. Lives OUTSIDE `src/emails` so the
  * preview server (`--dir src/emails`) never scans these send helpers.
  */
 import "server-only";
 import type { ReactElement } from "react";
 import { render } from "react-email";
-import { sendEmail } from "@/lib/ses";
+import { sendEmail } from "./transport";
 import { formatNGN, type DownloadItem, type EmailOrder } from "@/emails/types";
 import OrderConfirmation from "@/emails/OrderConfirmation";
 import DigitalDelivery from "@/emails/DigitalDelivery";
@@ -16,7 +16,7 @@ import ProjectInquiry from "@/emails/ProjectInquiry";
 
 const FROM = "Danielinniel <no-reply@danielinniel.com>";
 
-const adminInbox = (): string => {
+const contactInbox = (): string => {
   const to = process.env.CONTACT_EMAIL;
   if (!to) throw new Error("CONTACT_EMAIL is not set");
   return to;
@@ -47,7 +47,6 @@ export async function sendOrderConfirmationEmail({
   await sendEmail({
     from: FROM,
     to: order.customer.email,
-    replyTo: adminInbox(),
     subject: `Your order ${order.orderNumber} is confirmed`,
     html,
     text,
@@ -72,7 +71,6 @@ export async function sendDigitalDeliveryEmail({
   await sendEmail({
     from: FROM,
     to: order.customer.email,
-    replyTo: adminInbox(),
     subject: `Your downloads for order ${order.orderNumber}`,
     html,
     text,
@@ -82,15 +80,17 @@ export async function sendDigitalDeliveryEmail({
 /** Internal new-order notification to the store inbox. */
 export async function sendAdminOrderEmail({
   order,
+  contactEmails,
 }: {
   order: EmailOrder;
+  contactEmails: string[];
 }): Promise<void> {
   const { html, text } = await renderEmail(
     <AdminOrderNotification order={order} />,
   );
   await sendEmail({
     from: FROM,
-    to: adminInbox(),
+    to: contactEmails,
     replyTo: order.customer.email,
     subject: `New order ${order.orderNumber} — ${formatNGN(order.totalNGN)}`,
     html,
@@ -108,7 +108,7 @@ export async function sendContactFormEmail(data: {
   const { html, text } = await renderEmail(<ContactMessage {...data} />);
   await sendEmail({
     from: FROM,
-    to: adminInbox(),
+    to: contactInbox(),
     replyTo: data.email,
     subject: `New Contact Message from ${data.name}`,
     html,
@@ -130,7 +130,7 @@ export async function sendProjectInquiryEmail(data: {
   const { html, text } = await renderEmail(<ProjectInquiry {...data} />);
   await sendEmail({
     from: FROM,
-    to: adminInbox(),
+    to: contactInbox(),
     replyTo: data.email,
     subject: `New Project Inquiry from ${data.name} - ${
       data.category === "cover-art" ? "Cover Art" : "Concept & Design"

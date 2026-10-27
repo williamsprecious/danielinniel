@@ -177,11 +177,8 @@ const BookingForm = () => {
         return (
           <div className="h-screen px-5 flex items-center justify-center md:px-0 md:h-fit">
             <p className="text-muted-foreground tracking-wide border border-border border-solid p-4 rounded-md text-center">
-              Thank you for submitting your interest in working with{" "}
-              <span className="text-primary/80 font-semibold">
-                Danielinniel
-              </span>
-              . You&apos;ll be gotten back to you shortly!
+              Thank you for your interest in working with me. You&apos;ll be
+              gotten back to shortly!
             </p>
           </div>
         );

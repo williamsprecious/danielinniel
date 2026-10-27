@@ -26,8 +26,7 @@ async function checkRateLimit(): Promise<FormEmailActionState | null> {
     if (decision.reason.isRateLimit()) {
       return {
         success: false,
-        message:
-          "You've sent too many messages. Please try again in an hour.",
+        message: "You've sent too many messages. Please try again in an hour.",
       };
     }
     return {
@@ -44,7 +43,7 @@ async function checkRateLimit(): Promise<FormEmailActionState | null> {
 }
 
 export async function sendProjectEmail(
-  formData: unknown
+  formData: unknown,
 ): Promise<FormEmailActionState> {
   const blocked = await checkRateLimit();
   if (blocked) return blocked;
@@ -67,7 +66,7 @@ export async function sendProjectEmail(
 }
 
 export async function sendContactEmail(
-  formData: unknown
+  formData: unknown,
 ): Promise<FormEmailActionState> {
   const blocked = await checkRateLimit();
   if (blocked) return blocked;
