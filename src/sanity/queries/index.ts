@@ -3,7 +3,7 @@ import { sanityFetch } from "../lib/live";
 import { productImageFields } from "./fragments";
 
 const FEATURE_QUERY = defineQuery(
-  `*[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }`
+  `*[_type == "featured"] | order(_createdAt desc){ _id, title, image, workUrl }`,
 );
 
 export const GALLERY_QUERY = defineQuery(`
@@ -193,8 +193,7 @@ export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
         type,
         quantity,
         lineTotal,
-        image{ asset, crop, hotspot },
-        "downloadUrl": product->digitalFile.asset->url + "?dl="
+        image{ asset, crop, hotspot }
       },
       subtotal,
       shippingFee,
@@ -204,7 +203,10 @@ export const ORDER_BY_REFERENCE_QUERY = defineQuery(/* groq */ `
 
 export const getStoreSettings = async () => {
   try {
-    const { data } = await sanityFetch({ query: STORE_SETTINGS_QUERY, stega: false });
+    const { data } = await sanityFetch({
+      query: STORE_SETTINGS_QUERY,
+      stega: false,
+    });
     return data ?? null;
   } catch (error) {
     console.log("Error fetching store settings", error);

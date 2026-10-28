@@ -258,6 +258,7 @@ export type Order = {
     deliveredAt?: string;
   };
   adminNotes?: string;
+  inventoryProcessedAt?: string;
   createdAt?: string;
 };
 
@@ -1022,7 +1023,7 @@ export type STORE_SETTINGS_QUERY_RESULT =
 
 // Source: src/sanity/queries/index.ts
 // Variable: ORDER_BY_REFERENCE_QUERY
-// Query: *[_type == "order" && payment.reference == $reference][0]{      customer{ email },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country },      items[]{        _key,        title,        variantTitle,        type,        quantity,        lineTotal,        image{ asset, crop, hotspot },        "downloadUrl": product->digitalFile.asset->url + "?dl="      },      subtotal,      shippingFee,      total    }
+// Query: *[_type == "order" && payment.reference == $reference][0]{      customer{ email },      shippingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country },      billingAddress{   firstName,  lastName,  line1,  line2,  city,  state,  postalCode,  country },      items[]{        _key,        title,        variantTitle,        type,        quantity,        lineTotal,        image{ asset, crop, hotspot }      },      subtotal,      shippingFee,      total    }
 export type ORDER_BY_REFERENCE_QUERY_RESULT = {
   customer: {
     email: string | null;
@@ -1059,7 +1060,6 @@ export type ORDER_BY_REFERENCE_QUERY_RESULT = {
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
-    downloadUrl: string | null;
   }> | null;
   subtotal: number | null;
   shippingFee: number | null;
@@ -1081,7 +1081,7 @@ declare global {
     '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
     '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;
-    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      customer{ email },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        lineTotal,\n        image{ asset, crop, hotspot },\n        "downloadUrl": product->digitalFile.asset->url + "?dl="\n      },\n      subtotal,\n      shippingFee,\n      total\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
+    '\n    *[_type == "order" && payment.reference == $reference][0]{\n      customer{ email },\n      shippingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country\n },\n      billingAddress{ \n  firstName,\n  lastName,\n  line1,\n  line2,\n  city,\n  state,\n  postalCode,\n  country\n },\n      items[]{\n        _key,\n        title,\n        variantTitle,\n        type,\n        quantity,\n        lineTotal,\n        image{ asset, crop, hotspot }\n      },\n      subtotal,\n      shippingFee,\n      total\n    }\n  ': ORDER_BY_REFERENCE_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

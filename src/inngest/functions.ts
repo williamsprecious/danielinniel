@@ -13,6 +13,11 @@ import {
 } from "@/lib/email";
 import type { EmailAddress, EmailOrder } from "@/emails/types";
 import { getStoreContactEmails } from "@/lib/email/settings";
+import {
+  recordOrderNotes,
+  resolveDigitalDownloads,
+  updateOrderInventory,
+} from "@/lib/orders/processing";
 
 const CURRENCYAPI_BASE =
   "https://api.currencyapi.com/v3/latest?base_currency=NGN";
@@ -151,7 +156,13 @@ const buildOrderItem = (line: PaystackOrderLine, index: number) => ({
   _key: `line-${index}`,
   _type: "orderItem" as const,
   ...(line.productId
-    ? { product: { _type: "reference" as const, _ref: line.productId } }
+    ? {
+        product: {
+          _type: "reference" as const,
+          _ref: line.productId,
+          _weak: true,
+        },
+      }
     : {}),
   ...(line.variantKey ? { variantKey: line.variantKey } : {}),
   title: line.title,
@@ -315,29 +326,16 @@ export const processPaidOrder = inngest.createFunction(
       });
     });
 
-    // 4. Decrement inventory for physical lines (atomic transaction so retries are safe). Digital lines have no stock to track.
-    await step.run("decrement-inventory", async () => {
-      const physicalLines = metadata.lines.filter((l) => l.type === "physical");
-      if (physicalLines.length === 0) return { decremented: 0 };
-
-      let tx = backendClient.transaction();
-      for (const line of physicalLines) {
-        if (!line.productId) continue;
-        const path = line.variantKey
-          ? `variants[_key=="${line.variantKey}"].stock`
-          : "stock";
-        tx = tx.patch(line.productId, (p) => p.dec({ [path]: line.qty }));
-      }
-      await tx.commit();
-      return { decremented: physicalLines.length };
-    });
-
-    const emailOrder = buildEmailOrder(metadata, reference, verified.paidAt);
+    // 4. Missing physical products are noted for manual fulfillment. Stock and
+    // its completion marker are committed together to prevent double decrements.
+    await step.run("decrement-inventory", () =>
+      updateOrderInventory(backendClient, docId, metadata.lines),
+    );
 
     // 5. Resolve download links for any digital lines (public Sanity CDN URLs).
-    const downloads = await step.run("load-digital-files", async () => {
+    const delivery = await step.run("resolve-digital-delivery", async () => {
       const digitalLines = metadata.lines.filter((l) => l.type === "digital");
-      if (digitalLines.length === 0) return [];
+      if (digitalLines.length === 0) return { downloads: [], notes: [] };
 
       const ids = Array.from(
         new Set(digitalLines.map((l) => l.productId).filter(Boolean)),
@@ -348,40 +346,32 @@ export const processPaidOrder = inngest.createFunction(
         `*[_type == "product" && _id in $ids]{ _id, "url": digitalFile.asset->url }`,
         { ids },
       );
-      const urlById = new Map(files.map((f) => [f._id, f.url]));
-
-      return digitalLines.map((l) => {
-        const url = urlById.get(l.productId);
-        // `?dl=` makes the CDN send Content-Disposition: attachment so the link
-        // downloads the file (with its original name) instead of opening it.
-        return { title: l.title, url: url ? `${url}?dl=` : null };
-      });
+      return resolveDigitalDownloads(
+        digitalLines,
+        files,
+        process.env.NEXT_PUBLIC_APP_URL,
+      );
     });
 
-    const validDownloads = downloads.filter(
-      (d): d is { title: string; url: string } => Boolean(d.url),
+    await step.run("record-digital-delivery-notes", () =>
+      recordOrderNotes(backendClient, docId, delivery.notes),
     );
-    if (validDownloads.length < downloads.length) {
-      logger.warn("Some digital lines have no downloadable file", {
-        reference,
-        missing: downloads.length - validDownloads.length,
-      });
-    }
+    const emailOrder = buildEmailOrder(metadata, reference, verified.paidAt);
 
     // 6. Customer confirmation. Digital-only orders include downloads inline.
     await step.run("send-customer-email", () =>
       sendOrderConfirmationEmail({
         order: emailOrder,
-        downloads: metadata.isDigitalOnly ? validDownloads : undefined,
+        downloads: metadata.isDigitalOnly ? delivery.downloads : undefined,
       }),
     );
 
     // 7. Mixed carts (physical + digital): deliver files in a separate email.
-    if (!metadata.isDigitalOnly && validDownloads.length > 0) {
+    if (!metadata.isDigitalOnly && delivery.downloads.length > 0) {
       await step.run("send-digital-delivery", () =>
         sendDigitalDeliveryEmail({
           order: emailOrder,
-          downloads: validDownloads,
+          downloads: delivery.downloads,
         }),
       );
     }

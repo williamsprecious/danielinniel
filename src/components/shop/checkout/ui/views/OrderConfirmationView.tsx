@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { Image } from "next-sanity/image";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Download,
-  MapPin,
-  Package,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, MapPin, Package } from "lucide-react";
 import type { ORDER_BY_REFERENCE_QUERY_RESULT } from "../../../../../../sanity.types";
 import { urlFor } from "@/sanity/lib/image";
 import { formatPrice } from "@/lib/format-price";
@@ -91,15 +85,6 @@ const OrderConfirmationView = ({ order }: { order: OrderData }) => {
                     <span className="text-xs text-foreground/55">
                       Qty {line.quantity}
                     </span>
-                  )}
-                  {line.type === "digital" && line.downloadUrl && (
-                    <a
-                      href={line.downloadUrl}
-                      className="mt-2 inline-flex min-h-10 w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                    >
-                      <Download size={14} aria-hidden="true" />
-                      Download
-                    </a>
                   )}
                 </div>
                 <span className="col-start-2 text-sm font-medium whitespace-nowrap tabular-nums text-foreground sm:col-start-3 sm:row-start-1 sm:pt-1 sm:text-right">

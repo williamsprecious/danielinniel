@@ -275,8 +275,8 @@ export function DownloadList({ downloads }: { downloads: DownloadItem[] }) {
         className="m-0 mt-[18px] text-[12px] font-medium leading-[18px]"
         style={{ color: brand.muted }}
       >
-        Unable to download or access the files? Feel free to contact us and it
-        will be resolved.
+        Unable to download or access the files? Feel free to contact and it will
+        be resolved.
       </Text>
     </Block>
   );

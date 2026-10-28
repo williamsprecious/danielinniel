@@ -86,8 +86,9 @@ export const orderType = defineType({
               name: "product",
               type: "reference",
               to: [{ type: "product" }],
+              weak: true,
               description:
-                "Reference to the source product. May be null if the product is later deleted.",
+                "Optional link to the source product. The product can be deleted without removing this order's purchase details.",
             }),
             defineField({
               name: "variantKey",
@@ -280,6 +281,15 @@ export const orderType = defineType({
       title: "Admin Notes",
       type: "text",
       rows: 3,
+    }),
+
+    defineField({
+      name: "inventoryProcessedAt",
+      type: "datetime",
+      readOnly: true,
+      hidden: true,
+      description:
+        "Internal marker preventing duplicate stock updates on retries.",
     }),
 
     defineField({

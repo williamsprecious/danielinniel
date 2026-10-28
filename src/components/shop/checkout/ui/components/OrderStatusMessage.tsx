@@ -26,8 +26,8 @@ const OrderStatusMessage = ({ variant }: OrderStatusMessageProps) => {
       </h2>
       <p className="max-w-md text-sm text-foreground/60">
         {finalizing
-          ? "Your payment was successful — we're confirming your order. This page updates automatically and only takes a moment. A receipt has been sent to your email."
-          : "We couldn't find an order to display. If you've just paid, check your email for a receipt or contact us with your payment reference."}
+          ? "Your order has been recorded and is now being processed. A receipt has been sent to your email."
+          : "We couldn't find your order. If you've just paid, check your email for a receipt or contact us with your payment reference."}
       </p>
 
       <Link

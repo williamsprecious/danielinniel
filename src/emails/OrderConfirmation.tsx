@@ -3,12 +3,10 @@
  * supplied and the download links are shown inline (one combined email);
  * physical / mixed orders omit it.
  */
-import { Text } from "react-email";
 import { EmailLayout } from "./components/EmailLayout";
 import { OrderItemsTable } from "./components/OrderItemsTable";
 import {
   AddressBlock,
-  Block,
   Divider,
   DownloadList,
   Hero,
@@ -32,7 +30,10 @@ export default function OrderConfirmation({
     <EmailLayout
       preview={`Order ${order.orderNumber} confirmed — thank you for your purchase`}
     >
-      <Hero eyebrow="Order confirmed" title={`Thank you, ${order.customer.firstName}.`}>
+      <Hero
+        eyebrow="Order confirmed"
+        title={`Thank you, ${order.customer.firstName}.`}
+      >
         <Lead>
           Your payment went through and your order is confirmed. Here&apos;s a
           summary of order{" "}
@@ -66,21 +67,6 @@ export default function OrderConfirmation({
           <AddressBlock address={order.shippingAddress} />
         </>
       )}
-
-      <Divider />
-
-      <Block>
-        <Text
-          className="m-0 text-[14px] font-medium leading-[22px]"
-          style={{ color: brand.body }}
-        >
-          {order.isDigitalOnly
-            ? "Enjoy your files. "
-            : "We'll let you know as soon as your order ships. "}
-          If you have any questions, feel free to contact us and we&apos;ll be
-          happy to help.
-        </Text>
-      </Block>
     </EmailLayout>
   );
 }

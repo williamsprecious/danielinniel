@@ -1,7 +1,7 @@
 /**
  * Internal order notification sent to Store Settings contact emails. Operational
- * detail: customer, items, totals, address, payment reference and any admin notes
- * (e.g. currency-mismatch warnings from the order processor).
+ * detail: customer, items, totals, address and payment reference.
+ * Processing notes are available on the Sanity order document.
  */
 import { Section } from "react-email";
 import { EmailLayout } from "./components/EmailLayout";
