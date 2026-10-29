@@ -72,6 +72,7 @@ export function OrderItemsTable({
   shippingFeeNGN,
   totalNGN,
   showShipping = true,
+  showProductType = true,
 }: {
   items: EmailOrderItem[];
   subtotalNGN: number;
@@ -79,6 +80,7 @@ export function OrderItemsTable({
   totalNGN: number;
   /** Hide the shipping row for digital-only orders. */
   showShipping?: boolean;
+  showProductType?: boolean;
 }) {
   return (
     <Section>
@@ -138,7 +140,9 @@ export function OrderItemsTable({
                   className="m-0 mt-[5px] text-[12px] font-medium leading-[16px]"
                   style={{ color: brand.muted }}
                 >
-                  {item.type === "digital" ? "Digital" : "Physical"} · Qty{" "}
+                  {showProductType &&
+                    `${item.type === "digital" ? "Digital" : "Physical"} · `}
+                  Qty{" "}
                   {item.qty} × {formatNGN(item.unitPriceNGN)}
                 </Text>
               </Column>

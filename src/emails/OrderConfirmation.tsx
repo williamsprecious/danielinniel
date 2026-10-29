@@ -52,6 +52,7 @@ export default function OrderConfirmation({
         shippingFeeNGN={order.shippingFeeNGN}
         totalNGN={order.totalNGN}
         showShipping={!order.isDigitalOnly}
+        showProductType={false}
       />
 
       {hasDownloads && (

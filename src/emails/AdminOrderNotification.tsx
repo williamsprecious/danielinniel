@@ -67,6 +67,7 @@ export default function AdminOrderNotification({
         shippingFeeNGN={order.shippingFeeNGN}
         totalNGN={order.totalNGN}
         showShipping={!order.isDigitalOnly}
+        showProductType={false}
       />
 
       {order.shippingAddress && (

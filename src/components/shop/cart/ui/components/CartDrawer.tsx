@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Image } from "next-sanity/image";
 import Link from "next/link";
 import { ShoppingBag, X, Minus, Plus } from "lucide-react";
@@ -15,6 +16,7 @@ import {
 import {
   useCartStore,
   useHydratedCart,
+  useCartHydrated,
   useHydratedSubtotalNGN,
 } from "@/store/cart-store";
 import { urlFor } from "@/sanity/lib/image";
@@ -29,6 +31,12 @@ const CartDrawer = () => {
   const removeLine = useCartStore((s) => s.removeLine);
   const currency = useHydratedCurrency();
   const rates = useCurrencyStore((s) => s.rates);
+  const hydrated = useCartHydrated();
+  const revalidate = useCartStore((s) => s.revalidate);
+
+  useEffect(() => {
+    if (isOpen && hydrated) void revalidate();
+  }, [isOpen, hydrated, revalidate]);
 
   const itemCount = lines.reduce((sum, l) => sum + l.qty, 0);
 

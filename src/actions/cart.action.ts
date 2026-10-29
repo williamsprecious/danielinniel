@@ -2,7 +2,8 @@
 
 import { request as arcjetRequest, slidingWindow } from "@arcjet/next";
 import { aj } from "@/lib/arcjet";
-import { sanityFetch } from "@/sanity/lib/live";
+import { backendClient } from "@/sanity/lib/backendClient";
+import { formatVariantLabel } from "@/lib/variant-label";
 import { PRODUCTS_BY_IDS_FOR_CART_QUERY } from "@/sanity/queries";
 import type { CartLine } from "@/store/cart-store";
 import type { ShopImage } from "@/lib/shop-types";
@@ -66,9 +67,11 @@ type FetchedProduct = {
   compareAtPriceNGN: number | null;
   stock: number | null;
   image: unknown;
+  options: Array<{ name: string | null }> | null;
   variants: Array<{
     _key: string;
     title: string | null;
+    optionValues: string[] | null;
     priceNGN: number | null;
     compareAtPriceNGN: number | null;
     stock: number | null;
@@ -159,7 +162,11 @@ const reconcileLine = (
       variantKey: input.variantKey,
       slug,
       title,
-      variantTitle: variant.title ?? previous?.variantTitle ?? null,
+      variantTitle: formatVariantLabel(
+        product.options,
+        variant.optionValues,
+        variant.title ?? previous?.variantTitle ?? null,
+      ),
       type: "physical",
       image,
       priceNGN: variant.priceNGN,
@@ -274,10 +281,12 @@ export async function revalidateCart(
   const ids = Array.from(new Set(input.map((l) => l.productId)));
   let products: FetchedProduct[] = [];
   try {
-    const { data } = await sanityFetch({
-      query: PRODUCTS_BY_IDS_FOR_CART_QUERY,
-      params: { ids },
-    });
+    // Checkout validation must not depend on live-event cache invalidation.
+    const data = await backendClient.fetch(
+      PRODUCTS_BY_IDS_FOR_CART_QUERY,
+      { ids },
+      { cache: "no-store", perspective: "published", stega: false },
+    );
     products = (data ?? []) as unknown as FetchedProduct[];
   } catch (error) {
     console.error("revalidateCart fetch failed", error);

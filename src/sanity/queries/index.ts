@@ -132,9 +132,11 @@ export const PRODUCTS_BY_IDS_FOR_CART_QUERY = defineQuery(/* groq */ `
       compareAtPriceNGN,
       stock,
       "image": images[0]{ ${productImageFields} },
+      options[]{ name },
       variants[]{
         _key,
         title,
+        optionValues,
         priceNGN,
         compareAtPriceNGN,
         stock

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { formatVariantLabel } from "@/lib/variant-label";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ShoppingBag } from "lucide-react";
@@ -138,7 +139,9 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
       variantKey: activeVariant?.key ?? null,
       slug: product.slug,
       title: product.title,
-      variantTitle: activeVariant?.title ?? null,
+      variantTitle: activeVariant
+        ? formatVariantLabel(product.options, activeVariant.optionValues, activeVariant.title)
+        : null,
       type: product.type,
       image: firstImage,
       priceNGN: displayedPriceNGN,

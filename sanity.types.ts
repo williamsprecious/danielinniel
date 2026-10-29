@@ -808,7 +808,7 @@ export type PRODUCT_BY_SLUG_QUERY_RESULT = {
 
 // Source: src/sanity/queries/index.ts
 // Variable: PRODUCTS_BY_IDS_FOR_CART_QUERY
-// Query: *[_type == "product" && _id in $ids]{      _id,      status,      "slug": slug.current,      title,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      "image": images[0]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      variants[]{        _key,        title,        priceNGN,        compareAtPriceNGN,        stock      }    }
+// Query: *[_type == "product" && _id in $ids]{      _id,      status,      "slug": slug.current,      title,      type,      hasVariants,      priceNGN,      compareAtPriceNGN,      stock,      "image": images[0]{   ...,  ...asset->{    "width": metadata.dimensions.width,    "height": metadata.dimensions.height,    "lqip": metadata.lqip  } },      options[]{ name },      variants[]{        _key,        title,        optionValues,        priceNGN,        compareAtPriceNGN,        stock      }    }
 export type PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT = Array<{
   _id: string;
   status: "active" | "archived" | "draft" | null;
@@ -840,9 +840,13 @@ export type PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT = Array<{
         _key: string;
       }
     | null;
+  options: Array<{
+    name: string | null;
+  }> | null;
   variants: Array<{
     _key: string;
     title: string | null;
+    optionValues: Array<string> | null;
     priceNGN: number | null;
     compareAtPriceNGN: number | null;
     stock: number | null;
@@ -1077,7 +1081,7 @@ declare global {
     '\n    *[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ] | order(_createdAt desc) [$start...$end] {\n      _id,\n      title,\n      "slug": slug.current,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{ priceNGN, compareAtPriceNGN }\n    }\n  ': PRODUCT_LIST_QUERY_RESULT;
     '\n    count(*[_type == "product" && status == "active"\n      && ($categoryId == null || references($categoryId))\n    ])\n  ': PRODUCT_LIST_COUNT_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && slug.current == $slug][0]{\n      _id,\n      title,\n      "slug": slug.current,\n      description,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      shipping,\n      specifications[]{ label, value },\n      "images": images[]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      "categories": categories[]->{ _id, title, "slug": slug.current },\n      options[]{ name, values },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCT_BY_SLUG_QUERY_RESULT;
-    '\n    *[_type == "product" && _id in $ids]{\n      _id,\n      status,\n      "slug": slug.current,\n      title,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      variants[]{\n        _key,\n        title,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT;
+    '\n    *[_type == "product" && _id in $ids]{\n      _id,\n      status,\n      "slug": slug.current,\n      title,\n      type,\n      hasVariants,\n      priceNGN,\n      compareAtPriceNGN,\n      stock,\n      "image": images[0]{ \n  ...,\n  ...asset->{\n    "width": metadata.dimensions.width,\n    "height": metadata.dimensions.height,\n    "lqip": metadata.lqip\n  }\n },\n      options[]{ name },\n      variants[]{\n        _key,\n        title,\n        optionValues,\n        priceNGN,\n        compareAtPriceNGN,\n        stock\n      }\n    }\n  ': PRODUCTS_BY_IDS_FOR_CART_QUERY_RESULT;
     '\n    *[_type == "category" && visibility == "active"]\n      | order(coalesce(displayOrder, 9999) asc, title asc) {\n      _id,\n      title,\n      "slug": slug.current\n    }\n  ': ACTIVE_CATEGORIES_QUERY_RESULT;
     '\n    *[_type == "product" && status == "active" && defined(slug.current)]{\n      "slug": slug.current\n    }\n  ': ACTIVE_PRODUCT_SLUGS_QUERY_RESULT;
     '\n    *[_id == "storeSettings"][0]{\n      baseCurrency,\n      ratesToNGN[]{ code, rate },\n      ratesUpdatedAt,\n      shippingZones[]{\n        country,\n        defaultFeeNGN,\n        regionOverrides[]{ region, feeNGN }\n      }\n    }\n  ': STORE_SETTINGS_QUERY_RESULT;

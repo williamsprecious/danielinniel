@@ -17,6 +17,7 @@ const Shop = async () => {
 
   return (
     <ShopView
+      key={JSON.stringify(initialProducts)}
       categories={categories}
       initialProducts={initialProducts}
       pageSize={PRODUCT_PAGE_SIZE}
