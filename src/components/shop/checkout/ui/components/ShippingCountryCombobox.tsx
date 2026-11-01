@@ -128,7 +128,7 @@ const ShippingCountryCombobox = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search countries"
-              className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/40 focus:outline-none"
+              className="w-full bg-transparent text-base md:text-sm text-foreground placeholder:text-foreground/40 focus:outline-none"
             />
           </div>
           <ul className="max-h-64 overflow-y-auto py-1">

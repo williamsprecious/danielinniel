@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
 import CartBootRevalidator from "@/components/shop/cart/CartBootRevalidator";
-import SparklesBackground from "@/components/SparklesBackground";
 import { SanityLive } from "@/sanity/lib/live";
 import { getStoreSettings } from "@/sanity/queries";
 import { isCurrencyCode, type CurrencyRates } from "@/lib/currencies";
@@ -50,7 +49,6 @@ export default async function SiteLayout({
       <body
         className={`${headingFont.variable} ${inter.variable} font-sans relative antialiased`}
       >
-        <SparklesBackground />
         <CurrencyProvider initialRates={initialRates}>
           {children}
         </CurrencyProvider>

@@ -166,7 +166,7 @@ const PhoneInput = ({
           placeholder="Phone number"
           value={display}
           onChange={(e) => handleType(e.target.value)}
-          className="h-full w-full min-w-0 bg-transparent px-4 font-sans text-sm text-foreground/80 placeholder:text-sm placeholder:font-medium placeholder:text-muted-foreground/60 outline-none md:text-lg md:placeholder:text-lg"
+          className="h-full w-full min-w-0 bg-transparent px-4 font-sans text-base text-foreground/80 placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 outline-none md:text-lg md:placeholder:text-lg"
         />
       </div>
 

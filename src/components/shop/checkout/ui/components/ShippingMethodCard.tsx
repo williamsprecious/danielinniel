@@ -31,13 +31,13 @@ const ShippingMethodCard = ({ shippingQuote }: ShippingMethodCardProps) => {
       <h2 className="text-xs uppercase tracking-[0.18em] text-foreground/60">
         Shipping Method
       </h2>
-      <div className="flex items-center justify-between gap-4 rounded-xl border border-primary/60 bg-primary/10 p-5">
+      <div className="flex items-center justify-between gap-4 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-5">
         <div className="flex items-center gap-4">
           <div
             aria-hidden
-            className="grid size-5 shrink-0 place-items-center rounded-full border-2 border-primary"
+            className="grid size-5 shrink-0 place-items-center rounded-full border-2 border-foreground/50"
           >
-            <div className="size-2 rounded-full bg-primary" />
+            <div className="size-2 rounded-full bg-foreground/70" />
           </div>
           <div className="flex flex-col gap-0.5">
             <span className="text-sm font-medium text-foreground">

@@ -201,9 +201,9 @@ const CartDrawer = () => {
             <Link
               href="/checkout"
               onClick={close}
-              className="mt-5 flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground transition-transform"
+              className="mt-5 flex h-12 w-full cursor-pointer items-center font-semibold justify-center gap-2 rounded-full bg-primary text-primary-foreground transition-transform"
             >
-              <span className="text-base font-medium">Checkout</span>
+              <span className="text-base">Checkout</span>
               <span className="text-base opacity-80">·</span>
               <span className="text-base tabular-nums">
                 {formatPrice(subtotalNGN, currency, rates)}

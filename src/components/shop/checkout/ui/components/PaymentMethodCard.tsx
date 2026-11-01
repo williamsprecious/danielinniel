@@ -21,13 +21,13 @@ const PaymentMethodCard = () => {
         </p>
       </div>
       <div className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-primary/60 bg-primary/10 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-5">
           <div className="flex items-center gap-4">
             <div
               aria-hidden
-              className="grid size-5 shrink-0 place-items-center rounded-full border-2 border-primary"
+              className="grid size-5 shrink-0 place-items-center rounded-full border-2 border-foreground/50"
             >
-              <div className="size-2 rounded-full bg-primary" />
+              <div className="size-2 rounded-full bg-foreground/70" />
             </div>
             <span className="text-sm font-medium text-foreground">
               Paystack

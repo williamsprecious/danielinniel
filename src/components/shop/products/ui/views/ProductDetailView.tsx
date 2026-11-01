@@ -262,7 +262,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || isAdding}
                 className={cn(
-                  "inline-flex h-12 w-full max-w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-medium tracking-wide transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:w-auto sm:min-w-60 sm:px-8 lg:h-13 lg:min-w-64 lg:text-base 2xl:h-14 2xl:min-w-72",
+                  "inline-flex h-14 w-full max-w-full items-center justify-center gap-3 rounded-full px-8 text-base font-semibold tracking-wide transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:w-auto sm:min-w-72 sm:px-10 lg:h-16 lg:min-w-80 lg:text-lg 2xl:min-w-96",
                   isOutOfStock
                     ? "cursor-not-allowed bg-foreground/10 text-foreground/40"
                     : isAdding
@@ -272,7 +272,7 @@ const ProductDetailView = ({ product }: ProductDetailViewProps) => {
               >
                 <ShoppingBag
                   aria-hidden="true"
-                  className="size-4 shrink-0 lg:size-5"
+                  className="size-5 shrink-0 lg:size-6"
                 />
                 <span>
                   {isOutOfStock

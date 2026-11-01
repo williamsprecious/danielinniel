@@ -136,7 +136,7 @@ const CheckoutForm = ({
                     placeholder="Email"
                     aria-label="Email"
                     autoComplete="email"
-                    className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                    className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                     {...field}
                   />
                 </FormControl>
@@ -179,7 +179,7 @@ const CheckoutForm = ({
                       placeholder="First Name"
                       aria-label="First name"
                       autoComplete="given-name"
-                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                      className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>
@@ -196,7 +196,7 @@ const CheckoutForm = ({
                       placeholder="Last Name"
                       aria-label="Last name"
                       autoComplete="family-name"
-                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                      className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>
@@ -215,7 +215,7 @@ const CheckoutForm = ({
                     placeholder="Address"
                     aria-label="Address line 1"
                     autoComplete="address-line1"
-                    className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                    className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                     {...field}
                   />
                 </FormControl>
@@ -233,7 +233,7 @@ const CheckoutForm = ({
                     placeholder="Apartment, Suite, etc. (optional)"
                     aria-label="Apartment, suite, etc."
                     autoComplete="address-line2"
-                    className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                    className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                     {...field}
                   />
                 </FormControl>
@@ -257,7 +257,7 @@ const CheckoutForm = ({
                       placeholder="City"
                       aria-label="City"
                       autoComplete="address-level2"
-                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                      className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>
@@ -293,7 +293,7 @@ const CheckoutForm = ({
                       placeholder="Zip code"
                       aria-label="Postal code"
                       autoComplete="postal-code"
-                      className="text-sm placeholder:text-sm h-14 md:text-lg md:placeholder:text-lg md:h-16"
+                      className="text-base placeholder:text-base h-14 md:text-lg md:placeholder:text-lg md:h-16"
                       {...field}
                     />
                   </FormControl>

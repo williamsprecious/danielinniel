@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import CheckoutForm, {
   type CheckoutFormHandle,
 } from "@/components/shop/checkout/ui/components/CheckoutForm";
@@ -32,6 +33,7 @@ type CheckoutViewProps = {
 };
 
 const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
+  const reduceMotion = useReducedMotion();
   const formRef = useRef<CheckoutFormHandle>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -134,38 +136,53 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                   className="flex w-full cursor-pointer items-center justify-between rounded-2xl border border-border/30 bg-foreground/[0.03] px-5 py-4 text-left"
                 >
                   <span className="flex items-center gap-2 text-sm text-foreground/70">
-                    Order Summary
                     <ChevronDown
                       size={14}
                       className={cn(
-                        "transition-transform",
+                        "transition-transform duration-300 motion-reduce:transition-none",
                         mobileSummaryOpen && "rotate-180",
                       )}
                     />
+                    Order Summary
                   </span>
                   <span className="text-sm tabular-nums text-foreground">
                     {formatPrice(totalNGN, currency, rates)}
                   </span>
                 </button>
-                {mobileSummaryOpen && (
-                  <div
-                    id="mobile-order-summary"
-                    className="mt-3 rounded-2xl border border-border/30 bg-foreground/[0.03] px-4 py-6"
-                  >
-                    {statusMessage && (
-                      <div
-                        role="status"
-                        className="mb-4 rounded-md border border-primary/30 bg-primary/10 p-3 text-sm text-foreground"
-                      >
-                        {statusMessage}
+                <AnimatePresence initial={false}>
+                  {mobileSummaryOpen && (
+                    <motion.div
+                      id="mobile-order-summary"
+                      key="mobile-order-summary"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{
+                        height: {
+                          duration: reduceMotion ? 0 : 0.3,
+                          ease: [0.22, 1, 0.36, 1],
+                        },
+                        opacity: { duration: reduceMotion ? 0 : 0.2 },
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-3 rounded-2xl border border-border/30 bg-foreground/[0.03] px-4 py-6">
+                        {statusMessage && (
+                          <div
+                            role="status"
+                            className="mb-4 rounded-md border border-primary/30 bg-primary/10 p-3 text-sm text-foreground"
+                          >
+                            {statusMessage}
+                          </div>
+                        )}
+                        <OrderSummary
+                          shippingQuote={shippingQuote}
+                          isDigitalOnly={isDigitalOnly}
+                        />
                       </div>
-                    )}
-                    <OrderSummary
-                      shippingQuote={shippingQuote}
-                      isDigitalOnly={isDigitalOnly}
-                    />
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Form + desktop summary */}
@@ -212,7 +229,7 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
                       lines.length === 0 ||
                       availableCountries.length === 0
                     }
-                    className="flex h-14 w-full cursor-pointer items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-14 w-full cursor-pointer items-center justify-center rounded-full bg-primary text-base font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isSubmitting ? "PROCESSING…" : "PLACE ORDER"}
                   </button>
@@ -233,7 +250,7 @@ const CheckoutView = ({ shippingZones }: CheckoutViewProps) => {
             type="button"
             onClick={handlePlaceOrder}
             disabled={isSubmitting || availableCountries.length === 0}
-            className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary text-base font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary text-base font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span>{isSubmitting ? "PROCESSING…" : "PLACE ORDER"}</span>
             <span aria-hidden className="opacity-70">
