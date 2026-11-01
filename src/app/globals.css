@@ -54,21 +54,17 @@
 
 :root {
   --radius: 0.65rem;
-  /* Background, and foreground */
-  /* --background: oklch(0 0 0); */
   --background: oklch(0.1448 0 0);
-  /* --background: oklch(0.0823 0.008 240.75); */
-  --foreground: oklch(0.9436 0.0084 56.31);
+  --foreground: oklch(0.9072 0.0201 77.31);
 
   --card: oklch(0.9436 0.0084 56.31);
   --card-foreground: oklch(0.1448 0 0);
   --popover: oklch(0.9436 0.0084 56.31);
   --popover-foreground: oklch(0.1448 0 0);
-  --primary: oklch(0.7158 0.1386 240.63);
-  /* --primary: oklch(0.6601 0.1626 245.17); */
-  --primary-foreground: oklch(0.9436 0.0084 56.31);
-  --secondary: oklch(0.9436 0.0084 56.31);
-  --secondary-foreground: oklch(0.1448 0 0);
+  --primary: oklch(0.9072 0.0201 77.31);
+  --primary-foreground: oklch(0.1867 0 0);
+  --secondary: var(--primary);
+  --secondary-foreground: var(--primary-foreground);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.7182 0 0);
   --accent: oklch(0.9436 0.0084 56.31);
@@ -86,7 +82,7 @@
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.6601 0.1626 245.17);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: var(--foreground);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
@@ -104,7 +100,7 @@
 
   .modal-custom-scrollbar {
     scrollbar-width: thin !important;
-    scrollbar-color: hsl(var(--border) / 0.3) transparent !important;
+    scrollbar-color: var(--border) transparent !important;
   }
 }
 
@@ -114,10 +110,6 @@
   }
 }
 
-/* Brand styling for rendered Portable Text / markdown. @tailwindcss/typography
-   defaults to a gray palette (and `prose-invert` to flat white); map its color
-   variables to our theme tokens so prose content uses the site foreground.
-   Kept unlayered so it wins over the plugin's `utilities`-layer defaults. */
 .prose {
   --tw-prose-body: color-mix(in oklab, var(--foreground) 85%, transparent);
   --tw-prose-headings: var(--foreground);
@@ -131,13 +123,25 @@
   --tw-prose-hr: var(--border);
   --tw-prose-code: var(--foreground);
   --tw-prose-pre-code: var(--foreground);
-  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-pre-bg: var(--background);
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
   --tw-prose-captions: var(--muted-foreground);
 }
 
 ::selection {
-  background-color: #41adf1;
-  color: #f1ebe7;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }
+
+/* Warm ivory — main */
+/* --primary: oklch(0.9072 0.0201 77.31); */
+
+/* Muted coral */
+/* --primary: oklch(0.7129 0.0990 32.22); */
+
+/* Soft amber */
+/* --primary: oklch(0.7861 0.0880 81.48); */
+
+/* Dusty lavender */
+/* --primary: oklch(0.7435 0.0656 304.49); */

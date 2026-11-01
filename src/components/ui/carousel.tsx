@@ -93,7 +93,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   return (
     <li
       ref={slideRef}
-      className="flex flex-1 flex-col cursor-grab active:cursor-grabbing items-center justify-center relative text-center text-white opacity-100 transition-all duration-300 ease-in-out w-[70vmin] h-[70vmin] mx-[4vmin] z-10 [perspective:1200px] [transform-style:preserve-3d] sm:w-[65vmin] sm:h-[65vmin]"
+      className="flex flex-1 flex-col cursor-grab active:cursor-grabbing items-center justify-center relative text-center text-foreground opacity-100 transition-all duration-300 ease-in-out w-[70vmin] h-[70vmin] mx-[4vmin] z-10 [perspective:1200px] [transform-style:preserve-3d] sm:w-[65vmin] sm:h-[65vmin]"
       onClick={() => handleSlideClick(index)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -210,7 +210,7 @@ const CarouselControl = ({
       aria-label={title}
       onClick={handleClick}
     >
-      <IconArrowNarrowRight className="text-neutral-600 dark:text-neutral-200" />
+      <IconArrowNarrowRight className="text-neutral-600 dark:text-foreground/85" />
     </button>
   );
 };
