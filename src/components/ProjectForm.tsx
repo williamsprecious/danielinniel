@@ -148,7 +148,7 @@ const ProjectForm = ({
                 <SelectTrigger
                   className={cn(
                     "input",
-                    errors.grade?.message && "border border-destructive/90",
+                    errors.grade?.message && "border border-destructive/60",
                   )}
                 >
                   <SelectValue placeholder="Select grade" />
@@ -189,7 +189,7 @@ const ProjectForm = ({
                 <SelectTrigger
                   className={cn(
                     "input",
-                    errors.grade?.message && "border border-destructive/90",
+                    errors.grade?.message && "border border-destructive/60",
                   )}
                 >
                   <SelectValue placeholder="Select design" />
@@ -227,7 +227,7 @@ const ProjectForm = ({
               <SelectTrigger
                 className={cn(
                   "input",
-                  errors.budget?.message && "border border-destructive/90",
+                  errors.budget?.message && "border border-destructive/60",
                 )}
                 disabled={budgetList.length === 1}
               >
@@ -248,7 +248,7 @@ const ProjectForm = ({
       <div>
         <Textarea
           className={cn(
-            errors.projectDetails?.message && "border border-destructive/90",
+            errors.projectDetails?.message && "border border-destructive/60",
           )}
           placeholder="Describe your idea in detail"
           rows={10}

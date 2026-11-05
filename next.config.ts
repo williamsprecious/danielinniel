@@ -1,15 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      {
+        source: "/",
+        has: [{ type: "host", value: "shop.danielinniel.com" }],
+        destination: "https://danielinniel.com/shop",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "d1o0lg255tq9i5.cloudfront.net",
-        port: "",
-        pathname: "/**",
-      },
       {
         protocol: "https",
         hostname: "cdn.sanity.io",

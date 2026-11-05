@@ -100,7 +100,7 @@ const ShippingCountryCombobox = ({
         className={cn(
           "flex h-16 w-full cursor-pointer items-center justify-between rounded-md border border-transparent bg-[#131313] p-5 text-left text-sm text-foreground/80 transition-colors md:text-lg",
           !selectedName && "text-muted-foreground/60 font-medium",
-          hasError && "border-destructive/90",
+          hasError && "border-destructive/60",
           disabled && "cursor-not-allowed opacity-60",
         )}
       >

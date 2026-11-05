@@ -24,7 +24,7 @@ const OrderConfirmationView = ({ order }: { order: OrderData }) => {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:py-14 lg:px-10 lg:py-16">
       <div className="mb-8 flex flex-col items-center gap-5 text-center sm:mb-10">
-        <div className="grid size-16 place-items-center rounded-full border border-primary/20 bg-primary/10 text-primary">
+        <div className="grid size-16 place-items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 text-emerald-400">
           <CheckCircle2 size={32} strokeWidth={1.75} aria-hidden="true" />
         </div>
         <div className="space-y-3">

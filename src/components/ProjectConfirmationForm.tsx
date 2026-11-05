@@ -45,7 +45,7 @@ const ProjectConfirmationForm = ({
       </p>
 
       <Input
-        className={cn(errors.name?.message && "border border-destructive/90")}
+        className={cn(errors.name?.message && "border border-destructive/60")}
         placeholder="Your Name"
         disabled={disabled}
         {...register("name")}
@@ -53,7 +53,7 @@ const ProjectConfirmationForm = ({
 
       <Input
         className={cn(
-          errors.company?.message && "border border-destructive/90"
+          errors.company?.message && "border border-destructive/60"
         )}
         placeholder="Company (optional)"
         disabled={disabled}
@@ -62,7 +62,7 @@ const ProjectConfirmationForm = ({
 
       <Input
         type="email"
-        className={cn(errors.email?.message && "border border-destructive/90")}
+        className={cn(errors.email?.message && "border border-destructive/60")}
         placeholder="Email"
         disabled={disabled}
         {...register("email")}

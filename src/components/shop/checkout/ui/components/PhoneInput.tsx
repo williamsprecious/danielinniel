@@ -140,8 +140,8 @@ const PhoneInput = ({
         aria-invalid={hasError || undefined}
         className={cn(
           "flex h-14 w-full items-center rounded-md border border-transparent bg-[#131313] transition-colors md:h-16",
-          "aria-invalid:border-destructive/90",
-          hasError && "border-destructive/90",
+          "aria-invalid:border-destructive/60",
+          hasError && "border-destructive/60",
         )}
       >
         <button
