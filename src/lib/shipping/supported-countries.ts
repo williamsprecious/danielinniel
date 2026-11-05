@@ -5,14 +5,18 @@ export const SUPPORTED_SHIPPING_COUNTRIES = [
   { code: "US", name: "United States", regionLabel: "State" as const },
   { code: "CA", name: "Canada", regionLabel: "Province" as const },
   { code: "GB", name: "United Kingdom", regionLabel: null },
+  { code: "GH", name: "Ghana", regionLabel: "Region" as const },
+  { code: "ZA", name: "South Africa", regionLabel: "Province" as const },
+  { code: "KE", name: "Kenya", regionLabel: "County" as const },
 ] as const;
 
 export type SupportedShippingCountry =
   (typeof SUPPORTED_SHIPPING_COUNTRIES)[number];
 
-export const SUPPORTED_SHIPPING_COUNTRY_CODES = SUPPORTED_SHIPPING_COUNTRIES.map(
-  (c) => c.code,
-) as readonly ShippingCountryCode[];
+export const SUPPORTED_SHIPPING_COUNTRY_CODES =
+  SUPPORTED_SHIPPING_COUNTRIES.map(
+    (c) => c.code,
+  ) as readonly ShippingCountryCode[];
 
 export const isSupportedShippingCountry = (
   code: string | null | undefined,

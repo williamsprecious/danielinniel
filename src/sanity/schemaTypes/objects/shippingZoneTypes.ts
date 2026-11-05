@@ -1,6 +1,9 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import {
   CA_PROVINCES,
+  GH_REGIONS,
+  ZA_PROVINCES,
+  KE_COUNTIES,
   NG_STATES,
   US_STATES,
   type Region,
@@ -12,9 +15,9 @@ type CountryEntry = {
   /** Friendly title shown in the "Add" menu. */
   title: string;
   /** ISO country code locked into the document. */
-  code: "NG" | "US" | "CA" | "GB";
+  code: "NG" | "US" | "CA" | "GB" | "GH" | "ZA" | "KE";
   /** Label for the region field (also drives the array title). */
-  regionLabel: "State" | "Province" | null;
+  regionLabel: "State" | "Province" | "Region" | "County" | null;
   /** Allowed regions, or null for flat-only countries. */
   regions: ReadonlyArray<Region> | null;
 };
@@ -95,9 +98,7 @@ const buildZoneType = (entry: CountryEntry) =>
               of: [buildOverrideMember(entry)],
               validation: (Rule) =>
                 Rule.custom((items) => {
-                  const list = items as
-                    | Array<{ region?: string }>
-                    | undefined;
+                  const list = items as Array<{ region?: string }> | undefined;
                   if (!list || list.length === 0) return true;
                   const seen = new Set<string>();
                   const dups = new Set<string>();
@@ -131,8 +132,9 @@ const buildZoneType = (entry: CountryEntry) =>
             : "—";
         const overrideCount = Array.isArray(overrides) ? overrides.length : 0;
         const overrideSuffix = entry.regions
-          ? ` • ${overrideCount} ${(entry.regionLabel ?? "region")
-              .toLowerCase()} override${overrideCount === 1 ? "" : "s"}`
+          ? ` • ${overrideCount} ${(
+              entry.regionLabel ?? "region"
+            ).toLowerCase()} override${overrideCount === 1 ? "" : "s"}`
           : "";
         return {
           title: entry.title,
@@ -141,6 +143,30 @@ const buildZoneType = (entry: CountryEntry) =>
       },
     },
   });
+
+export const shippingZoneGHType = buildZoneType({
+  typeName: "shippingZoneGH",
+  title: "Ghana",
+  code: "GH",
+  regionLabel: "Region",
+  regions: GH_REGIONS,
+});
+
+export const shippingZoneZAType = buildZoneType({
+  typeName: "shippingZoneZA",
+  title: "South Africa",
+  code: "ZA",
+  regionLabel: "Province",
+  regions: ZA_PROVINCES,
+});
+
+export const shippingZoneKEType = buildZoneType({
+  typeName: "shippingZoneKE",
+  title: "Kenya",
+  code: "KE",
+  regionLabel: "County",
+  regions: KE_COUNTIES,
+});
 
 export const shippingZoneNGType = buildZoneType({
   typeName: "shippingZoneNG",

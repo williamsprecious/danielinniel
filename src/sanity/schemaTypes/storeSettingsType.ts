@@ -131,6 +131,9 @@ export const storeSettingsType = defineType({
         defineArrayMember({ type: "shippingZoneUS" }),
         defineArrayMember({ type: "shippingZoneCA" }),
         defineArrayMember({ type: "shippingZoneGB" }),
+        defineArrayMember({ type: "shippingZoneGH" }),
+        defineArrayMember({ type: "shippingZoneZA" }),
+        defineArrayMember({ type: "shippingZoneKE" }),
       ],
       validation: (Rule) =>
         Rule.custom((items) => {
@@ -142,6 +145,9 @@ export const storeSettingsType = defineType({
             US: "United States",
             CA: "Canada",
             GB: "United Kingdom",
+            GH: "Ghana",
+            ZA: "South Africa",
+            KE: "Kenya",
           };
           const seen = new Set<string>();
           const dups = new Set<string>();

@@ -30,6 +30,522 @@
     }
   },
   {
+    "name": "shippingZoneKE",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneKE"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "regionOverrides": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "region": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "union",
+                    "of": [
+                      {
+                        "type": "string",
+                        "value": "Baringo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Bomet"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Bungoma"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Busia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Elgeyo Marakwet"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Embu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Garissa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Homa Bay"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Isiolo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kajiado"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kakamega"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kericho"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kiambu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kilifi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kirinyaga"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kisii"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kisumu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kitui"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Kwale"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Laikipia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Lamu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Machakos"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Makueni"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Mandera"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Marsabit"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Meru"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Migori"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Mombasa"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Murang'a"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nairobi City"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nakuru"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nandi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Narok"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nyamira"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nyandarua"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Nyeri"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Samburu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Siaya"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Taita Taveta"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Tana River"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Tharaka Nithi"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Trans Nzoia"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Turkana"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Uasin Gishu"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Vihiga"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Wajir"
+                      },
+                      {
+                        "type": "string",
+                        "value": "West Pokot"
+                      }
+                    ]
+                  },
+                  "optional": true
+                },
+                "feeNGN": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "number"
+                  },
+                  "optional": true
+                },
+                "_type": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string",
+                    "value": "shippingZoneKEOverride"
+                  }
+                }
+              },
+              "rest": {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "shippingZoneZA",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneZA"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "regionOverrides": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "region": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "union",
+                    "of": [
+                      {
+                        "type": "string",
+                        "value": "Eastern Cape"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Free State"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Gauteng"
+                      },
+                      {
+                        "type": "string",
+                        "value": "KwaZulu-Natal"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Limpopo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Mpumalanga"
+                      },
+                      {
+                        "type": "string",
+                        "value": "North West"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Northern Cape"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Western Cape"
+                      }
+                    ]
+                  },
+                  "optional": true
+                },
+                "feeNGN": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "number"
+                  },
+                  "optional": true
+                },
+                "_type": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string",
+                    "value": "shippingZoneZAOverride"
+                  }
+                }
+              },
+              "rest": {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "shippingZoneGH",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "shippingZoneGH"
+          }
+        },
+        "country": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "defaultFeeNGN": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "regionOverrides": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "region": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "union",
+                    "of": [
+                      {
+                        "type": "string",
+                        "value": "Ahafo"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Ashanti"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Bono"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Bono East"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Central"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Eastern"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Greater Accra"
+                      },
+                      {
+                        "type": "string",
+                        "value": "North East"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Northern"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Oti"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Savannah"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Upper East"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Upper West"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Volta"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Western"
+                      },
+                      {
+                        "type": "string",
+                        "value": "Western North"
+                      }
+                    ]
+                  },
+                  "optional": true
+                },
+                "feeNGN": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "number"
+                  },
+                  "optional": true
+                },
+                "_type": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string",
+                    "value": "shippingZoneGHOverride"
+                  }
+                }
+              },
+              "rest": {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "shippingZoneCA",
     "type": "type",
     "value": {
@@ -863,6 +1379,51 @@
                 "rest": {
                   "type": "inline",
                   "name": "shippingZoneGB"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneGH"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneZA"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "shippingZoneKE"
                 }
               }
             ]

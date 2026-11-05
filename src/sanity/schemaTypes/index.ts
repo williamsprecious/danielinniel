@@ -9,6 +9,9 @@ import { orderType } from "./orderType";
 import { storeSettingsType } from "./storeSettingsType";
 import {
   shippingZoneCAType,
+  shippingZoneGHType,
+  shippingZoneZAType,
+  shippingZoneKEType,
   shippingZoneGBType,
   shippingZoneNGType,
   shippingZoneUSType,
@@ -26,6 +29,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     shippingZoneNGType,
     shippingZoneUSType,
     shippingZoneCAType,
+    shippingZoneGHType,
+    shippingZoneZAType,
+    shippingZoneKEType,
     shippingZoneGBType,
   ],
 };

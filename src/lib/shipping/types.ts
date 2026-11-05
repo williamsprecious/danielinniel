@@ -1,4 +1,5 @@
-export type ShippingCountryCode = "NG" | "US" | "CA" | "GB";
+export type ShippingCountryCode =
+  "NG" | "US" | "CA" | "GB" | "GH" | "ZA" | "KE";
 
 export type RegionOverride = {
   region: string;

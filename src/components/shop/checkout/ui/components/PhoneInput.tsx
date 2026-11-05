@@ -18,11 +18,22 @@ import NG from "country-flag-icons/react/3x2/NG";
 import US from "country-flag-icons/react/3x2/US";
 import CA from "country-flag-icons/react/3x2/CA";
 import GB from "country-flag-icons/react/3x2/GB";
+import GH from "country-flag-icons/react/3x2/GH";
+import ZA from "country-flag-icons/react/3x2/ZA";
+import KE from "country-flag-icons/react/3x2/KE";
 import { cn } from "@/lib/utils";
 import { isSupportedShippingCountry } from "@/lib/shipping/supported-countries";
 import type { ShippingCountryCode } from "@/lib/shipping/types";
 
-const FLAGS: Record<ShippingCountryCode, typeof NG> = { NG, US, CA, GB };
+const FLAGS: Record<ShippingCountryCode, typeof NG> = {
+  NG,
+  US,
+  CA,
+  GB,
+  GH,
+  ZA,
+  KE,
+};
 
 const DEFAULT_COUNTRY: ShippingCountryCode = "NG";
 

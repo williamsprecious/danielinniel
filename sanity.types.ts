@@ -21,6 +21,114 @@ export type ShippingZoneGB = {
   defaultFeeNGN?: number;
 };
 
+export type ShippingZoneKE = {
+  _type: "shippingZoneKE";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Baringo"
+      | "Bomet"
+      | "Bungoma"
+      | "Busia"
+      | "Elgeyo Marakwet"
+      | "Embu"
+      | "Garissa"
+      | "Homa Bay"
+      | "Isiolo"
+      | "Kajiado"
+      | "Kakamega"
+      | "Kericho"
+      | "Kiambu"
+      | "Kilifi"
+      | "Kirinyaga"
+      | "Kisii"
+      | "Kisumu"
+      | "Kitui"
+      | "Kwale"
+      | "Laikipia"
+      | "Lamu"
+      | "Machakos"
+      | "Makueni"
+      | "Mandera"
+      | "Marsabit"
+      | "Meru"
+      | "Migori"
+      | "Mombasa"
+      | "Murang'a"
+      | "Nairobi City"
+      | "Nakuru"
+      | "Nandi"
+      | "Narok"
+      | "Nyamira"
+      | "Nyandarua"
+      | "Nyeri"
+      | "Samburu"
+      | "Siaya"
+      | "Taita Taveta"
+      | "Tana River"
+      | "Tharaka Nithi"
+      | "Trans Nzoia"
+      | "Turkana"
+      | "Uasin Gishu"
+      | "Vihiga"
+      | "Wajir"
+      | "West Pokot";
+    feeNGN?: number;
+    _type: "shippingZoneKEOverride";
+    _key: string;
+  }>;
+};
+
+export type ShippingZoneZA = {
+  _type: "shippingZoneZA";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Eastern Cape"
+      | "Free State"
+      | "Gauteng"
+      | "KwaZulu-Natal"
+      | "Limpopo"
+      | "Mpumalanga"
+      | "North West"
+      | "Northern Cape"
+      | "Western Cape";
+    feeNGN?: number;
+    _type: "shippingZoneZAOverride";
+    _key: string;
+  }>;
+};
+
+export type ShippingZoneGH = {
+  _type: "shippingZoneGH";
+  country?: string;
+  defaultFeeNGN?: number;
+  regionOverrides?: Array<{
+    region?:
+      | "Ahafo"
+      | "Ashanti"
+      | "Bono"
+      | "Bono East"
+      | "Central"
+      | "Eastern"
+      | "Greater Accra"
+      | "North East"
+      | "Northern"
+      | "Oti"
+      | "Savannah"
+      | "Upper East"
+      | "Upper West"
+      | "Volta"
+      | "Western"
+      | "Western North";
+    feeNGN?: number;
+    _type: "shippingZoneGHOverride";
+    _key: string;
+  }>;
+};
+
 export type ShippingZoneCA = {
   _type: "shippingZoneCA";
   country?: string;
@@ -186,6 +294,15 @@ export type StoreSettings = {
     | ({
         _key: string;
       } & ShippingZoneGB)
+    | ({
+        _key: string;
+      } & ShippingZoneGH)
+    | ({
+        _key: string;
+      } & ShippingZoneZA)
+    | ({
+        _key: string;
+      } & ShippingZoneKE)
   >;
 };
 
@@ -572,6 +689,9 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | ShippingZoneGB
+  | ShippingZoneKE
+  | ShippingZoneZA
+  | ShippingZoneGH
   | ShippingZoneCA
   | ShippingZoneUS
   | ShippingZoneNG
@@ -944,6 +1064,31 @@ export type STORE_SETTINGS_QUERY_RESULT =
             defaultFeeNGN: number | null;
             regionOverrides: Array<{
               region:
+                | "Ahafo"
+                | "Ashanti"
+                | "Bono East"
+                | "Bono"
+                | "Central"
+                | "Eastern"
+                | "Greater Accra"
+                | "North East"
+                | "Northern"
+                | "Oti"
+                | "Savannah"
+                | "Upper East"
+                | "Upper West"
+                | "Volta"
+                | "Western North"
+                | "Western"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
                 | "Alabama"
                 | "Alaska"
                 | "Arizona"
@@ -1017,6 +1162,80 @@ export type STORE_SETTINGS_QUERY_RESULT =
                 | "Quebec"
                 | "Saskatchewan"
                 | "Yukon"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Baringo"
+                | "Bomet"
+                | "Bungoma"
+                | "Busia"
+                | "Elgeyo Marakwet"
+                | "Embu"
+                | "Garissa"
+                | "Homa Bay"
+                | "Isiolo"
+                | "Kajiado"
+                | "Kakamega"
+                | "Kericho"
+                | "Kiambu"
+                | "Kilifi"
+                | "Kirinyaga"
+                | "Kisii"
+                | "Kisumu"
+                | "Kitui"
+                | "Kwale"
+                | "Laikipia"
+                | "Lamu"
+                | "Machakos"
+                | "Makueni"
+                | "Mandera"
+                | "Marsabit"
+                | "Meru"
+                | "Migori"
+                | "Mombasa"
+                | "Murang'a"
+                | "Nairobi City"
+                | "Nakuru"
+                | "Nandi"
+                | "Narok"
+                | "Nyamira"
+                | "Nyandarua"
+                | "Nyeri"
+                | "Samburu"
+                | "Siaya"
+                | "Taita Taveta"
+                | "Tana River"
+                | "Tharaka Nithi"
+                | "Trans Nzoia"
+                | "Turkana"
+                | "Uasin Gishu"
+                | "Vihiga"
+                | "Wajir"
+                | "West Pokot"
+                | null;
+              feeNGN: number | null;
+            }> | null;
+          }
+        | {
+            country: string | null;
+            defaultFeeNGN: number | null;
+            regionOverrides: Array<{
+              region:
+                | "Eastern Cape"
+                | "Free State"
+                | "Gauteng"
+                | "KwaZulu-Natal"
+                | "Limpopo"
+                | "Mpumalanga"
+                | "North West"
+                | "Northern Cape"
+                | "Western Cape"
                 | null;
               feeNGN: number | null;
             }> | null;
